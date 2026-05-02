@@ -4389,22 +4389,22 @@
             <div class="content-overlay" style="background-color: rgba(255,255,255,0.7); backdrop-filter: blur(2px);">
                 <h2>Galeri Foto</h2>
                 <div class="gallery-grid">
-                    <div class="gallery-item" onclick="openGallery('prewedding')">
+                    <div class="gallery-item" onclick="openSimpleGallery('prewedding')">
                         <div class="icon-camera"></div>
                         <div class="title">Pre-Wedding</div>
                         <div class="description">Dokumentasi sesi pra-kawin</div>
                     </div>
-                    <div class="gallery-item" onclick="openGallery('engagement')">
+                    <div class="gallery-item" onclick="openSimpleGallery('engagement')">
                         <div class="icon-ring"></div>
                         <div class="title">Engagement</div>
                         <div class="description">Momen pertunangan sakral</div>
                     </div>
-                    <div class="gallery-item" onclick="openGallery('moments')">
+                    <div class="gallery-item" onclick="openSimpleGallery('moments')">
                         <div class="icon-heart"></div>
                         <div class="title">Moments</div>
                         <div class="description">Koleksi kenangan berharga</div>
                     </div>
-                    <div class="gallery-item" onclick="openGallery('together')">
+                    <div class="gallery-item" onclick="openSimpleGallery('together')">
                         <div class="icon-together"></div>
                         <div class="title">Together</div>
                         <div class="description">Perjalanan kisah cinta</div>
@@ -5577,9 +5577,45 @@
         
         // Enhanced gallery function with arrow navigation and lazy loading
         function openSimpleGallery(category) {
-
+            // Debug: Check what photos are available
+            const photos = getPhotosFromCategory(category);
             const photoPaths = loadAllPhotosFromCategory(category);
-            if (photoPaths.length === 0) {
+            
+            // Debug: Log to see what's happening
+            if (photos.length === 0 || photoPaths.length === 0) {
+                // Try to detect photos immediately if none found
+                detectPhotosFromFolder(category, true).then(detectedPhotos => {
+                    if (detectedPhotos.length > 0) {
+                        galleryCategories[category] = detectedPhotos;
+                        // Retry opening gallery
+                        openSimpleGallery(category);
+                    } else {
+                        // Show user feedback
+                        const modal = document.createElement('div');
+                        modal.style.cssText = `
+                            position: fixed;
+                            inset: 0;
+                            background: rgba(0,0,0,0.8);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            z-index: 99999;
+                            color: white;
+                            font-family: 'Montserrat', sans-serif;
+                            text-align: center;
+                            padding: 2rem;
+                        `;
+                        modal.innerHTML = `
+                            <div>
+                                <div style="font-size: 2rem; margin-bottom: 1rem;">📷</div>
+                                <div style="font-size: 1.2rem; margin-bottom: 0.5rem;">Foto tidak ditemukan</div>
+                                <div style="font-size: 0.9rem; opacity: 0.8;">Kategori: ${category}</div>
+                                <button onclick="this.closest('div').parentElement.remove()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #ff6b6b; color: white; border: none; border-radius: 5px; cursor: pointer;">Tutup</button>
+                            </div>
+                        `;
+                        document.body.appendChild(modal);
+                    }
+                });
                 return;
             }
             
@@ -6928,10 +6964,14 @@
         
         // Initialize everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM Content Loaded - Initializing all systems...');
-            
-            // Initialize photo detection
-            initializePhotoDetection();
+            // Initialize photo detection and smart loading system
+            initializePhotoDetection().then(() => {
+                // Start smart auto-loading system
+                setupAutoPhotoLoading();
+                
+                // Start photo watcher for auto-refresh
+                setupPhotoWatcher();
+            });
             
             // Initialize music player
             initSimpleMusic();
@@ -6941,19 +6981,6 @@
             
             // Initialize countdown timer
             startCountdown();
-            
-            console.log('All systems initialized successfully');
-        });
-        
-        // Initialize automatic photo detection and smart photo loading
-        initializePhotoDetection().then(() => {
-            // Start smart auto-loading system
-            console.log('🎯 Starting premium auto-loading system...');
-            setupAutoPhotoLoading();
-            
-            // Start photo watcher for auto-refresh
-            console.log('👁️ Starting photo watcher for auto-detection...');
-            setupPhotoWatcher();
         });
         // Music starts only after the invitation is opened.
 
@@ -7118,21 +7145,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
