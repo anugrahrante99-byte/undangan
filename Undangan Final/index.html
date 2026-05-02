@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -1084,16 +1084,7 @@
             margin-bottom: 0;
         }
         
-        /* State untuk animasi scroll */
-        .section.scroll-animated {
-            opacity: 0;
-            transform: translateY(50px);
-        }
-        
-        .section.scroll-animated.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        /* Scroll animations disabled */
         
         .section.fade-in {
             animation: elegantFadeIn 1.2s ease-out forwards;
@@ -1772,6 +1763,7 @@
             font-size: 2.5rem;
             margin-bottom: 0.8rem;
             display: block;
+            color: #6c5ce7;
             background: linear-gradient(135deg, #6c5ce7, #5f3dc4);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -1782,6 +1774,7 @@
         
         .gallery-item:hover .icon {
             transform: scale(1.15) rotate(8deg);
+            color: #5f3dc4;
             background: linear-gradient(135deg, #5f3dc4, #4a148c);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -1979,10 +1972,9 @@
         }
         
         .couple-item h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: #FFD700;
             background: linear-gradient(135deg, #FFD700, #FFA500, #FFD700);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -2147,6 +2139,7 @@
         
         .heart-symbol {
             font-size: 1.5rem;
+            color: #FF69B4;
             background: linear-gradient(135deg, #FF69B4, #FF1493, #FF69B4);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -2157,7 +2150,7 @@
         .and-text {
             font-family: 'Playfair Display', serif;
             font-size: 2rem;
-            font-weight: 700;
+            color: #FFD700;
             background: linear-gradient(135deg, #FFD700, #FFA500, #FFD700);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -2167,6 +2160,7 @@
         
         .couple-symbol {
             font-size: 2rem;
+            color: #FFD700;
             background: linear-gradient(135deg, #FFD700, #FFA500, #FFD700);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -2230,8 +2224,8 @@
         .thanks-message h2 {
             font-family: 'Playfair Display', serif;
             font-size: 1.8rem;
-            font-weight: 700;
             margin-bottom: 1.5rem;
+            color: #4682B4;
             background: linear-gradient(135deg, #4682B4, #5F9EA0, #4682B4);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -2274,15 +2268,13 @@
         
         .thanks-message .decorative-icon {
             font-size: 1.5rem;
+            color: #4682B4;
             background: linear-gradient(135deg, #4682B4, #5F9EA0, #4682B4);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin: 0.5rem 0;
             display: block;
-            animation: heartbeat 2s ease-in-out infinite;
-            position: relative;
-            z-index: 1;
         }
         
         .music-control {
@@ -2590,27 +2582,16 @@
             }
         }
         
-        /* Simplified Scroll Animation Classes - Clean & Minimal */
-        .scroll-animate {
+        /* Ultra-Simple Scroll Animation - Mobile Friendly */
+        .scroll-fade {
             opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.6s ease-out;
+            transform: translateY(15px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
         
-        .scroll-animate.animated {
+        .scroll-fade.visible {
             opacity: 1;
             transform: translateY(0);
-        }
-        
-        /* Same simple animation for all sections - consistent and clean */
-        .section-1 .scroll-animate.animated,
-        .section-2 .scroll-animate.animated,
-        .section-3 .scroll-animate.animated,
-        .section-4 .scroll-animate.animated,
-        .section-5 .scroll-animate.animated {
-            opacity: 1;
-            transform: translateY(0);
-            transition: all 0.6s ease-out;
         }
         
         /* Event details styling for Section 5 */
@@ -2630,6 +2611,8 @@
             text-align: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
         
         .event-item:hover {
@@ -2644,6 +2627,8 @@
             font-size: 1.3rem;
             margin-bottom: 1rem;
             font-weight: 700;
+            position: relative;
+            z-index: 2;
         }
         
         .event-item p {
@@ -2652,30 +2637,19 @@
             font-family: 'Montserrat', sans-serif;
             font-size: 0.95rem;
             line-height: 1.6;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
         }
         
-        .section-6 .scroll-animate.animated,
-        .section-7 .scroll-animate.animated,
-        .section-8 .scroll-animate.animated,
-        .section-9 .scroll-animate.animated,
-        .section-10 .scroll-animate.animated {
-            opacity: 1;
-            transform: translateY(0);
-            transition: all 0.6s ease-out;
-        }
-        
-        /* Exclude gallery items from scroll animations */
-        .section-6 .gallery-item {
+        .gallery-item {
             opacity: 1 !important;
             transform: none !important;
-            filter: none !important;
-            animation: none !important;
-            transition: all 0.3s ease !important;
+            transition: transform 0.3s ease !important;
         }
         
-        .section-6 .gallery-item:hover {
-            transform: translateY(-5px) scale(1.02) !important;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        .gallery-item:hover {
+            transform: translateY(-5px);
         }
         
         /* Luxury animation variants */
@@ -2784,29 +2758,7 @@
         .stagger-7 { transition-delay: 0.7s; }
         .stagger-8 { transition-delay: 0.8s; }
         
-        .scroll-animate.slide-in-up {
-            transform: translateY(30px);
-        }
-        
-        .scroll-animate.slide-in-up.animated {
-            transform: translateY(0);
-        }
-        
-        .scroll-animate.scale-in {
-            transform: scale(0.9);
-        }
-        
-        .scroll-animate.scale-in.animated {
-            transform: scale(1);
-        }
-        
-        .scroll-animate.rotate-in {
-            transform: rotate(-5deg) scale(0.95);
-        }
-        
-        .scroll-animate.rotate-in.animated {
-            transform: rotate(0deg) scale(1);
-        }
+        /* Scroll animations disabled */
         
         /* Delay Classes - Using transition delay for stability */
         .delay-1 { transition-delay: 0.1s; }
@@ -2947,71 +2899,42 @@
             }
         }
         
-        /* Scroll Animation Classes */
+        /* Elegant Scroll Animation Classes */
         .scroll-animate {
             opacity: 0;
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         
         .scroll-animate.animated {
             opacity: 1;
+            transform: translateY(0);
         }
         
-        .scroll-animate.slide-in-left {
-            transform: translateX(-50px);
+        .scroll-animate.fade-in {
+            transform: translateY(0);
+            opacity: 0;
         }
         
-        .scroll-animate.slide-in-left.animated {
-            transform: translateX(0);
+        .scroll-animate.fade-in.animated {
+            opacity: 1;
         }
         
-        .scroll-animate.slide-in-right {
-            transform: translateX(50px);
+        .scroll-animate.slide-up {
+            transform: translateY(30px);
         }
         
-        .scroll-animate.slide-in-right.animated {
-            transform: translateX(0);
-        }
-        
-        .scroll-animate.slide-in-up {
-            transform: translateY(50px);
-        }
-        
-        .scroll-animate.slide-in-up.animated {
+        .scroll-animate.slide-up.animated {
             transform: translateY(0);
         }
         
         .scroll-animate.scale-in {
-            transform: scale(0.8);
+            transform: scale(0.95);
         }
         
         .scroll-animate.scale-in.animated {
             transform: scale(1);
         }
-        
-        .scroll-animate.rotate-in {
-            transform: rotate(-10deg);
-        }
-        
-        .scroll-animate.rotate-in.animated {
-            transform: rotate(0deg);
-        }
-        
-        .scroll-animate.bounce-in {
-            transform: scale(0.3);
-        }
-        
-        .scroll-animate.bounce-in.animated {
-            transform: scale(1);
-        }
-        
-        /* Staggered Animation Delays */
-        .scroll-animate.delay-1 { transition-delay: 0.1s; }
-        .scroll-animate.delay-2 { transition-delay: 0.2s; }
-        .scroll-animate.delay-3 { transition-delay: 0.3s; }
-        .scroll-animate.delay-4 { transition-delay: 0.4s; }
-        .scroll-animate.delay-5 { transition-delay: 0.5s; }
-        .scroll-animate.delay-6 { transition-delay: 0.6s; }
         
         @keyframes glow {
             0%, 100% {
@@ -4577,14 +4500,21 @@
                             </div>
                         </div>
                         <div class="bank-info">
-                            <h3>Bank BNI</h3>
-                            <p>No. Rekening: <strong id="bni-account" style="padding: 4px 8px; border-radius: 6px; background: rgba(0,102,204,0.1);">1787542145</strong> <button onclick="copyAccountNumber()" style="margin-left: 8px; padding: 4px 12px; background: #0066CC; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.background='#0052a3'" onmouseout="this.style.background='#0066CC'">📋 Copy</button></p>
+                            <p>No. Rekening: <strong id="bni-account" style="padding: 4px 8px; border-radius: 6px; background: rgba(0,102,204,0.1);">1787542145</strong> <button onclick="copyAccountNumber('bni')" style="margin-left: 8px; padding: 4px 12px; background: #0066CC; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.background='#0052a3'" onmouseout="this.style.background='#0066CC'">📋 Copy</button></p>
                             <p>a.n. <strong>Fepprianti</strong></p>
                         </div>
                     </div>
-                    <div class="barcode-container" style="display: flex; flex-direction: column; align-items: center; margin-top: 1rem;">
-                        <div style="width: 200px; height: 80px; background: repeating-linear-gradient(90deg, #000 0px, #000 3px, #fff 3px, #fff 6px); border-radius: 6px; margin: 0.5rem 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"></div>
-                        <small style="color: #666; font-size: 0.85rem; font-weight: 500;">1787542145</small>
+                    <div class="gift-item">
+                        <div class="bank-logo">
+                            <img src="mandiri-logo.png" alt="Bank Mandiri Logo" style="width: 60px; height: 60px; object-fit: contain; border-radius: 0; box-shadow: none; background: transparent;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #0066B3, #004A8F); border-radius: 10px; display: none; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(0,102,179,0.3);">
+                                MANDIRI
+                            </div>
+                        </div>
+                        <div class="bank-info">
+                            <p>No. Rekening: <strong id="mandiri-account" style="padding: 4px 8px; border-radius: 6px; background: rgba(0,102,179,0.1);">1620004386821</strong> <button onclick="copyAccountNumber('mandiri')" style="margin-left: 8px; padding: 4px 12px; background: #0066B3; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.background='#004A8F'" onmouseout="this.style.background='#0066B3'">📋 Copy</button></p>
+                            <p>a.n. <strong>Adiaksa Anugrah Rante</strong></p>
+                        </div>
                     </div>
                 </div>
                 <div class="gift-note">
@@ -5107,7 +5037,6 @@
 
         // Smart photo detection with pattern matching - FULLY AUTOMATIC
         async function detectPhotosFromFolder(category, forceRefresh = false) {
-            console.log(`🔍 Smart detecting photos in ${category} folder${forceRefresh ? ' (forced refresh)' : ''}...`);
             
             const detectedPhotos = [];
             
@@ -5116,7 +5045,6 @@
             for (const file of knownFiles) {
                 if (await testImageExists(`${category}/${file}`)) {
                     detectedPhotos.push(file);
-                    console.log(`✅ Found known file: ${category}/${file}`);
                 }
             }
             
@@ -5128,18 +5056,14 @@
             
             // If still no files found, use fallback
             if (detectedPhotos.length === 0) {
-                console.log(`⚠️ No photos detected in ${category}, using fallback list`);
                 return fallbackPhotos[category] || [];
             }
-            
-            console.log(`📸 Detected ${detectedPhotos.length} photos in ${category}`);
             return detectedPhotos;
         }
         
                 
         // Auto-refresh photo detection when new photos are added - ENHANCED
         async function autoRefreshPhotoDetection(category = null) {
-            console.log(`🔄 Auto-refreshing photo detection${category ? ` for ${category}` : ' for all categories'}...`);
             
             const categoriesToRefresh = category ? [category] : Object.keys(galleryCategories);
             const refreshPromises = categoriesToRefresh.map(async (cat) => {
@@ -5151,7 +5075,6 @@
                     const photosChanged = JSON.stringify(oldPhotos.sort()) !== JSON.stringify(newPhotos.sort());
                     
                     if (photosChanged) {
-                        console.log(`🆕 Photos changed in ${cat}: ${oldPhotos.length} → ${newPhotos.length}`);
                         galleryCategories[cat] = newPhotos;
                         
                         // Update mini gallery if it exists
@@ -5167,7 +5090,6 @@
                         
                         return { category: cat, changed: true, oldCount: oldPhotos.length, newCount: newPhotos.length };
                     } else {
-                        console.log(`✅ No changes in ${cat} photos`);
                         return { category: cat, changed: false };
                     }
                 } catch (error) {
@@ -5177,7 +5099,6 @@
             });
             
             const results = await Promise.all(refreshPromises);
-            console.log('🎯 Auto-refresh completed:', results);
             return results;
         }
         
@@ -5225,7 +5146,6 @@
         
         // Update mini gallery with new photos
         function updateMiniGallery(category, photos) {
-            console.log(`🖼️ Updating mini gallery for ${category} with ${photos.length} photos`);
             
             // Find mini gallery elements for this category
             const miniGalleryElements = document.querySelectorAll(`[data-category="${category}"]`);
@@ -5284,7 +5204,6 @@
         
         // Watch for file system changes - ENHANCED AUTO-DETECTION
         function setupPhotoWatcher() {
-            console.log('👁️ Setting up enhanced photo watcher for auto-detection...');
             
             // Check for changes every 3 seconds (more responsive)
             const watcherInterval = setInterval(async () => {
@@ -5298,14 +5217,12 @@
             // Also check on page visibility change
             document.addEventListener('visibilitychange', async () => {
                 if (!document.hidden) {
-                    console.log('👀 Page visible, checking for photo changes...');
                     await autoRefreshPhotoDetection();
                 }
             });
             
             // Check on window focus
             window.addEventListener('focus', async () => {
-                console.log('🎯 Window focused, checking for photo changes...');
                 await autoRefreshPhotoDetection();
             });
             
@@ -5314,14 +5231,12 @@
             document.addEventListener('mousemove', () => {
                 clearTimeout(activityTimer);
                 activityTimer = setTimeout(async () => {
-                    console.log('🖱️ User activity detected, checking for photo changes...');
                     await autoRefreshPhotoDetection();
                 }, 2000);
             });
             
             // Initial check after 1 second
             setTimeout(async () => {
-                console.log('🚀 Initial photo detection check...');
                 await autoRefreshPhotoDetection();
             }, 1000);
             
@@ -5351,7 +5266,6 @@
                 const testPath = `${category}/${pattern}`;
                 if (await testImageExists(testPath) && !detectedPhotos.includes(pattern)) {
                     detectedPhotos.push(pattern);
-                    console.log(`Found similar pattern: ${testPath}`);
                 }
             }
         }
@@ -5387,7 +5301,6 @@
 
         // Initialize photo detection for all categories
         async function initializePhotoDetection() {
-            console.log('Initializing smart photo detection...');
             
             const detectionPromises = Object.keys(galleryCategories).map(async (category) => {
                 try {
@@ -5395,29 +5308,24 @@
                     galleryCategories[category] = photos;
                     return { category, success: true, count: photos.length };
                 } catch (error) {
-                    console.log(`Error detecting photos in ${category}:`, error);
                     galleryCategories[category] = fallbackPhotos[category] || [];
                     return { category, success: false, error };
                 }
             });
             
             const results = await Promise.all(detectionPromises);
-            console.log('Photo detection completed:', results);
-            console.log('Final gallery categories:', galleryCategories);
             
             return results;
         }
 
         // Load Couple Photos Automatically with Smart Loading - PREMIUM
         function loadCouplePhotos() {
-            console.log('📸 Auto-loading couple photos with smart system...');
             
             // Check if elements exist before loading
             const groomElement = document.getElementById('groomPhoto');
             const brideElement = document.getElementById('bridePhoto');
             
             if (!groomElement || !brideElement) {
-                console.log('⚠️ Couple photo elements not found, retrying...');
                 // Retry after 500ms
                 setTimeout(() => loadCouplePhotos(), 500);
                 return;
@@ -5434,26 +5342,21 @@
             
             const checkAndRetry = () => {
                 retryCount++;
-                console.log(`🔄 Auto-loading check #${retryCount}`);
                 
                 const groomLoaded = groomElement.querySelector('img');
                 const brideLoaded = brideElement.querySelector('img');
                 
                 if (!groomLoaded) {
-                    console.log('🔄 Retrying groom photo loading...');
                     loadPhotosFromFolderLazy('groom', 'groomPhoto');
                 }
                 
                 if (!brideLoaded) {
-                    console.log('🔄 Retrying bride photo loading...');
                     loadPhotosFromFolderLazy('bride', 'bridePhoto');
                 }
                 
                 // Continue retrying if needed
                 if (retryCount < maxRetries && (!groomLoaded || !brideLoaded)) {
                     setTimeout(checkAndRetry, retryInterval);
-                } else if (groomLoaded && brideLoaded) {
-                    console.log('✅ Both couple photos loaded successfully!');
                 }
             };
             
@@ -5481,7 +5384,6 @@
                         
                         // Check if photo is already loaded
                         if (!element.querySelector('img')) {
-                            console.log(`👁️ Auto-loading ${folderName} photo on scroll...`);
                             loadPhotosFromFolderLazy(folderName, element.id);
                         }
                         
@@ -5502,14 +5404,12 @@
         // Auto-load on page visibility change
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden) {
-                console.log('👀 Page became visible, checking photo loading...');
                 setupAutoPhotoLoading();
             }
         });
         
         // Auto-load on window focus
         window.addEventListener('focus', () => {
-            console.log('🎯 Window focused, ensuring photos are loaded...');
             setupAutoPhotoLoading();
         });
 
@@ -5522,14 +5422,12 @@
         function loadAllPhotosFromCategory(category) {
             const photos = getPhotosFromCategory(category);
             const photoPaths = photos.map(photo => `${category}/${photo}`);
-            console.log(`Loading ${photoPaths.length} photos from ${category}:`, photoPaths);
             return photoPaths;
         }
         
         function loadPhotosFromFolder(folderName, elementId) {
             const photoElement = document.getElementById(elementId);
             if (!photoElement) {
-                console.log(`Element with ID '${elementId}' not found`);
                 return;
             }
             
@@ -5541,11 +5439,9 @@
                 const img = new Image();
                 img.onload = function() {
                     photoElement.innerHTML = `<img src="${photoPath}" alt="${folderName === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita'}" style="width: 100%; height: 100%; object-fit: cover; object-position: center; border-radius: 50%; cursor: pointer;" onclick="openSimpleGallery('${folderName}')" title="Klik untuk lihat galeri">`;
-                    console.log(`Photo loaded successfully: ${photoPath}`);
                 };
                 img.onerror = function() {
                     photoElement.innerHTML = '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f0f0f0; border-radius: 50%;"><div style="color: #666; font-size: 0.8rem;">Photo Not Found</div></div>';
-                    console.log(`Failed to load photo: ${photoPath}`);
                 };
                 img.src = photoPath;
             } else {
@@ -5557,13 +5453,11 @@
         function loadPhotosFromFolderLazy(folderName, elementId) {
             const photoElement = document.getElementById(elementId);
             if (!photoElement) {
-                console.log(`⚠️ Element with ID '${elementId}' not found`);
                 return;
             }
             
             // Check if photo is already loading or loaded
             if (photoElement.dataset.loading === 'true' || photoElement.querySelector('img')) {
-                console.log(`📸 ${folderName} photo already loading or loaded`);
                 return;
             }
             
@@ -5621,12 +5515,10 @@
                         </div>
                     `;
                     photoElement.dataset.loading = 'false';
-                    console.log(`❌ All photo options failed for ${folderName}`);
                     return;
                 }
                 
                 const photoPath = filteredOptions[currentOptionIndex];
-                console.log(`🔄 Trying to load ${folderName} photo: ${photoPath}`);
                 
                 const img = new Image();
                 
@@ -5641,7 +5533,6 @@
                              loading="lazy">
                     `;
                     photoElement.dataset.loading = 'false';
-                    console.log(`✅ ${folderName} photo loaded successfully: ${photoPath}`);
                     
                     // Add premium animation styles if not already added
                     if (!document.querySelector('#premium-photo-styles')) {
@@ -5671,7 +5562,6 @@
                 };
                 
                 img.onerror = function() {
-                    console.log(`⚠️ Failed to load ${photoPath}, trying next option...`);
                     currentOptionIndex++;
                     // Try next option after a short delay
                     setTimeout(tryLoadPhoto, 200);
@@ -5687,11 +5577,9 @@
         
         // Enhanced gallery function with arrow navigation and lazy loading
         function openSimpleGallery(category) {
-            console.log(`Opening gallery for category: ${category}`);
 
             const photoPaths = loadAllPhotosFromCategory(category);
             if (photoPaths.length === 0) {
-                console.log(`No photos found for category: ${category}`);
                 return;
             }
             
@@ -5820,7 +5708,6 @@
                         if (photoContainer) {
                             photoContainer.innerHTML = `<img src="${photoPath}" alt="${titleText}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 14px; display: block; animation: fadeIn 0.3s ease-in-out;">`;
                         }
-                        console.log(`Gallery photo loaded successfully: ${photoPath}`);
                     };
                     img.onerror = function() {
                         if (photoContainer) {
@@ -5832,7 +5719,6 @@
                                 </div>
                             `;
                         }
-                        console.log(`Failed to load gallery photo: ${photoPath}`);
                     };
                     img.src = photoPath;
                 }, 300);
@@ -5878,10 +5764,7 @@
             document.body.appendChild(modal);
             updatePhotoDisplay(0);
         }
-        function openGallery(category) {
-            openSimpleGallery(category);
-        }
-        
+                
         function viewImage(src) {
             const viewer = document.createElement('div');
             viewer.style.cssText = `
@@ -5912,19 +5795,52 @@
             document.body.appendChild(viewer);
         }
 
-        // Simplified and Stable Scroll Animation System
-        function initScrollAnimations() {
-            // Use Intersection Observer for better performance
-            const animatedElements = document.querySelectorAll('.scroll-animate');
+                
+        function setupScrollAnimations() {
+            // Elegant scroll animations with Intersection Observer
             
+            // Add animation classes to main content elements
+            const contentElements = document.querySelectorAll('.content-overlay, .overlay-text, .thanks-message');
+            contentElements.forEach((element, index) => {
+                element.classList.add('scroll-animate', 'fade-in');
+                // Add staggered delay for elegant effect
+                element.style.transitionDelay = `${index * 0.1}s`;
+            });
+            
+            // Add animations to event items with slide-up effect
+            const eventItems = document.querySelectorAll('.event-item');
+            eventItems.forEach((element, index) => {
+                element.classList.add('scroll-animate', 'slide-up');
+                element.style.transitionDelay = `${index * 0.2}s`;
+            });
+            
+            // Add animations to couple photos with scale-in effect
+            const couplePhotos = document.querySelectorAll('.couple-photo');
+            couplePhotos.forEach((element, index) => {
+                element.classList.add('scroll-animate', 'scale-in');
+                element.style.transitionDelay = `${index * 0.15}s`;
+            });
+            
+            // Add animations to gallery items
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            galleryItems.forEach((element, index) => {
+                element.classList.add('scroll-animate', 'slide-up');
+                element.style.transitionDelay = `${index * 0.1}s`;
+            });
+            
+            // Add animations to countdown items
+            const countdownItems = document.querySelectorAll('.countdown-item');
+            countdownItems.forEach((element, index) => {
+                element.classList.add('scroll-animate', 'scale-in');
+                element.style.transitionDelay = `${index * 0.1}s`;
+            });
+            
+            // Initialize Intersection Observer for performance
             if ('IntersectionObserver' in window) {
-                console.log('Using Intersection Observer for scroll animations');
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
-                            console.log('Element entered viewport:', entry.target);
                             entry.target.classList.add('animated');
-                            observer.unobserve(entry.target);
                         }
                     });
                 }, {
@@ -5932,119 +5848,28 @@
                     rootMargin: '0px 0px -50px 0px'
                 });
                 
+                // Observe all animated elements
+                const animatedElements = document.querySelectorAll('.scroll-animate');
                 animatedElements.forEach(element => {
                     observer.observe(element);
-                    console.log('Observing element:', element);
                 });
             } else {
-                console.log('Using fallback scroll detection');
                 // Fallback for older browsers
-                function checkScroll() {
+                const checkVisibility = () => {
+                    const animatedElements = document.querySelectorAll('.scroll-animate:not(.animated)');
                     animatedElements.forEach(element => {
                         const rect = element.getBoundingClientRect();
                         const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-                        
-                        if (isVisible && !element.classList.contains('animated')) {
-                            console.log('Element visible via fallback:', element);
+                        if (isVisible) {
                             element.classList.add('animated');
                         }
                     });
-                }
+                };
                 
-                // Initial check
-                setTimeout(checkScroll, 100);
-                
-                // Simple scroll listener
-                let ticking = false;
-                window.addEventListener('scroll', () => {
-                    if (!ticking) {
-                        requestAnimationFrame(() => {
-                            checkScroll();
-                            ticking = false;
-                        });
-                        ticking = true;
-                    }
-                });
+                window.addEventListener('scroll', checkVisibility);
+                checkVisibility(); // Initial check
             }
         }
-        
-        function setupScrollAnimations() {
-            // Enhanced scroll animation setup with debugging
-            try {
-                console.log('Setting up scroll animations...');
-                
-                // Animate main content sections with different effects
-                const contentElements = document.querySelectorAll('.content-overlay, .overlay-text, .thanks-message');
-                console.log(`Found ${contentElements.length} content elements`);
-                contentElements.forEach((element, index) => {
-                    element.classList.add('scroll-animate', 'slide-in-up', `delay-${Math.min(index + 1, 3)}`);
-                    console.log(`Added animation to element ${index}:`, element.className);
-                });
-                
-                // Exclude gallery items from scroll animations
-                const galleryItems = document.querySelectorAll('.gallery-item');
-                if (galleryItems.length > 0) {
-                    console.log(`Found ${galleryItems.length} gallery items - excluding from scroll animations`);
-                    galleryItems.forEach((item, index) => {
-                        // Remove any scroll animation classes
-                        item.classList.remove('scroll-animate', 'scale-in', 'slide-in-up', 'slide-in-left', 'slide-in-right');
-                        // Ensure gallery items are always visible and static
-                        item.style.opacity = '1';
-                        item.style.transform = 'none';
-                        item.style.animation = 'none';
-                        console.log(`Excluded gallery item ${index} from scroll animations`);
-                    });
-                }
-                
-                // Animate countdown items with rotation effect
-                const countdownItems = document.querySelectorAll('.countdown-item');
-                if (countdownItems.length > 0) {
-                    console.log(`Found ${countdownItems.length} countdown items`);
-                    countdownItems.forEach((item, index) => {
-                        item.classList.add('scroll-animate', 'rotate-in', `delay-${Math.min(index + 1, 3)}`);
-                        console.log(`Added animation to countdown item ${index}`);
-                    });
-                }
-                
-                // Animate forms with scale effect
-                const forms = document.querySelectorAll('.wishes-form, .form-group');
-                if (forms.length > 0) {
-                    console.log(`Found ${forms.length} form elements`);
-                    forms.forEach((form, index) => {
-                        form.classList.add('scroll-animate', 'scale-in', `delay-${Math.min(index + 1, 2)}`);
-                        console.log(`Added animation to form element ${index}`);
-                    });
-                }
-                
-                // Animate couple photos with special effect
-                const couplePhotos = document.querySelectorAll('.couple-photo');
-                if (couplePhotos.length > 0) {
-                    console.log(`Found ${couplePhotos.length} couple photos`);
-                    couplePhotos.forEach((photo, index) => {
-                        photo.classList.add('scroll-animate', 'fade-in', `delay-${index + 1}`);
-                        console.log(`Added animation to couple photo ${index}`);
-                    });
-                }
-                
-                // Animate location items with slide effect
-                const locationItems = document.querySelectorAll('.location-item');
-                if (locationItems.length > 0) {
-                    console.log(`Found ${locationItems.length} location items`);
-                    locationItems.forEach((item, index) => {
-                        item.classList.add('scroll-animate', 'slide-left', `delay-${Math.min(index + 1, 2)}`);
-                        console.log(`Added animation to location item ${index}`);
-                    });
-                }
-                
-                console.log('Scroll animations setup completed');
-                
-            } catch (error) {
-                console.error('Scroll animation setup error:', error);
-            }
-        }
-
-                
-                
         
         // Check if invitation can be opened (time lock system)
         function canOpenInvitation() {
@@ -6166,7 +5991,6 @@
                     clearInterval(musicFadeInterval);
                     musicFadeInterval = null;
                     simpleMusicPlayer.volume = 0.5;
-                    console.log('Music fade in completed');
                     if (callback) callback();
                 }
             }, MUSIC_FADE_STEP);
@@ -6196,7 +6020,6 @@
                     musicFadeInterval = null;
                     simpleMusicPlayer.volume = 0;
                     simpleMusicPlayer.pause();
-                    console.log('Music fade out completed');
                     if (callback) callback();
                 }
             }, MUSIC_FADE_STEP);
@@ -6208,7 +6031,6 @@
                 initSimpleMusic();
             }
             
-            console.log('Auto-starting music with fade in...');
             isSimpleMusicPlaying = true;
             
             // Update icon to pause
@@ -6221,7 +6043,6 @@
             simpleMusicPlayer.play().then(() => {
                 fadeInMusic();
             }).catch(error => {
-                console.log('Auto-start music failed:', error);
                 isSimpleMusicPlaying = false;
                 if (musicIconImg) {
                     musicIconImg.src = 'icon musik/play.png';
@@ -6229,134 +6050,89 @@
             });
         }
 
-        // Simplified Scroll Animations System - Clean & Minimal
-        let scrollAnimations = {
-            progressIndicator: null,
-            observer: null,
-            
-            init: function() {
-                console.log('Initializing simplified scroll animations...');
-                
-                // Add section IDs for consistency
-                this.addSectionIds();
-                
-                // Initialize intersection observer for animations
-                this.initIntersectionObserver();
-                
-                console.log('Simplified scroll animations initialized successfully');
-            },
-            
-            addSectionIds: function() {
-                const sections = document.querySelectorAll('.section');
-                sections.forEach((section, index) => {
-                    section.id = `section-${index + 1}`;
-                    section.classList.add('scroll-animate');
-                });
-            },
-            
-            initScrollProgress: function() {
-                this.progressIndicator = document.getElementById('scrollProgress');
-                if (this.progressIndicator) {
-                    this.updateScrollProgress();
-                }
-            },
-            
-            updateScrollProgress: function() {
-                if (!this.progressIndicator) return;
-                
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                const scrollPercent = (scrollTop / scrollHeight) * 100;
-                
-                this.progressIndicator.style.width = scrollPercent + '%';
-            },
-            
-            initIntersectionObserver: function() {
-                const options = {
-                    root: null,
-                    rootMargin: '0px',
-                    threshold: 0.1
-                };
-                
-                this.observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        const element = entry.target;
-                        
-                        if (entry.isIntersecting) {
-                            element.classList.add('animated');
-                        }
-                    });
-                }, options);
-                
-                // Observe all sections and their children
-                const sections = document.querySelectorAll('.section');
-                sections.forEach(section => {
-                    this.observer.observe(section);
-                    
-                    // Also observe important child elements for staggered animations (excluding gallery items)
-                    const childElements = section.querySelectorAll('.content-overlay, h2, .event-info, .location-info, .couple-info, .wishes-form, .gift-container, .thanks-message');
-                    childElements.forEach((child, index) => {
-                        child.classList.add('scroll-animate');
-                        child.style.animationDelay = `${index * 0.1}s`;
-                        this.observer.observe(child);
-                    });
-                });
-            },
-            
-                        
-            initScrollListeners: function() {
-                // Enhanced scroll listener for mobile compatibility
-                let ticking = false;
-                
-                const updateScrollEffects = () => {
-                    this.updateScrollProgress();
-                    this.fixMobileScrollPosition();
-                    ticking = false;
-                };
-                
-                const onScroll = () => {
-                    if (!ticking) {
-                        requestAnimationFrame(updateScrollEffects);
-                        ticking = true;
-                    }
-                };
-                
-                // Add passive event listener for better mobile performance
-                window.addEventListener('scroll', onScroll, { passive: true });
-                
-                // Fix mobile scroll issues
-                this.fixMobileScrollBehavior();
-            },
-            
-            fixMobileScrollBehavior: function() {
-                // Prevent iOS bounce scroll
-                document.body.addEventListener('touchmove', function(e) {
-                    if (e.touches.length > 1) {
-                        e.preventDefault();
-                    }
-                }, { passive: false });
-                
-                // Fix scroll position on iOS
-                if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-                    window.addEventListener('resize', function() {
-                        setTimeout(function() {
-                            window.scrollTo(0, window.scrollY);
-                        }, 100);
-                    });
-                }
-            },
-            
-            fixMobileScrollPosition: function() {
-                // Ensure proper scroll position on mobile
-                if (window.scrollY === 0 && document.body.scrollHeight > window.innerHeight) {
-                    // Force scroll to top if needed
-                    window.scrollTo(0, 0);
-                }
-            }
-        };
-        
         // Initialize music player
         function initSimpleMusic() {
+            simpleMusicPlayer = document.getElementById('backgroundMusic');
+            
+            if (simpleMusicPlayer) {
+                // Set first song
+                const firstSong = simplePlaylist[simpleCurrentSongIndex];
+                simpleMusicPlayer.src = firstSong;
+                simpleMusicPlayer.volume = 0; // Start with volume 0 for fade in
+                simpleMusicPlayer.load();
+            }
+        }
+        
+        // Toggle music play/pause with fade effects
+        function toggleSimpleMusic() {
+            console.log('Toggle music clicked, current state:', isSimpleMusicPlaying);
+            
+            if (!simpleMusicPlayer) {
+                console.log('Music player not found, initializing...');
+                initSimpleMusic();
+            }
+            
+            const musicIconImg = document.getElementById('musicIconImg');
+            if (!musicIconImg) {
+                console.log('Music icon image not found!');
+                return;
+            }
+            
+            if (isSimpleMusicPlaying) {
+                // Fade out and pause music
+                console.log('Pausing music with fade out...');
+                fadeOutMusic(() => {
+                    musicIconImg.src = 'icon musik/play.png';
+                    isSimpleMusicPlaying = false;
+                    console.log('Music paused with fade out');
+                });
+            } else {
+                // Play music with fade in
+                console.log('Starting music with fade in...');
+                isSimpleMusicPlaying = true;
+                musicIconImg.src = 'icon musik/pause.png';
+                
+                if (!simpleMusicPlayer.src || simpleMusicPlayer.src === '') {
+                    console.log('No audio source set, setting first song...');
+                    simpleMusicPlayer.src = simplePlaylist[simpleCurrentSongIndex];
+                    simpleMusicPlayer.load();
+                }
+                
+                simpleMusicPlayer.play().then(() => {
+                    console.log('Audio play started, beginning fade in...');
+                    fadeInMusic(() => {
+                        console.log('Music playing with fade in');
+                    });
+                }).catch(error => {
+                    console.log('Music play failed:', error);
+                    isSimpleMusicPlaying = false;
+                    musicIconImg.src = 'icon musik/play.png';
+                });
+            }
+        }
+        
+        // Previous song
+        function previousSimpleSong() {
+                        console.log('Previous song clicked, current index:', simpleCurrentSongIndex);
+                        
+                        if (!simpleMusicPlayer) {
+                            console.log('Music player not found, initializing...');
+                            initSimpleMusic();
+                            return;
+                        }
+                        
+                        simpleCurrentSongIndex = simpleCurrentSongIndex - 1;
+                        if (simpleCurrentSongIndex < 0) {
+                            simpleCurrentSongIndex = simplePlaylist.length - 1;
+                        }
+                        
+                        const songName = getSongName(simplePlaylist[simpleCurrentSongIndex]);
+                        console.log('Going to previous song, new index:', simpleCurrentSongIndex, 'Song:', songName);
+                        
+                        // Show brief notification
+                        showSongNotification('Previous: ' + songName);
+                        
+                        loadAndPlaySong();
             console.log('Initializing music player...');
             simpleMusicPlayer = document.getElementById('backgroundMusic');
             
@@ -7160,8 +6936,8 @@
             // Initialize music player
             initSimpleMusic();
             
-            // Initialize scroll animations
-            scrollAnimations.init();
+            // Initialize ultra-simple scroll animations
+            simpleScrollAnimation.init();
             
             // Initialize countdown timer
             startCountdown();
@@ -7310,8 +7086,9 @@
             };
 
             // Copy account number function
-        function copyAccountNumber() {
-            const accountElement = document.getElementById('bni-account');
+        function copyAccountNumber(bankType = 'mandiri') {
+            const accountId = bankType + '-account';
+            const accountElement = document.getElementById(accountId);
             const accountNumber = accountElement.textContent;
             
             // Create temporary input for copying
@@ -7323,7 +7100,7 @@
             document.body.removeChild(tempInput);
             
             // Show feedback on button
-            const buttons = document.querySelectorAll('button[onclick="copyAccountNumber()"]');
+            const buttons = document.querySelectorAll(`button[onclick="copyAccountNumber('${bankType}')"]`);
             buttons.forEach(button => {
                 const originalText = button.textContent;
                 button.textContent = '✅ Tersalin!';
