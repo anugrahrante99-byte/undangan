@@ -771,18 +771,7 @@
             touch-action: manipulation;
             /* Smooth scrolling */
             -webkit-overflow-scrolling: touch;
-            /* Background utama dari background.jpg - optimized untuk mobile */
-            background: url('background.jpg') center center/cover no-repeat fixed;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            
-            /* Mobile optimization - background tetap fixed */
-            @media (max-width: 768px) {
-                background-attachment: fixed;
-                background-size: cover;
-                background-position: center;
-            }
+            /* Background handled by main body styles */
             height: 100vh;
             min-height: 100vh;
             /* Custom scrollbar */
@@ -3802,23 +3791,18 @@
             min-height: 100svh !important;
             overflow-x: hidden !important;
             color: var(--ink);
-            background: #211f1d url('background.jpg') center center / cover fixed no-repeat !important;
+            background: url('background.jpg') center center / cover fixed no-repeat !important;
             
-            /* Mobile background optimization - background sesuai tinggi dan lebar mobile */
+            /* Mobile background optimization - background tetap fixed dan tidak zoom */
             @media (max-width: 768px) {
                 background-attachment: fixed !important;
-                background-size: 100% auto !important;
-                background-position: top center !important;
+                background-size: cover !important;
+                background-position: center !important;
                 background-repeat: no-repeat !important;
-                min-height: 100vh !important;
-                height: 100vh !important;
-                width: 100vw !important;
                 /* Prevent background zoom on mobile */
-                -webkit-background-size: 100% auto !important;
-                -moz-background-size: 100% auto !important;
-                -o-background-size: 100% auto !important;
-                /* Ensure background covers entire mobile viewport */
-                background-color: #211f1d !important;
+                -webkit-background-size: cover !important;
+                -moz-background-size: cover !important;
+                -o-background-size: cover !important;
             }
         }
 
@@ -3828,7 +3812,7 @@
             inset: 0;
             pointer-events: none;
             background: linear-gradient(180deg, rgba(0,0,0,0.28), rgba(255,248,235,0.12) 38%, rgba(0,0,0,0.24));
-            z-index: 0;
+            z-index: -1;
         }
 
         .cover-screen,
@@ -4200,15 +4184,13 @@
                 bottom: max(10px, env(safe-area-inset-bottom));
             }
         }
-        /* Phone background fit */
+        /* Phone background optimization - KEEP BACKGROUND IMAGE */
         @media (max-width: 559px), (hover: none) and (pointer: coarse) {
-            html {
-                background: #211f1d !important;
-            }
-
             body {
-                background: #211f1d !important;
-                background-image: none !important;
+                background: url('background.jpg') center center / cover fixed no-repeat !important;
+                background-size: cover !important;
+                background-position: center !important;
+                background-attachment: fixed !important;
             }
 
             body::before {
@@ -6718,32 +6700,13 @@
             const coverScreen = document.getElementById('coverScreen');
             const mainContent = document.getElementById('mainContent');
             
-            // Check if mobile device
-            const isMobile = window.innerWidth <= 768;
-            
             // Lock background position during transition
             const currentBackground = window.getComputedStyle(body).backgroundImage;
             const currentPosition = window.getComputedStyle(body).backgroundPosition;
             const currentSize = window.getComputedStyle(body).backgroundSize;
             
-            // Create background stability layer with mobile optimization
-            const stabilityStyles = isMobile ? `
-                background-image: ${currentBackground} !important;
-                background-position: top center !important;
-                background-size: 100% auto !important;
-                background-attachment: fixed !important;
-                background-repeat: no-repeat !important;
-                min-height: 100vh !important;
-                height: 100vh !important;
-                width: 100vw !important;
-                transform: none !important;
-                transition: none !important;
-                animation: none !important;
-                will-change: auto !important;
-                backface-visibility: hidden !important;
-                -webkit-backface-visibility: hidden !important;
-                background-color: #211f1d !important;
-            ` : `
+            // Create background stability layer
+            const stabilityStyles = `
                 background-image: ${currentBackground} !important;
                 background-position: ${currentPosition} !important;
                 background-size: ${currentSize} !important;
