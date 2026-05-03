@@ -3804,16 +3804,21 @@
             color: var(--ink);
             background: #211f1d url('background.jpg') center center / cover fixed no-repeat !important;
             
-            /* Mobile background optimization - background tetap fixed dan tidak zoom */
+            /* Mobile background optimization - background sesuai tinggi dan lebar mobile */
             @media (max-width: 768px) {
                 background-attachment: fixed !important;
-                background-size: cover !important;
-                background-position: center !important;
+                background-size: 100% auto !important;
+                background-position: top center !important;
                 background-repeat: no-repeat !important;
+                min-height: 100vh !important;
+                height: 100vh !important;
+                width: 100vw !important;
                 /* Prevent background zoom on mobile */
-                -webkit-background-size: cover !important;
-                -moz-background-size: cover !important;
-                -o-background-size: cover !important;
+                -webkit-background-size: 100% auto !important;
+                -moz-background-size: 100% auto !important;
+                -o-background-size: 100% auto !important;
+                /* Ensure background covers entire mobile viewport */
+                background-color: #211f1d !important;
             }
         }
 
@@ -6713,14 +6718,35 @@
             const coverScreen = document.getElementById('coverScreen');
             const mainContent = document.getElementById('mainContent');
             
-            // Lock background position during transition with mobile-specific fixes
-            const currentBackground = window.getComputedStyle(body).backgroundImage;
+            // Check if mobile device
+            const isMobile = window.innerWidth <= 768;
             
-            // Create background stability layer with mobile scaling prevention
-            const stabilityStyles = `
+            // Lock background position during transition
+            const currentBackground = window.getComputedStyle(body).backgroundImage;
+            const currentPosition = window.getComputedStyle(body).backgroundPosition;
+            const currentSize = window.getComputedStyle(body).backgroundSize;
+            
+            // Create background stability layer with mobile optimization
+            const stabilityStyles = isMobile ? `
                 background-image: ${currentBackground} !important;
-                background-position: center center !important;
-                background-size: cover !important;
+                background-position: top center !important;
+                background-size: 100% auto !important;
+                background-attachment: fixed !important;
+                background-repeat: no-repeat !important;
+                min-height: 100vh !important;
+                height: 100vh !important;
+                width: 100vw !important;
+                transform: none !important;
+                transition: none !important;
+                animation: none !important;
+                will-change: auto !important;
+                backface-visibility: hidden !important;
+                -webkit-backface-visibility: hidden !important;
+                background-color: #211f1d !important;
+            ` : `
+                background-image: ${currentBackground} !important;
+                background-position: ${currentPosition} !important;
+                background-size: ${currentSize} !important;
                 background-attachment: fixed !important;
                 background-repeat: no-repeat !important;
                 transform: none !important;
@@ -6729,27 +6755,6 @@
                 will-change: auto !important;
                 backface-visibility: hidden !important;
                 -webkit-backface-visibility: hidden !important;
-                -webkit-transform: none !important;
-                -moz-transform: none !important;
-                -ms-transform: none !important;
-                -o-transform: none !important;
-                zoom: 1 !important;
-                -webkit-zoom: 1 !important;
-                -moz-zoom: 1 !important;
-                -ms-zoom: 1 !important;
-                -o-zoom: 1 !important;
-                scale: 1 !important;
-                -webkit-scale: 1 !important;
-                min-height: 100vh !important;
-                min-width: 100vw !important;
-                height: 100vh !important;
-                width: 100vw !important;
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
-                overflow: hidden !important;
             `;
             
             // Apply stability styles to both body and html
@@ -6760,147 +6765,17 @@
             if (coverScreen) {
                 coverScreen.style.background = 'transparent';
                 coverScreen.style.backdropFilter = 'none';
-                coverScreen.style.transform = 'none';
-                coverScreen.style.webkitTransform = 'none';
             }
             
             // Ensure main content doesn't affect background
             if (mainContent) {
                 mainContent.style.background = 'transparent';
                 mainContent.style.backdropFilter = 'none';
-                mainContent.style.transform = 'none';
-                mainContent.style.webkitTransform = 'none';
             }
             
-            // Force background repaint and prevent mobile zoom
+            // Force background repaint
             body.offsetHeight; // Trigger reflow
             html.offsetHeight; // Trigger reflow
-            
-            // Additional mobile-specific fixes
-            if (window.innerWidth <= 768) {
-                // Force viewport reset on mobile
-                const viewport = document.querySelector('meta[name="viewport"]');
-                if (viewport) {
-                    viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
-                }
-                
-                // Prevent double-tap zoom
-                document.addEventListener('touchstart', function(e) {
-                    if (e.touches.length > 1) {
-                        e.preventDefault();
-                    }
-                }, { passive: false });
-                
-                // Prevent pinch zoom
-                let lastTouchEnd = 0;
-                document.addEventListener('touchend', function(e) {
-                    const now = Date.now();
-                    if (now - lastTouchEnd <= 300) {
-                        e.preventDefault();
-                    }
-                    lastTouchEnd = now;
-                }, false);
-            }
-        }
-
-        // Prevent mobile zoom completely
-        function preventMobileZoom() {
-            const body = document.body;
-            const html = document.documentElement;
-            
-            // Prevent double-tap zoom
-            let lastTouchEnd = 0;
-            document.addEventListener('touchend', function(e) {
-                const now = Date.now();
-                if (now - lastTouchEnd <= 300) {
-                    e.preventDefault();
-                }
-                lastTouchEnd = now;
-            }, false);
-            
-            // Prevent pinch zoom
-            document.addEventListener('touchstart', function(e) {
-                if (e.touches.length > 1) {
-                    e.preventDefault();
-                }
-            }, { passive: false });
-            
-            // Prevent gesture zoom
-            document.addEventListener('gesturestart', function(e) {
-                e.preventDefault();
-            }, false);
-            
-            // Prevent wheel zoom on mobile
-            document.addEventListener('wheel', function(e) {
-                if (e.ctrlKey || e.metaKey) {
-                    e.preventDefault();
-                }
-            }, { passive: false });
-            
-            // Force no-zoom styles
-            const noZoomStyles = `
-                touch-action: none !important;
-                -webkit-touch-callout: none !important;
-                -webkit-user-select: none !important;
-                -webkit-tap-highlight-color: transparent !important;
-                user-select: none !important;
-                -webkit-user-drag: none !important;
-                -khtml-user-drag: none !important;
-                -moz-user-drag: none !important;
-                -o-user-drag: none !important;
-                -ms-user-drag: none !important;
-            `;
-            
-            body.style.cssText += noZoomStyles;
-            html.style.cssText += noZoomStyles;
-        }
-
-        // Reset mobile viewport to prevent scaling
-        function resetMobileViewport() {
-            const viewport = document.querySelector('meta[name="viewport"]');
-            if (viewport) {
-                // Force viewport reset
-                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
-                
-                // Double-check after a short delay
-                setTimeout(() => {
-                    viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
-                }, 100);
-                
-                // Triple-check after a longer delay
-                setTimeout(() => {
-                    viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
-                }, 500);
-            }
-            
-            // Force body and html dimensions
-            const body = document.body;
-            const html = document.documentElement;
-            
-            const viewportStyles = `
-                min-height: 100vh !important;
-                min-width: 100vw !important;
-                height: 100vh !important;
-                width: 100vw !important;
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
-                overflow: hidden !important;
-                transform-origin: 0 0 !important;
-                -webkit-transform-origin: 0 0 !important;
-                -moz-transform-origin: 0 0 !important;
-                -ms-transform-origin: 0 0 !important;
-                -o-transform-origin: 0 0 !important;
-            `;
-            
-            body.style.cssText += viewportStyles;
-            html.style.cssText += viewportStyles;
-            
-            // Force reflow
-            body.offsetHeight;
-            html.offsetHeight;
         }
 
         // Enhanced background enforcement function
@@ -6908,41 +6783,22 @@
             const body = document.body;
             const html = document.documentElement;
             
-            // FORCE background settings with !important override and mobile scaling prevention
+            // FORCE background settings with !important override
             const backgroundStyles = `
                 background-attachment: fixed !important;
                 background-size: cover !important;
-                background-position: center center !important;
+                background-position: center !important;
                 background-repeat: no-repeat !important;
                 transform: none !important;
                 zoom: 1 !important;
                 -webkit-transform: none !important;
                 -webkit-zoom: 1 !important;
                 -moz-transform: none !important;
-                -moz-zoom: 1 !important;
                 -ms-transform: none !important;
-                -ms-zoom: 1 !important;
                 -o-transform: none !important;
-                -o-zoom: 1 !important;
                 transition: none !important;
                 animation: none !important;
                 will-change: auto !important;
-                scale: 1 !important;
-                -webkit-scale: 1 !important;
-                min-height: 100vh !important;
-                min-width: 100vw !important;
-                height: 100vh !important;
-                width: 100vw !important;
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
-                overflow: hidden !important;
-                touch-action: none !important;
-                -webkit-touch-callout: none !important;
-                -webkit-user-select: none !important;
-                -webkit-tap-highlight-color: transparent !important;
             `;
             
             // Apply styles to body
@@ -6951,34 +6807,12 @@
             // Apply to html as backup
             html.style.backgroundAttachment = 'fixed';
             html.style.backgroundSize = 'cover';
-            html.style.backgroundPosition = 'center center';
+            html.style.backgroundPosition = 'center';
             html.style.transform = 'none';
             html.style.zoom = '1';
             html.style.transition = 'none';
             html.style.animation = 'none';
             html.style.willChange = 'auto';
-            html.style.scale = '1';
-            html.style.webkitScale = '1';
-            html.style.minHeight = '100vh';
-            html.style.minWidth = '100vw';
-            html.style.height = '100vh';
-            html.style.width = '100vw';
-            html.style.position = 'fixed';
-            html.style.top = '0';
-            html.style.left = '0';
-            html.style.right = '0';
-            html.style.bottom = '0';
-            html.style.overflow = 'hidden';
-            html.style.touchAction = 'none';
-            html.style.webkitTouchCallout = 'none';
-            html.style.webkitUserSelect = 'none';
-            html.style.webkitTapHighlightColor = 'transparent';
-            
-            // Prevent mobile zoom completely
-            preventMobileZoom();
-            
-            // Reset mobile viewport
-            resetMobileViewport();
             
             // Force viewport meta tag
             const viewport = document.querySelector('meta[name="viewport"]');
