@@ -317,7 +317,7 @@
         .hidden {
             display: none;
         }
-    </style>
+            /* Mobile Responsive Styles */\n        @media (max-width: 768px) {\n            body {\n                padding: 10px;\n            }\n            \n            .management-container {\n                border-radius: 15px;\n                margin: 10px;\n            }\n            \n            .header {\n                padding: 20px;\n            }\n            \n            .header h1 {\n                font-size: 1.8rem;\n            }\n            \n            .header p {\n                font-size: 0.9rem;\n            }\n            \n            .tabs {\n                flex-direction: column;\n                gap: 5px;\n            }\n            \n            .tab-button {\n                border-radius: 10px;\n                margin-bottom: 5px;\n                padding: 15px;\n            }\n            \n            .tab-content {\n                padding: 20px;\n            }\n            \n            .form-group {\n                margin-bottom: 20px;\n            }\n            \n            .form-group input,\n            .form-group select,\n            .form-group textarea {\n                font-size: 16px;\n                padding: 12px;\n            }\n            \n            .btn {\n                padding: 12px 20px;\n                font-size: 14px;\n                margin: 5px 0;\n                width: 100%;\n            }\n            \n            .stats-grid {\n                grid-template-columns: 1fr;\n                gap: 15px;\n            }\n            \n            .stat-card {\n                padding: 20px;\n            }\n            \n            .stat-value {\n                font-size: 2rem;\n            }\n            \n            .guest-list {\n                max-height: 300px;\n            }\n            \n            .guest-item {\n                padding: 15px;\n                flex-direction: column;\n                align-items: flex-start;\n            }\n            \n            .guest-info {\n                margin-bottom: 10px;\n            }\n            \n            .guest-actions {\n                width: 100%;\n                justify-content: flex-end;\n            }\n            \n            .message {\n                padding: 12px;\n                margin: 10px 0;\n                font-size: 14px;\n            }\n            \n            .login-container {\n                padding: 20px;\n                margin: 10px;\n            }\n            \n            .login-form {\n                padding: 30px;\n            }\n            \n            .login-form h2 {\n                font-size: 1.8rem;\n            }\n        }\n        \n        @media (max-width: 480px) {\n            .header h1 {\n                font-size: 1.5rem;\n            }\n            \n            .tab-content {\n                padding: 15px;\n            }\n            \n            .form-group input,\n            .form-group select,\n            .form-group textarea {\n                padding: 10px;\n            }\n            \n            .btn {\n                padding: 10px 15px;\n                font-size: 13px;\n            }\n            \n            .stat-card {\n                padding: 15px;\n            }\n            \n            .stat-value {\n                font-size: 1.8rem;\n            }\n        }\n    </style>
 </head>
 <body>
     <div id="loginScreen" class="login-container">
@@ -352,7 +352,7 @@
             
             <div id="settings" class="tab-content">
                 <h2>Pengaturan Sistem</h2>
-                <div id="settingsMessage"></div>
+                <div id="systemMessage"></div>
                 
                 <form id="settingsForm">
                     <div class="form-group">
@@ -366,7 +366,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="weddingDate">Tanggal Pernikahan</label>
+                        <label for="weddingDate">Tanggal Perkawinan</label>
                         <input type="datetime-local" id="weddingDate" name="weddingDate">
                     </div>
 
@@ -471,7 +471,7 @@
                 <div id="settingsMessage"></div>
                 
                 <div style="margin-bottom: 30px;">
-                    <h3>  Ganti Password Admin</h3>
+
                     <div class="form-group">
                         <label for="currentPassword">Password Saat Ini</label>
                         <input type="password" id="currentPassword" placeholder="Masukkan password saat ini">
@@ -484,7 +484,7 @@
                         <label for="confirmPassword">Konfirmasi Password</label>
                         <input type="password" id="confirmPassword" placeholder="Konfirmasi password baru">
                     </div>
-                    <button class="btn btn-primary" onclick="changePassword()">  Ganti Password</button>
+
                 </div>
 
                 <div style="margin-bottom: 30px;">
@@ -519,7 +519,7 @@
     <script>
         // Configuration
         const CONFIG = {
-            ADMIN_PASSWORD: 'kawinkawin',
+            ADMIN_PASSWORD: .kawinkawin.,
             WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbxJXvAz9s_WWOGSopAQIgUsph_dUpNIK21bXyeB3SJalEp2Ea3VwRJvYjUcaCGEuHO3/exec',
             SPREADSHEET_ID: '1gvHiIkStxwhnhLZhK7se-TfQucecSy-9ClZe_gKv8A8',
             SHEETS: {
@@ -743,8 +743,14 @@
         }
 
         function calculateStats(wishes, sent) {
+            // Total ucapan diambil dari sheet ucapan
             const totalWishes = wishes && wishes.length > 0 ? wishes.length : 0;
-            const totalGuests = sent && sent.length > 0 ? sent.length : 0;
+            
+            // Total tamu unik (koreksi nama double)
+            const uniqueGuests = sent && sent.length > 0 
+                ? [...new Set(sent.map(g => (g.name || '').toLowerCase().trim()))].length 
+                : 0;
+            const totalGuests = uniqueGuests;
             
             // Get last update dari data terbaru (ucapan atau terkirim)
             let lastUpdate = new Date().toLocaleString('id-ID');
@@ -875,7 +881,7 @@
             const weddingDate = document.getElementById('weddingDate').value;
             
             try {
-                showMessage('settingsMessage', 'Menyimpan pengaturan...', 'info');
+                showMessage('systemMessage', 'Menyimpan pengaturan...', 'info');
                 
                 // Update Web App URL if changed
                 if (webAppUrl && webAppUrl !== CONFIG.WEB_APP_URL) {
@@ -894,9 +900,9 @@
                     localStorage.setItem('weddingDate', weddingDate);
                 }
                 
-                showMessage('settingsMessage', 'Pengaturan berhasil disimpan!', 'success');
+                showMessage('systemMessage', 'Pengaturan berhasil disimpan!', 'success');
             } catch (error) {
-                showMessage('settingsMessage', 'Gagal menyimpan pengaturan: ' + error.message, 'error');
+                showMessage('systemMessage', 'Gagal menyimpan pengaturan: ' + error.message, 'error');
             }
         });
 
@@ -1226,7 +1232,7 @@
 
 "Tuhan adalah kasih" (1 Yohanes 4:16)
 
-Dengan anugerah Tuhan, kami mengundang Anda untuk hadir dalam pemberkatan pernikahan kami:
+Dengan anugerah Tuhan, kami mengundang Anda untuk hadir dalam pemberkatan perkawinan kami:
 
 *Adiaksa Anugrah Rante*
 Putra dari Bapak Sender Rante, B.Sc & Ibu Rosdiana Kadang
@@ -1236,11 +1242,11 @@ Putri dari Bapak Benyamin Dendean & Ibu Martha Sarira
 
 *Pemberkatan*
 Jumat, 26 Juni 2026
-09.00 WITA
+09.00 WITA - Selesai
 Gereja Toraja Jemaat Bua Tallulolo
 
 *Resepsi*
-12.00 WITA - Selesai
+13.00 WITA - Selesai
 Ballroom D'Rij Hotel & Convention
 
 *Digital Invitation:*
@@ -1284,7 +1290,7 @@ God bless you`;
 
 "Tuhan adalah kasih" (1 Yohanes 4:16)
 
-Dengan anugerah Tuhan, kami mengundang Anda untuk hadir dalam pemberkatan pernikahan kami:
+Dengan anugerah Tuhan, kami mengundang Anda untuk hadir dalam pemberkatan perkawinan kami:
 
 *Adiaksa Anugrah Rante*
 Putra dari Bapak Sender Rante, B.Sc & Ibu Rosdiana Kadang
@@ -1294,11 +1300,11 @@ Putri dari Bapak Benyamin Dendean & Ibu Martha Sarira
 
 *Pemberkatan*
 Jumat, 26 Juni 2026
-09.00 WITA
+09.00 WITA - Selesai
 Gereja Toraja Jemaat Bua Tallulolo
 
 *Resepsi*
-12.00 WITA - Selesai
+13.00 WITA - Selesai
 Ballroom D'Rij Hotel & Convention
 
 *Digital Invitation:*
@@ -1356,7 +1362,7 @@ God bless you`;
 
 "Tuhan adalah kasih" (1 Yohanes 4:16)
 
-Dengan anugerah Tuhan, kami mengundang Anda untuk hadir dalam pemberkatan pernikahan kami:
+Dengan anugerah Tuhan, kami mengundang Anda untuk hadir dalam pemberkatan perkawinan kami:
 
 *Adiaksa Anugrah Rante*
 Putra dari Bapak Sender Rante, B.Sc & Ibu Rosdiana Kadang
@@ -1366,11 +1372,11 @@ Putri dari Bapak Benyamin Dendean & Ibu Martha Sarira
 
 *Pemberkatan*
 Jumat, 26 Juni 2026
-09.00 WITA
+09.00 WITA - Selesai
 Gereja Toraja Jemaat Bua Tallulolo
 
 *Resepsi*
-12.00 WITA - Selesai
+13.00 WITA - Selesai
 Ballroom D'Rij Hotel & Convention
 
 *Digital Invitation:*
@@ -1460,6 +1466,10 @@ God bless you`;
                 
                 if (sentSuccess) {
                     showMessage('whatsappMessage', `Data tamu ${name} berhasil disimpan ke Google Sheets!`, 'success');
+                    // Auto-update statistik setelah pengiriman
+                    setTimeout(() => {
+                        loadDashboard();
+                    }, 1000);
                 } else {
                     showMessage('whatsappMessage', 'Gagal menyimpan data ke Google Sheets', 'error');
                 }
@@ -1549,7 +1559,7 @@ God bless you`;
 
 Assalamualaikum Warahmatullahi Wabarakatuh
 
-Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan acara pernikahan kami:
+Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan acara perkawinan kami:
 
 👰‍♂️ *Adiaksa Anugrah Rante, S.Kom*
       (Putra dari Bapak Alm. Marthen Rante & Ibu Yustina Rante)
@@ -1557,7 +1567,7 @@ Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan acara
  ‍♀️ *Pdt. Fepprianti S.Th.*
       (Putri dari Bapak Pdt. Yunus Toding & Ibu Pdt. Yuliana Toding)
 
-🗓️ *Pemberkatan Pernikahan*
+🗓️ *Pemberkatan Perkawinan*
 Jumat, 26 Juni 2026
 ⏰ Pukul 10.00 WITA - Selesai
 📍 Gereja Toraja Jemaat Bua Tallulolo
@@ -1565,7 +1575,7 @@ Jumat, 26 Juni 2026
 🎉 *Resepsi & Ramah Tamah*
 📍 Ballroom D'Rij Hotel & Convention
 
-Dengan memohon doa restu dari Bapak/Ibu/Saudara/i, kami mengundang sekalian untuk hadir dalam momen suci penyatuan dua hati dalam ikatan pernikahan yang sakral dan penuh kasih.
+Dengan memohon doa restu dari Bapak/Ibu/Saudara/i, kami mengundang sekalian untuk hadir dalam momen suci penyatuan dua hati dalam ikatan perkawinan yang sakral dan penuh kasih.
 
 📱 *Undangan Digital Lengkap:*
 ${invitationLink}
@@ -1698,9 +1708,15 @@ With love and gratitude in Christ,
 
         // Settings Functions
         function changePassword() {
+            console.log('changePassword function called');
+            
             const currentPassword = document.getElementById('currentPassword').value;
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            console.log('Current password:', currentPassword);
+            console.log('New password:', newPassword);
+            console.log('Expected password:', CONFIG.ADMIN_PASSWORD);
             
             if (!currentPassword || !newPassword || !confirmPassword) {
                 showMessage('settingsMessage', 'Semua field harus diisi!', 'error');
@@ -1708,7 +1724,7 @@ With love and gratitude in Christ,
             }
             
             if (currentPassword !== CONFIG.ADMIN_PASSWORD) {
-                showMessage('settingsMessage', 'Password saat ini salah!', 'error');
+                showMessage('settingsMessage', 'Password saat ini salah! Expected: ' + CONFIG.ADMIN_PASSWORD, 'error');
                 return;
             }
             
@@ -1734,6 +1750,7 @@ With love and gratitude in Christ,
             document.getElementById('confirmPassword').value = '';
             
             showMessage('settingsMessage', 'Password berhasil diganti! Password baru: ' + newPassword, 'success');
+            console.log('Password changed successfully to:', newPassword);
         }
 
         // Utility functions
