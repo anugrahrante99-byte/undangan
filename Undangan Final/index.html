@@ -8,29 +8,29 @@
     <meta name="mobile-web-app-capable" content="yes">
     
     <!-- SEO Meta Tags -->
-    <title>Undangan Pernikahan Adiaksa & Fepprianti - 26 Juni 2026</title>
-    <meta name="description" content="Undangan pernikahan digital Adiaksa Anugrah Rante & Pdt. Fepprianti S.Th. Jumat, 26 Juni 2026. Bergabunglah dalam perayaan sakral kami.">
-    <meta name="keywords" content="undangan pernikahan, wedding invitation, Adiaksa, Fepprianti, pernikahan, 26 Juni 2026, digital invitation, undangan online">
+    <title>Undangan Perkawinan Adiaksa & Fepprianti - 26 Juni 2026</title>
+    <meta name="description" content="Undangan perkawinan digital Adiaksa Anugrah Rante & Pdt. Fepprianti S.Th. Jumat, 26 Juni 2026. Bergabunglah dalam perayaan sakral kami.">
+    <meta name="keywords" content="undangan perkawinan, wedding invitation, Adiaksa, Fepprianti, perkawinan, 26 Juni 2026, digital invitation, undangan online">
     <meta name="author" content="Adiaksa & Fepprianti">
     <meta name="robots" content="index, follow">
     <meta name="language" content="id">
     <meta name="revisit-after" content="7 days">
     
     <!-- Open Graph Meta Tags for Social Media -->
-    <meta property="og:title" content="Undangan Pernikahan Adiaksa & Fepprianti">
-    <meta property="og:description" content="Undangan pernikahan digital Adiaksa Anugrah Rante & Pdt. Fepprianti S.Th. Jumat, 26 Juni 2026">
+    <meta property="og:title" content="Undangan Perkawinan Adiaksa & Fepprianti">
+    <meta property="og:description" content="Undangan perkawinan digital Adiaksa Anugrah Rante & Pdt. Fepprianti S.Th. Jumat, 26 Juni 2026">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://uggafeppri.my.id">
     <meta property="og:image" content="https://uggafeppri.my.id/background.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="id_ID">
-    <meta property="og:site_name" content="Undangan Pernikahan Adiaksa & Fepprianti">
+    <meta property="og:site_name" content="Undangan Perkawinan Adiaksa & Fepprianti">
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Undangan Pernikahan Adiaksa & Fepprianti">
-    <meta name="twitter:description" content="Undangan pernikahan digital Adiaksa Anugrah Rante & Pdt. Fepprianti S.Th. Jumat, 26 Juni 2026">
+    <meta name="twitter:title" content="Undangan Perkawinan Adiaksa & Fepprianti">
+    <meta name="twitter:description" content="Undangan perkawinan digital Adiaksa Anugrah Rante & Pdt. Fepprianti S.Th. Jumat, 26 Juni 2026">
     <meta name="twitter:image" content="https://uggafeppri.my.id/background.jpg">
     
     <!-- Canonical URL -->
@@ -4270,7 +4270,7 @@
             <h1 class="cover-title" id="coverTitle">Undangan Perkawinan</h1>
             <p class="cover-subtitle" id="coverDescription">Kepada Yth.<br>Bapak/Ibu/Saudara(i)</p>
             <div class="guest-name" id="guestNameDisplay" aria-live="polite">Tamu Undangan</div>
-            <button type="button" class="open-button" onclick="openInvitation()" aria-label="Buka undangan pernikahan">Buka Undangan</button>
+            <button type="button" class="open-button" onclick="openInvitation()" aria-label="Buka undangan perkawinan">Buka Undangan</button>
         </div>
     </div>
 
@@ -4334,11 +4334,11 @@
                 <div class="event-info">
                     <div class="event-item">
                         <h3>Pemberkatan</h3>
-                        <p>Jumat, 26 Juni 2026<br>09.00 WITA<br>Gereja Toraja Jemaat Bua Tallulolo</p>
+                        <p>Jumat, 26 Juni 2026<br>09.00 - Selesai WITA<br>Gereja Toraja Jemaat Bua Tallulolo</p>
                     </div>
                     <div class="event-item">
                         <h3>Resepsi</h3>
-                        <p>Jumat, 26 Juni 2026<br>12.00 - Selesai<br>Ballroom D'Rij Hotel & Convention</p>
+                        <p>Jumat, 26 Juni 2026<br>13.00 - Selesai<br>Ballroom D'Rij Hotel & Convention</p>
                     </div>
                 </div>
             </div>
@@ -4369,15 +4369,15 @@
                 <h2>Detail Acara</h2>
                 <div class="event-details">
                     <div class="event-item">
-                        <h3>Akad Nikah</h3>
+                        <h3>Pemberkatan</h3>
                         <p>Jumat, 26 Juni 2026</p>
-                        <p>08:00 - 09:00 WITA</p>
-                        <p>Ballroom D'Rij Hotel & Convention</p>
+                        <p>09:00 - Selesai WITA</p>
+                        <p>Gereja Toraja Jemaat Bua Tallulolo</p>
                     </div>
                     <div class="event-item">
                         <h3>Resepsi</h3>
                         <p>Jumat, 26 Juni 2026</p>
-                        <p>10:00 - 13:00 WITA</p>
+                        <p>13:00 - Selesai WITA</p>
                         <p>Ballroom D'Rij Hotel & Convention</p>
                     </div>
                 </div>
@@ -4579,8 +4579,11 @@
         
         // Countdown Timer
         function startCountdown() {
+            console.log('Countdown timer started');
+            
             // Set wedding date with WITA timezone (UTC+8)
-            const weddingDate = new Date('2026-06-26T08:00:00+08:00').getTime();
+            const weddingDate = new Date('2026-06-26T09:00:00+08:00').getTime();
+            console.log('Wedding date set to:', new Date(weddingDate));
             
             const timer = setInterval(function() {
                 const now = new Date().getTime();
@@ -4617,6 +4620,8 @@
                 const minutesElement = document.getElementById('minutes');
                 const secondsElement = document.getElementById('seconds');
                 
+                console.log('Updating countdown:', { days, hours, minutes, seconds });
+                
                 if (daysElement) daysElement.textContent = days.toString().padStart(2, '0');
                 if (hoursElement) hoursElement.textContent = hours.toString().padStart(2, '0');
                 if (minutesElement) minutesElement.textContent = minutes.toString().padStart(2, '0');
@@ -4634,7 +4639,7 @@
 
         // Add to Calendar Function
         function addToCalendar() {
-            const weddingDate = new Date('2026-06-26T08:00:00+08:00');
+            const weddingDate = new Date('2026-06-26T09:00:00+08:00');
             const endDate = new Date('2026-06-26T17:00:00+08:00');
             
             // Format dates for calendar
@@ -4642,8 +4647,8 @@
             const endDateStr = endDate.toISOString().replace(/-|:|\.\d\d\d/g, '');
             
             // Calendar event details
-            const title = 'Pernikahan Adiaksa & Fepprianti';
-            const details = 'Undangan Pernikahan Adiaksa Anugrah Rante & Pdt. Fepprianti S.Th\n\nPemberkatan:\nJumat, 26 Juni 2026\n09.00 WITA\nGereja Toraja Jemaat Bua Tallulolo\nJl. Dr. T.B. Simatupang Poros Tangmentoe, Lembang Tallulolo, Kec. Kesu\', Kabupaten Toraja Utara, Sulawesi Selatan\n\nResepsi:\nJumat, 26 Juni 2026\n12.00 - Selesai\nBallroom D\'Rij Hotel & Convention\n\nKehadiran Anda sangat kami harapkan. Terima kasih!';
+            const title = 'Perkawinan Adiaksa & Fepprianti';
+            const details = 'Undangan Perkawinan Adiaksa Anugrah Rante & Pdt. Fepprianti S.Th\n\nPemberkatan:\nJumat, 26 Juni 2026\n09.00 WITA\nGereja Toraja Jemaat Bua Tallulolo\nJl. Dr. T.B. Simatupang Poros Tangmentoe, Lembang Tallulolo, Kec. Kesu\', Kabupaten Toraja Utara, Sulawesi Selatan\n\nResepsi:\nJumat, 26 Juni 2026\n12.00 - Selesai\nBallroom D\'Rij Hotel & Convention\n\nKehadiran Anda sangat kami harapkan. Terima kasih!';
             const location = 'Gereja Toraja Jemaat Bua Tallulolo & Gedung D\'Rij Hotel & Convention';
             
             // Create Google Calendar link
@@ -4698,7 +4703,7 @@
             `;
             confirmation.innerHTML = `
                 <div style="font-weight: 600; margin-bottom: 0.3rem;">Kalender Dibuka!</div>
-                <div style="font-size: 0.8rem; opacity: 0.9;">Event pernikahan telah ditambahkan ke kalender Anda.</div>
+                <div style="font-size: 0.8rem; opacity: 0.9;">Event perkawinan telah ditambahkan ke kalender Anda.</div>
             `;
             
             // Add animation
