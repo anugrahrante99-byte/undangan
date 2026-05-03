@@ -471,7 +471,7 @@
                 <div id="settingsMessage"></div>
                 
                 <div style="margin-bottom: 30px;">
-                    <h3>� Ganti Password Admin</h3>
+                    <h3>  Ganti Password Admin</h3>
                     <div class="form-group">
                         <label for="currentPassword">Password Saat Ini</label>
                         <input type="password" id="currentPassword" placeholder="Masukkan password saat ini">
@@ -484,21 +484,21 @@
                         <label for="confirmPassword">Konfirmasi Password</label>
                         <input type="password" id="confirmPassword" placeholder="Konfirmasi password baru">
                     </div>
-                    <button class="btn btn-primary" onclick="changePassword()">� Ganti Password</button>
+                    <button class="btn btn-primary" onclick="changePassword()">  Ganti Password</button>
                 </div>
 
                 <div style="margin-bottom: 30px;">
-                    <h3>�️ Tools & Maintenance</h3>
+                    <h3> ️ Tools & Maintenance</h3>
                     <div style="display: grid; gap: 15px;">
-                        <button class="btn btn-danger" onclick="clearCache()">�️ Clear Cache & Local Storage</button>
-                        <button class="btn btn-primary" onclick="testConnection()">� Test Koneksi Google Sheets</button>
-                        <button class="btn btn-secondary" onclick="exportData()">� Export Data Ucapan</button>
+                        <button class="btn btn-danger" onclick="clearCache()"> ️ Clear Cache & Local Storage</button>
+                        <button class="btn btn-primary" onclick="testConnection()">  Test Koneksi Google Sheets</button>
+                        <button class="btn btn-secondary" onclick="exportData()">  Export Data Ucapan</button>
                         <button class="btn btn-secondary" onclick="backupData()">💾 Backup Data</button>
                     </div>
                 </div>
 
                 <div style="margin-bottom: 30px;">
-                    <h3>� Konfigurasi Sistem</h3>
+                    <h3>  Konfigurasi Sistem</h3>
                     <div class="form-group">
                         <label>Web App URL</label>
                         <input type="text" value="https://script.google.com/macros/s/AKfycbxJXvAz9s_WWOGSopAQIgUsph_dUpNIK21bXyeB3SJalEp2Ea3VwRJvYjUcaCGEuHO3/exec" readonly style="background: #f8f9fa;">
@@ -548,6 +548,12 @@
 
         // Authentication
         function checkAuth() {
+            // Load saved password from localStorage
+            const savedPassword = localStorage.getItem('adminPassword');
+            if (savedPassword) {
+                CONFIG.ADMIN_PASSWORD = savedPassword;
+            }
+            
             const auth = localStorage.getItem('weddingAdminAuth');
             if (auth === 'true') {
                 showManagementScreen();
@@ -1548,7 +1554,7 @@ Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan acara
 👰‍♂️ *Adiaksa Anugrah Rante, S.Kom*
       (Putra dari Bapak Alm. Marthen Rante & Ibu Yustina Rante)
 
-�‍♀️ *Pdt. Fepprianti S.Th.*
+ ‍♀️ *Pdt. Fepprianti S.Th.*
       (Putri dari Bapak Pdt. Yunus Toding & Ibu Pdt. Yuliana Toding)
 
 🗓️ *Pemberkatan Pernikahan*
@@ -1718,6 +1724,9 @@ With love and gratitude in Christ,
             
             // Update password in config
             CONFIG.ADMIN_PASSWORD = newPassword;
+            
+            // Save to localStorage for persistent login
+            localStorage.setItem('adminPassword', newPassword);
             
             // Clear form
             document.getElementById('currentPassword').value = '';
