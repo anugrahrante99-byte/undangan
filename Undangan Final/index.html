@@ -790,52 +790,53 @@
             scrollbar-color: rgba(255,255,255,0.3) transparent;
         }
         
-        /* Cover Screen - LOCKED SIZE */
+        /* Cover Screen - PERFECT VIEWPORT LOCK */
         .cover-screen {
             position: fixed;
             top: 0;
             left: 0;
+            right: 0;
+            bottom: 0;
             width: 100vw;
             height: 100vh;
             height: -webkit-fill-available;
-            background: url('background.jpg') center center/cover no-repeat fixed;
-            background-color: #211f1d;
+            height: -moz-available;
+            height: fill-available;
+            background: transparent;
+            background-color: transparent;
+            background-image: none;
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 99997;
             transition: opacity 1s ease, transform 1s ease;
-            /* iOS/Android background lock */
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-            /* Ensure full screen without any margin/padding */
+            /* Reset all box model */
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            /* Prevent zoom on iOS */
-            touch-action: manipulation;
+            /* Prevent all scrolling and zooming */
+            overflow: hidden;
+            touch-action: none;
+            -webkit-touch-callout: none;
             -webkit-user-select: none;
             user-select: none;
-            pointer-events: auto !important;
-            /* Lock scroll - prevent any scrolling */
-            overflow: hidden;
-            -webkit-overflow-scrolling: touch;
-            /* Prevent body scroll when cover is active */
-            position: fixed;
-            /* Disable all scroll interactions */
-            touch-action: none;
-            /* Prevent bounce scroll on iOS */
+            /* iOS Safari fixes */
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            /* Prevent bounce scroll */
             overscroll-behavior: none;
             -webkit-overscroll-behavior: none;
-            /* Lock cover screen size - prevent scaling on Chrome */
+            /* Force viewport dimensions */
             min-width: 100vw;
             min-height: 100vh;
             max-width: 100vw;
             max-height: 100vh;
-            /* Force exact viewport dimensions */
-            width: 100vw !important;
-            height: 100vh !important;
-            /* Prevent Chrome scaling */
+            /* Ensure no scaling on refresh */
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+            /* Prevent content shift */
+            pointer-events: auto !important;
             image-rendering: -webkit-optimize-contrast;
             image-rendering: crisp-edges;
             /* Stable rendering */
@@ -2044,15 +2045,14 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            object-position: center;
+            object-position: center top;
             border-radius: 50%;
             transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: block;
-            /* Ensure perfect circle fit */
             position: absolute;
             top: 0;
             left: 0;
-            /* Prevent image distortion */
+            /* Ensure perfect circle fit */
             min-width: 100%;
             min-height: 100%;
         }
@@ -4206,20 +4206,6 @@
                 background-image: none !important;
             }
 
-            body::after {
-                content: '';
-                position: fixed;
-                inset: 0;
-                z-index: -1;
-                pointer-events: none;
-                background-image: url('background.jpg');
-                background-repeat: no-repeat;
-                background-position: center top;
-                background-size: cover;
-                background-color: #211f1d;
-                transform: translateZ(0);
-            }
-
             body::before {
                 background: linear-gradient(180deg, rgba(0,0,0,0.20), rgba(255,248,235,0.08) 42%, rgba(0,0,0,0.20)) !important;
             }
@@ -4287,7 +4273,7 @@
                 </div>
                 <p style="color: #555; margin-top: 1rem; font-weight: 400; font-family: 'Playfair Display', serif; letter-spacing: 1.5px; line-height: 1.8; font-style: italic;">
                     Jumat, 26 Juni 2026<br>
-                    08.00 - selesai Wita
+                    09.00 - selesai Wita
                 </p>
                 <div class="countdown-container" style="margin-top: 1.5rem; text-align: center; cursor: pointer;" onclick="addToCalendar()" role="button" tabindex="0" aria-label="Klik untuk menambahkan acara ke kalender">
                     <div style="font-size: 0.8rem; color: #666; margin-bottom: 0.8rem; font-family: 'Playfair Display', serif; font-style: italic;">Klik untuk Mengingatkan</div>
@@ -4501,7 +4487,7 @@
                             </div>
                         </div>
                         <div class="bank-info">
-                            <p>No. Rekening: <strong id="bni-account" style="padding: 4px 8px; border-radius: 6px; background: rgba(0,102,204,0.1);">1787542145</strong> <button onclick="copyAccountNumber('bni')" style="margin-left: 8px; padding: 4px 12px; background: #0066CC; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.background='#0052a3'" onmouseout="this.style.background='#0066CC'">📋 Copy</button></p>
+                            <p>No. Rekening: <strong id="bni-account" style="padding: 4px 8px; border-radius: 6px; background: rgba(0,102,204,0.1);">1787542145</strong> <button id="copy-bni-btn" style="margin-left: 8px; padding: 4px 12px; background: #0066CC; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.background='#0052a3'" onmouseout="this.style.background='#0066CC'">📋 Copy</button></p>
                             <p>a.n. <strong>Fepprianti</strong></p>
                         </div>
                     </div>
@@ -4513,7 +4499,7 @@
                             </div>
                         </div>
                         <div class="bank-info">
-                            <p>No. Rekening: <strong id="mandiri-account" style="padding: 4px 8px; border-radius: 6px; background: rgba(0,102,179,0.1);">1620004386821</strong> <button onclick="copyAccountNumber('mandiri')" style="margin-left: 8px; padding: 4px 12px; background: #0066B3; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.background='#004A8F'" onmouseout="this.style.background='#0066B3'">📋 Copy</button></p>
+                            <p>No. Rekening: <strong id="mandiri-account" style="padding: 4px 8px; border-radius: 6px; background: rgba(0,102,179,0.1);">1620004386821</strong> <button id="copy-mandiri-btn" style="margin-left: 8px; padding: 4px 12px; background: #0066B3; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.background='#004A8F'" onmouseout="this.style.background='#0066B3'">📋 Copy</button></p>
                             <p>a.n. <strong>Adiaksa Anugrah Rante</strong></p>
                         </div>
                     </div>
@@ -4579,62 +4565,85 @@
         
         // Countdown Timer
         function startCountdown() {
-            console.log('Countdown timer started');
+            const daysElement = document.getElementById('days');
+            const hoursElement = document.getElementById('hours');
+            const minutesElement = document.getElementById('minutes');
+            const secondsElement = document.getElementById('seconds');
+            
+            if (!daysElement || !hoursElement || !minutesElement || !secondsElement) {
+                return;
+            }
             
             // Set wedding date with WITA timezone (UTC+8)
             const weddingDate = new Date('2026-06-26T09:00:00+08:00').getTime();
-            console.log('Wedding date set to:', new Date(weddingDate));
             
-            const timer = setInterval(function() {
-                const now = new Date().getTime();
-                const distance = weddingDate - now;
-                
-                if (distance < 0) {
-                    // Wedding day has arrived
-                    clearInterval(timer);
-                    document.getElementById('days').textContent = '00';
-                    document.getElementById('hours').textContent = '00';
-                    document.getElementById('minutes').textContent = '00';
-                    document.getElementById('seconds').textContent = '00';
-                    
-                    // Show wedding day message
-                    const countdownContainer = document.querySelector('.countdown-container');
-                    if (countdownContainer) {
-                        countdownContainer.innerHTML = `
-                            <div style="font-size: 1.2rem; color: #e74c3c; font-weight: 600; font-family: 'Playfair Display', serif; text-align: center;">
-                                Hari Bahagia Telah Tiba! ??
-                            </div>
-                        `;
-                    }
-                    return;
-                }
-                
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                
-                // Update countdown display
-                const daysElement = document.getElementById('days');
-                const hoursElement = document.getElementById('hours');
-                const minutesElement = document.getElementById('minutes');
-                const secondsElement = document.getElementById('seconds');
-                
-                console.log('Updating countdown:', { days, hours, minutes, seconds });
-                
-                if (daysElement) daysElement.textContent = days.toString().padStart(2, '0');
-                if (hoursElement) hoursElement.textContent = hours.toString().padStart(2, '0');
-                if (minutesElement) minutesElement.textContent = minutes.toString().padStart(2, '0');
-                if (secondsElement) secondsElement.textContent = seconds.toString().padStart(2, '0');
-                
-                // Add pulse animation for last 10 seconds
-                if (distance < 10000 && distance > 0) {
-                    const countdownItems = document.querySelectorAll('.countdown-item');
-                    countdownItems.forEach(item => {
-                        item.style.animation = 'pulse 0.5s ease infinite';
-                    });
-                }
+            // Clear any existing timer
+            if (window.countdownTimer) {
+                clearInterval(window.countdownTimer);
+            }
+            
+            // Update immediately
+            updateCountdown(weddingDate);
+            
+            // Set interval to update every second
+            window.countdownTimer = setInterval(function() {
+                updateCountdown(weddingDate);
             }, 1000);
+        }
+        
+        function updateCountdown(weddingDate) {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+            
+            const daysElement = document.getElementById('days');
+            const hoursElement = document.getElementById('hours');
+            const minutesElement = document.getElementById('minutes');
+            const secondsElement = document.getElementById('seconds');
+            
+            if (distance < 0) {
+                // Wedding day has arrived
+                clearInterval(window.countdownTimer);
+                
+                if (daysElement) daysElement.textContent = '00';
+                if (hoursElement) hoursElement.textContent = '00';
+                if (minutesElement) minutesElement.textContent = '00';
+                if (secondsElement) secondsElement.textContent = '00';
+                
+                // Show wedding day message
+                const countdownContainer = document.querySelector('.countdown-container');
+                if (countdownContainer) {
+                    countdownContainer.innerHTML = `
+                        <div style="font-size: 1.2rem; color: #e74c3c; font-weight: 600; font-family: 'Playfair Display', serif; text-align: center;">
+                            Hari Bahagia Telah Tiba! 🎉
+                        </div>
+                    `;
+                }
+                return;
+            }
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            if (daysElement) daysElement.textContent = days.toString().padStart(2, '0');
+            if (hoursElement) hoursElement.textContent = hours.toString().padStart(2, '0');
+            if (minutesElement) minutesElement.textContent = minutes.toString().padStart(2, '0');
+            if (secondsElement) secondsElement.textContent = seconds.toString().padStart(2, '0');
+            
+            // Add pulse animation for last 10 seconds
+            if (distance < 10000 && distance > 0) {
+                const countdownItems = document.querySelectorAll('.countdown-item');
+                countdownItems.forEach(item => {
+                    item.style.animation = 'pulse 0.5s ease infinite';
+                });
+            } else {
+                // Remove pulse animation if not in last 10 seconds
+                const countdownItems = document.querySelectorAll('.countdown-item');
+                countdownItems.forEach(item => {
+                    item.style.animation = '';
+                });
+            }
         }
 
         // Add to Calendar Function
@@ -5099,7 +5108,7 @@
                         return { category: cat, changed: false };
                     }
                 } catch (error) {
-                    console.error(`❌ Error refreshing ${cat}:`, error);
+                    // console.error(`❌ Error refreshing ${cat}:`, error);
                     return { category: cat, error: error.message };
                 }
             });
@@ -5185,12 +5194,10 @@
             img.src = photoPath;
             img.alt = `${category} photo ${index + 1}`;
             img.loading = 'lazy';
-            img.onclick = () => openSimpleGallery(category);
-            img.style.cssText = `
+                        img.style.cssText = `
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
-                cursor: pointer;
                 transition: all 0.3s ease;
             `;
             
@@ -5216,7 +5223,7 @@
                 try {
                     await autoRefreshPhotoDetection();
                 } catch (error) {
-                    console.error('❌ Photo watcher error:', error);
+                    // console.error('❌ Photo watcher error:', error);
                 }
             }, 3000);
             
@@ -5444,7 +5451,7 @@
                 // Create image element to handle loading errors
                 const img = new Image();
                 img.onload = function() {
-                    photoElement.innerHTML = `<img src="${photoPath}" alt="${folderName === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita'}" style="width: 100%; height: 100%; object-fit: cover; object-position: center; border-radius: 50%; cursor: pointer;" onclick="openSimpleGallery('${folderName}')" title="Klik untuk lihat galeri">`;
+                    photoElement.innerHTML = `<img src="${photoPath}" alt="${folderName === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita'}" style="width: 100%; height: 100%; object-fit: cover; object-position: center top; border-radius: 50%; display: block; position: absolute; top: 0; left: 0;">`;
                 };
                 img.onerror = function() {
                     photoElement.innerHTML = '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f0f0f0; border-radius: 50%;"><div style="color: #666; font-size: 0.8rem;">Photo Not Found</div></div>';
@@ -5533,9 +5540,7 @@
                     photoElement.innerHTML = `
                         <img src="${photoPath}" 
                              alt="${folderName === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita'}" 
-                             style="width: 100%; height: 100%; object-fit: cover; object-position: center; border-radius: 50%; cursor: pointer; animation: luxuryPhotoReveal 0.8s cubic-bezier(0.23, 1, 0.32, 1);" 
-                             onclick="openSimpleGallery('${folderName}')" 
-                             title="Klik untuk lihat galeri"
+                             style="width: 100%; height: 100%; object-fit: cover; object-position: center top; border-radius: 50%; display: block; position: absolute; top: 0; left: 0; animation: luxuryPhotoReveal 0.8s cubic-bezier(0.23, 1, 0.32, 1);" 
                              loading="lazy">
                     `;
                     photoElement.dataset.loading = 'false';
@@ -5939,8 +5944,8 @@
         
         // Playlist songs - UPDATED to match actual files in folder
         const simplePlaylist = [
-            'musik/Frankie Valli - Can t Take My Eyes Off You.mp3',
-            'musik/The Prayer.mp3'
+            'musik/The Prayer.mp3',
+            'musik/Frankie Valli - Can t Take My Eyes Off You.mp3'
         ];
         
 
@@ -6107,46 +6112,46 @@
         
         // Toggle music play/pause with fade effects
         function toggleSimpleMusic() {
-            console.log('Toggle music clicked, current state:', isSimpleMusicPlaying);
+            // console.log('Toggle music clicked, current state:', isSimpleMusicPlaying);
             
             if (!simpleMusicPlayer) {
-                console.log('Music player not found, initializing...');
+                // console.log('Music player not found, initializing...');
                 initSimpleMusic();
             }
             
             const musicIconImg = document.getElementById('musicIconImg');
             if (!musicIconImg) {
-                console.log('Music icon image not found!');
+                // console.log('Music icon image not found!');
                 return;
             }
             
             if (isSimpleMusicPlaying) {
                 // Fade out and pause music
-                console.log('Pausing music with fade out...');
+                // console.log('Pausing music with fade out...');
                 fadeOutMusic(() => {
                     musicIconImg.src = 'icon musik/play.png';
                     isSimpleMusicPlaying = false;
-                    console.log('Music paused with fade out');
+                    // console.log('Music paused with fade out');
                 });
             } else {
                 // Play music with fade in
-                console.log('Starting music with fade in...');
+                // console.log('Starting music with fade in...');
                 isSimpleMusicPlaying = true;
                 musicIconImg.src = 'icon musik/pause.png';
                 
                 if (!simpleMusicPlayer.src || simpleMusicPlayer.src === '') {
-                    console.log('No audio source set, setting first song...');
+                    // console.log('No audio source set, setting first song...');
                     simpleMusicPlayer.src = simplePlaylist[simpleCurrentSongIndex];
                     simpleMusicPlayer.load();
                 }
                 
                 simpleMusicPlayer.play().then(() => {
-                    console.log('Audio play started, beginning fade in...');
+                    // console.log('Audio play started, beginning fade in...');
                     fadeInMusic(() => {
-                        console.log('Music playing with fade in');
+                        // console.log('Music playing with fade in');
                     });
                 }).catch(error => {
-                    console.log('Music play failed:', error);
+                    // console.log('Music play failed:', error);
                     isSimpleMusicPlaying = false;
                     musicIconImg.src = 'icon musik/play.png';
                 });
@@ -6155,10 +6160,10 @@
         
         // Previous song
         function previousSimpleSong() {
-                        console.log('Previous song clicked, current index:', simpleCurrentSongIndex);
+                        // console.log('Previous song clicked, current index:', simpleCurrentSongIndex);
                         
                         if (!simpleMusicPlayer) {
-                            console.log('Music player not found, initializing...');
+                            // console.log('Music player not found, initializing...');
                             initSimpleMusic();
                             return;
                         }
@@ -6169,75 +6174,75 @@
                         }
                         
                         const songName = getSongName(simplePlaylist[simpleCurrentSongIndex]);
-                        console.log('Going to previous song, new index:', simpleCurrentSongIndex, 'Song:', songName);
+                        // console.log('Going to previous song, new index:', simpleCurrentSongIndex, 'Song:', songName);
                         
                         // Show brief notification
                         showSongNotification('Previous: ' + songName);
                         
                         loadAndPlaySong();
-            console.log('Initializing music player...');
+            // console.log('Initializing music player...');
             simpleMusicPlayer = document.getElementById('backgroundMusic');
             
             if (simpleMusicPlayer) {
-                console.log('Audio element found:', simpleMusicPlayer);
-                console.log('Playlist:', simplePlaylist);
-                console.log('Current song index:', simpleCurrentSongIndex);
+                // console.log('Audio element found:', simpleMusicPlayer);
+                // console.log('Playlist:', simplePlaylist);
+                // console.log('Current song index:', simpleCurrentSongIndex);
                 
                 // Set first song
                 const firstSong = simplePlaylist[simpleCurrentSongIndex];
-                console.log('Setting first song:', firstSong);
+                // console.log('Setting first song:', firstSong);
                 simpleMusicPlayer.src = firstSong;
                 simpleMusicPlayer.volume = 0; // Start with volume 0 for fade in
                 simpleMusicPlayer.load();
                 
-                console.log('Music player initialized successfully');
+                // console.log('Music player initialized successfully');
             } else {
-                console.log('Audio element not found');
+                // console.log('Audio element not found');
             }
         }
         
         // Toggle music play/pause with fade effects
         function toggleSimpleMusic() {
-            console.log('Toggle music clicked, current state:', isSimpleMusicPlaying);
+            // console.log('Toggle music clicked, current state:', isSimpleMusicPlaying);
             
             if (!simpleMusicPlayer) {
-                console.log('Music player not found, initializing...');
+                // console.log('Music player not found, initializing...');
                 initSimpleMusic();
             }
             
             const musicIconImg = document.getElementById('musicIconImg');
             if (!musicIconImg) {
-                console.log('Music icon image not found!');
+                // console.log('Music icon image not found!');
                 return;
             }
             
             if (isSimpleMusicPlaying) {
                 // Fade out and pause music
-                console.log('Pausing music with fade out...');
+                // console.log('Pausing music with fade out...');
                 fadeOutMusic(() => {
                     musicIconImg.src = 'icon musik/play.png';
                     isSimpleMusicPlaying = false;
-                    console.log('Music paused with fade out');
+                    // console.log('Music paused with fade out');
                 });
             } else {
                 // Play music with fade in
-                console.log('Starting music with fade in...');
+                // console.log('Starting music with fade in...');
                 isSimpleMusicPlaying = true;
                 musicIconImg.src = 'icon musik/pause.png';
                 
                 if (!simpleMusicPlayer.src || simpleMusicPlayer.src === '') {
-                    console.log('No audio source set, setting first song...');
+                    // console.log('No audio source set, setting first song...');
                     simpleMusicPlayer.src = simplePlaylist[simpleCurrentSongIndex];
                     simpleMusicPlayer.load();
                 }
                 
                 simpleMusicPlayer.play().then(() => {
-                    console.log('Audio play started, beginning fade in...');
+                    // console.log('Audio play started, beginning fade in...');
                     fadeInMusic(() => {
-                        console.log('Music playing with fade in');
+                        // console.log('Music playing with fade in');
                     });
                 }).catch(error => {
-                    console.log('Music play failed:', error);
+                    // console.log('Music play failed:', error);
                     isSimpleMusicPlaying = false;
                     musicIconImg.src = 'icon musik/play.png';
                 });
@@ -6246,10 +6251,10 @@
         
         // Previous song
         function previousSimpleSong() {
-            console.log('Previous song clicked, current index:', simpleCurrentSongIndex);
+            // console.log('Previous song clicked, current index:', simpleCurrentSongIndex);
             
             if (!simpleMusicPlayer) {
-                console.log('Music player not found, initializing...');
+                // console.log('Music player not found, initializing...');
                 initSimpleMusic();
                 return;
             }
@@ -6260,7 +6265,7 @@
             }
             
             const songName = getSongName(simplePlaylist[simpleCurrentSongIndex]);
-            console.log('Going to previous song, new index:', simpleCurrentSongIndex, 'Song:', songName);
+            // console.log('Going to previous song, new index:', simpleCurrentSongIndex, 'Song:', songName);
             
             // Show brief notification
             showSongNotification('Previous: ' + songName);
@@ -6270,17 +6275,17 @@
         
         // Next song
         function nextSimpleSong() {
-            console.log('Next song clicked, current index:', simpleCurrentSongIndex);
+            // console.log('Next song clicked, current index:', simpleCurrentSongIndex);
             
             if (!simpleMusicPlayer) {
-                console.log('Music player not found, initializing...');
+                // console.log('Music player not found, initializing...');
                 initSimpleMusic();
                 return;
             }
             
             simpleCurrentSongIndex = (simpleCurrentSongIndex + 1) % simplePlaylist.length;
             const songName = getSongName(simplePlaylist[simpleCurrentSongIndex]);
-            console.log('Going to next song, new index:', simpleCurrentSongIndex, 'Song:', songName);
+            // console.log('Going to next song, new index:', simpleCurrentSongIndex, 'Song:', songName);
             
             // Show brief notification
             showSongNotification('Next: ' + songName);
@@ -6342,44 +6347,44 @@
 
         // Load and play current song with fade in
         function loadAndPlaySong() {
-            console.log('Loading and playing song, index:', simpleCurrentSongIndex);
+            // console.log('Loading and playing song, index:', simpleCurrentSongIndex);
             
             if (simpleMusicPlayer) {
                 const songPath = simplePlaylist[simpleCurrentSongIndex];
                 const songName = getSongName(songPath);
-                console.log('Setting audio source to:', songPath);
-                console.log('Song name:', songName);
+                // console.log('Setting audio source to:', songPath);
+                // console.log('Song name:', songName);
                 
                 simpleMusicPlayer.src = songPath;
                 simpleMusicPlayer.volume = 0; // Start with volume 0 for fade in
                 simpleMusicPlayer.load();
                 
                 if (isSimpleMusicPlaying) {
-                    console.log('Music is playing, starting new song with fade in...');
+                    // console.log('Music is playing, starting new song with fade in...');
                     simpleMusicPlayer.play().then(() => {
-                        console.log('Audio play started, beginning fade in...');
+                        // console.log('Audio play started, beginning fade in...');
                         fadeInMusic(() => {
-                            console.log('Now playing:', songName);
+                            // console.log('Now playing:', songName);
                         });
                     }).catch(error => {
-                        console.log('Play failed:', error);
+                        // console.log('Play failed:', error);
                         // Try next song if current fails
-                        console.log('Trying next song due to error...');
+                        // console.log('Trying next song due to error...');
                         setTimeout(() => {
                             nextSimpleSong();
                         }, 1000);
                     });
                 } else {
-                    console.log('Music is not playing, song loaded but not started');
+                    // console.log('Music is not playing, song loaded but not started');
                 }
             } else {
-                console.log('Music player not available!');
+                // console.log('Music player not available!');
             }
         }
         
         // Proper opening function without alert
         function openInvitationProperly() {
-            console.log('Opening invitation properly...');
+            // console.log('Opening invitation properly...');
             
             const coverScreen = document.getElementById('coverScreen');
             const mainContent = document.getElementById('mainContent');
@@ -6404,7 +6409,7 @@
                     setTimeout(() => playWithFade(), 500);
                 }
                 
-                console.log('Invitation opened successfully!');
+                // console.log('Invitation opened successfully!');
             }, 1000);
         }
         
@@ -6412,6 +6417,9 @@
         function openInvitation() {
             const coverScreen = document.getElementById('coverScreen');
             const mainContent = document.getElementById('mainContent');
+            
+            // Reset cover screen viewport before opening
+            resetCoverScreenViewport();
             
             // Unlock scroll using the new system
             unlockCoverScreen();
@@ -6430,6 +6438,8 @@
             mainContent.style.opacity = '1';
             mainContent.style.transform = 'translateY(0)';
             mainContent.style.height = 'auto';
+            mainContent.style.pointerEvents = 'auto';
+            mainContent.style.visibility = 'visible';
             
             // Set invitation as opened
             invitationOpened = true;
@@ -6437,7 +6447,13 @@
             // CRITICAL: Force background to stay fixed and prevent zoom - ENHANCED
             setTimeout(() => {
                 enforceBackgroundFixed();
+                stabilizeBackgroundTransition();
             }, 200);
+            
+            // Start countdown timer when invitation is opened
+            setTimeout(() => {
+                startCountdown();
+            }, 500);
             
             // CONTINUOUS enforcement to prevent zoom
             const backgroundGuardInterval = setInterval(() => {
@@ -6509,7 +6525,7 @@
             body.style.removeProperty('top');
             body.style.removeProperty('left');
             
-            console.log('Scroll enabled - backup check completed');
+            // console.log('Scroll enabled - backup check completed');
         }
         
         // Unlock scroll for main content
@@ -6543,7 +6559,7 @@
             body.style.transform = 'none';
             body.style.zoom = '1';
             
-            console.log('Scroll enabled - background preserved');
+            // console.log('Scroll enabled - background preserved');
         }
         
         // Toggle Music Controls
@@ -6642,17 +6658,17 @@
         
         // Simple function to show music controls
         function showMusicControls() {
-            console.log('showMusicControls called!');
+            // console.log('showMusicControls called!');
             const musicControl = document.getElementById('musicControlSimple');
             const arrowTrigger = document.getElementById('musicArrowTrigger');
             
             if (musicControl && arrowTrigger) {
-                console.log('Music control found:', musicControl);
-                console.log('Arrow trigger found:', arrowTrigger);
+                // console.log('Music control found:', musicControl);
+                // console.log('Arrow trigger found:', arrowTrigger);
                 
                 // Toggle visibility using style
                 if (musicControl.style.display === 'none' || musicControl.style.display === '') {
-                    console.log('Showing music controls');
+                    // console.log('Showing music controls');
                     musicControl.style.display = 'flex';
                     musicControl.style.opacity = '1';
                     musicControl.style.visibility = 'visible';
@@ -6664,20 +6680,20 @@
                         setTimeout(() => playWithFade(), 500);
                     }
                 } else {
-                    console.log('Hiding music controls');
+                    // console.log('Hiding music controls');
                     musicControl.style.display = 'none';
                     musicControl.style.opacity = '0';
                     musicControl.style.visibility = 'hidden';
                     arrowTrigger.classList.remove('active');
                 }
             } else {
-                console.log('Music control or arrow trigger not found');
+                // console.log('Music control or arrow trigger not found');
             }
         }
         
         // Initialize music system
         function initializeMusicSystem() {
-            console.log('Initializing music system...');
+            // console.log('Initializing music system...');
             initializeAudioPlayer();
             initializePlaylist();
             
@@ -6690,6 +6706,54 @@
             }, 2000);
         }
         
+        // Background transition stabilization function
+        function stabilizeBackgroundTransition() {
+            const body = document.body;
+            const html = document.documentElement;
+            const coverScreen = document.getElementById('coverScreen');
+            const mainContent = document.getElementById('mainContent');
+            
+            // Lock background position during transition
+            const currentBackground = window.getComputedStyle(body).backgroundImage;
+            const currentPosition = window.getComputedStyle(body).backgroundPosition;
+            const currentSize = window.getComputedStyle(body).backgroundSize;
+            
+            // Create background stability layer
+            const stabilityStyles = `
+                background-image: ${currentBackground} !important;
+                background-position: ${currentPosition} !important;
+                background-size: ${currentSize} !important;
+                background-attachment: fixed !important;
+                background-repeat: no-repeat !important;
+                transform: none !important;
+                transition: none !important;
+                animation: none !important;
+                will-change: auto !important;
+                backface-visibility: hidden !important;
+                -webkit-backface-visibility: hidden !important;
+            `;
+            
+            // Apply stability styles to both body and html
+            body.style.cssText += stabilityStyles;
+            html.style.cssText += stabilityStyles;
+            
+            // Ensure cover screen doesn't affect background
+            if (coverScreen) {
+                coverScreen.style.background = 'transparent';
+                coverScreen.style.backdropFilter = 'none';
+            }
+            
+            // Ensure main content doesn't affect background
+            if (mainContent) {
+                mainContent.style.background = 'transparent';
+                mainContent.style.backdropFilter = 'none';
+            }
+            
+            // Force background repaint
+            body.offsetHeight; // Trigger reflow
+            html.offsetHeight; // Trigger reflow
+        }
+
         // Enhanced background enforcement function
         function enforceBackgroundFixed() {
             const body = document.body;
@@ -6708,6 +6772,9 @@
                 -moz-transform: none !important;
                 -ms-transform: none !important;
                 -o-transform: none !important;
+                transition: none !important;
+                animation: none !important;
+                will-change: auto !important;
             `;
             
             // Apply styles to body
@@ -6719,6 +6786,9 @@
             html.style.backgroundPosition = 'center';
             html.style.transform = 'none';
             html.style.zoom = '1';
+            html.style.transition = 'none';
+            html.style.animation = 'none';
+            html.style.willChange = 'auto';
             
             // Force viewport meta tag
             const viewport = document.querySelector('meta[name="viewport"]');
@@ -6761,7 +6831,7 @@
             styleElement.id = 'background-enforcement';
             document.head.appendChild(styleElement);
             
-            console.log('Background enforcement applied - zoom prevented');
+            // console.log('Background enforcement applied - zoom prevented');
         }
 
         // Prevent zoom functions
@@ -6855,7 +6925,7 @@
                 coverScreen.style.pointerEvents = 'auto';
             }
             
-            console.log('Cover screen locked');
+            // console.log('Cover screen locked');
         }
 
         function unlockCoverScreen() {
@@ -6883,7 +6953,7 @@
             // Store that invitation was opened
             localStorage.setItem('invitationOpened', 'true');
             
-            console.log('Cover screen unlocked - scroll enabled');
+            // console.log('Cover screen unlocked - scroll enabled');
         }
 
         // Reset function for testing (optional)
@@ -6894,7 +6964,7 @@
 
         // Add scroll-reveal classes to important elements
         function addScrollRevealClasses() {
-            console.log('Adding scroll-reveal classes to elements...');
+            // console.log('Adding scroll-reveal classes to elements...');
             
             // Hero section elements
             const heroTitle = document.querySelector('.cover-title');
@@ -6965,11 +7035,38 @@
                 if (accountCard) accountCard.classList.add('scroll-reveal-scale');
             }
             
-            console.log('Scroll-reveal classes added successfully');
+            // console.log('Scroll-reveal classes added successfully');
         }
         
         // Initialize everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            // Check if this is a refresh (not first load)
+            const isRefresh = performance.navigation && performance.navigation.type === 1 || 
+                            performance.getEntriesByType && performance.getEntriesByType('navigation').length > 0 && 
+                            performance.getEntriesByType('navigation')[0].type === 'reload';
+            
+            // Only force return to cover on refresh, not on first load
+            if (isRefresh) {
+                forceReturnToCover();
+            } else {
+                // For first load, ensure main content is ready but hidden
+                const mainContent = document.getElementById('mainContent');
+                if (mainContent) {
+                    mainContent.style.opacity = '0';
+                    mainContent.style.transform = 'translateY(50px)';
+                    mainContent.style.pointerEvents = 'none';
+                    mainContent.style.visibility = 'hidden';
+                }
+            }
+            
+            // Reset cover screen to perfect viewport on load
+            resetCoverScreenViewport();
+            
+            // Stabilize background immediately on load
+            setTimeout(() => {
+                stabilizeBackgroundTransition();
+            }, 100);
+            
             // Set guest name from URL parameter
             const guestName = getGuestName();
             const guestNameDisplay = document.getElementById('guestNameDisplay');
@@ -6995,6 +7092,127 @@
             // Initialize countdown timer
             startCountdown();
         });
+        
+        // Force return to cover screen on refresh
+        function forceReturnToCover() {
+            const coverScreen = document.getElementById('coverScreen');
+            const mainContent = document.getElementById('mainContent');
+            const body = document.body;
+            const html = document.documentElement;
+            
+            if (!coverScreen || !mainContent) return;
+            
+            // Reset invitation state
+            invitationOpened = false;
+            
+            // Force scroll to top immediately
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            
+            // Show cover screen
+            coverScreen.style.display = 'flex';
+            coverScreen.style.opacity = '1';
+            coverScreen.style.transform = 'scale(1)';
+            coverScreen.style.pointerEvents = 'auto';
+            coverScreen.style.visibility = 'visible';
+            
+            // Reset main content to default state (but don't hide it completely)
+            mainContent.style.opacity = '0';
+            mainContent.style.transform = 'translateY(50px)';
+            mainContent.style.pointerEvents = 'none';
+            mainContent.style.visibility = 'hidden';
+            
+            // Lock body scroll
+            body.classList.add('cover-active');
+            body.style.overflow = 'hidden';
+            body.style.position = 'fixed';
+            body.style.top = '0';
+            body.style.left = '0';
+            body.style.width = '100%';
+            body.style.height = '100vh';
+            
+            html.style.overflow = 'hidden';
+            
+            // Only reset music if it's currently playing (don't interfere with initialization)
+            if (typeof simpleMusicPlayer !== 'undefined' && simpleMusicPlayer && isSimpleMusicPlaying) {
+                simpleMusicPlayer.pause();
+                simpleMusicPlayer.currentTime = 0;
+                isSimpleMusicPlaying = false;
+                simpleCurrentSongIndex = 0;
+            }
+            
+            // Only reset countdown if it's currently running
+            if (typeof countdownInterval !== 'undefined' && countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            
+            // Clear any stored state related to session
+            if (typeof localStorage !== 'undefined') {
+                localStorage.removeItem('invitationOpened');
+                localStorage.removeItem('musicState');
+                localStorage.removeItem('scrollPosition');
+            }
+            
+            // Double-check scroll position after a short delay
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+            }, 50);
+            
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+            }, 200);
+        }
+        
+        // Reset cover screen to perfect viewport
+        function resetCoverScreenViewport() {
+            const coverScreen = document.querySelector('.cover-screen');
+            if (!coverScreen) return;
+            
+            // Force reset all viewport properties
+            coverScreen.style.position = 'fixed';
+            coverScreen.style.top = '0';
+            coverScreen.style.left = '0';
+            coverScreen.style.right = '0';
+            coverScreen.style.bottom = '0';
+            coverScreen.style.width = '100vw';
+            coverScreen.style.height = '100vh';
+            coverScreen.style.minWidth = '100vw';
+            coverScreen.style.minHeight = '100vh';
+            coverScreen.style.maxWidth = '100vw';
+            coverScreen.style.maxHeight = '100vh';
+            coverScreen.style.margin = '0';
+            coverScreen.style.padding = '0';
+            coverScreen.style.overflow = 'hidden';
+            coverScreen.style.touchAction = 'none';
+            coverScreen.style.userSelect = 'none';
+            coverScreen.style.webkitUserSelect = 'none';
+            
+            // Force viewport height recalculation
+            const updateViewportHeight = () => {
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+                
+                // Apply to cover screen
+                coverScreen.style.height = `${vh * 100}px`;
+                coverScreen.style.minHeight = `${vh * 100}px`;
+                coverScreen.style.maxHeight = `${vh * 100}px`;
+            };
+            
+            updateViewportHeight();
+            
+            // Update on resize and orientation change
+            window.addEventListener('resize', updateViewportHeight);
+            window.addEventListener('orientationchange', updateViewportHeight);
+            
+            // Force refresh after a short delay to ensure proper sizing
+            setTimeout(updateViewportHeight, 100);
+            setTimeout(updateViewportHeight, 500);
+        }
         // Music starts only after the invitation is opened.
 
         // Mobile polish: stabilize first open and keep phone-mode layout comfortable.
@@ -7125,35 +7343,104 @@
                 return result;
             };
 
-            // Copy account number function
-        function copyAccountNumber(bankType = 'mandiri') {
-            const accountId = bankType + '-account';
-            const accountElement = document.getElementById(accountId);
-            const accountNumber = accountElement.textContent;
+            // Copy functions with event listeners - more reliable
+        function initCopyButtons() {
+            // BNI Copy Button
+            const bniBtn = document.getElementById('copy-bni-btn');
+            if (bniBtn) {
+                bniBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    copyAccountNumber('1787542145', 'bni');
+                });
+            }
             
-            // Create temporary input for copying
-            const tempInput = document.createElement('input');
-            tempInput.value = accountNumber;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
+            // Mandiri Copy Button
+            const mandiriBtn = document.getElementById('copy-mandiri-btn');
+            if (mandiriBtn) {
+                mandiriBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    copyAccountNumber('1620004386821', 'mandiri');
+                });
+            }
+        }
+        
+        function copyAccountNumber(accountNumber, bankType) {
+            // Try modern clipboard API first
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(accountNumber).then(() => {
+                    showCopyFeedback(bankType);
+                }).catch(() => {
+                    // Fallback method
+                    copyToClipboardFallback(accountNumber, bankType);
+                });
+            } else {
+                // Direct fallback
+                copyToClipboardFallback(accountNumber, bankType);
+            }
+        }
+        
+        function copyToClipboardFallback(text, bankType) {
+            // Create textarea element
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            textarea.style.left = '-9999px';
+            textarea.style.top = '-9999px';
+            textarea.setAttribute('readonly', '');
             
-            // Show feedback on button
-            const buttons = document.querySelectorAll(`button[onclick="copyAccountNumber('${bankType}')"]`);
-            buttons.forEach(button => {
+            document.body.appendChild(textarea);
+            
+            // Select text
+            textarea.select();
+            textarea.setSelectionRange(0, 99999); // For mobile devices
+            
+            try {
+                const success = document.execCommand('copy');
+                if (success) {
+                    showCopyFeedback(bankType);
+                } else {
+                    // Last resort - prompt
+                    prompt('Salin nomor rekening ini:', text);
+                    showCopyFeedback(bankType);
+                }
+            } catch (err) {
+                // Last resort - prompt
+                prompt('Salin nomor rekening ini:', text);
+                showCopyFeedback(bankType);
+            }
+            
+            document.body.removeChild(textarea);
+        }
+        
+        function showCopyFeedback(bankType) {
+            let button;
+            if (bankType === 'bni') {
+                button = document.getElementById('copy-bni-btn');
+            } else if (bankType === 'mandiri') {
+                button = document.getElementById('copy-mandiri-btn');
+            }
+            
+            if (button) {
                 const originalText = button.textContent;
+                const originalBg = button.style.background;
+                
                 button.textContent = '✅ Tersalin!';
                 button.style.background = '#4CAF50';
                 
                 setTimeout(() => {
                     button.textContent = originalText;
-                    button.style.background = '#0066CC';
+                    button.style.background = originalBg;
                 }, 2000);
-            });
+            }
         }
 
-        document.addEventListener('DOMContentLoaded', initSmartMusicDock);
+        document.addEventListener('DOMContentLoaded', function() {
+            initSmartMusicDock();
+            initCopyButtons();
+        });
         })();
     </script>
 </body>
