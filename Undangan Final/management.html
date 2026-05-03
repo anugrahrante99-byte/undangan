@@ -470,23 +470,7 @@
                 <h2>Pengaturan Admin</h2>
                 <div id="settingsMessage"></div>
                 
-                <div style="margin-bottom: 30px;">
-
-                    <div class="form-group">
-                        <label for="currentPassword">Password Saat Ini</label>
-                        <input type="password" id="currentPassword" placeholder="Masukkan password saat ini">
-                    </div>
-                    <div class="form-group">
-                        <label for="newPassword">Password Baru</label>
-                        <input type="password" id="newPassword" placeholder="Masukkan password baru">
-                    </div>
-                    <div class="form-group">
-                        <label for="confirmPassword">Konfirmasi Password</label>
-                        <input type="password" id="confirmPassword" placeholder="Konfirmasi password baru">
-                    </div>
-
-                </div>
-
+                
                 <div style="margin-bottom: 30px;">
                     <h3> ️ Tools & Maintenance</h3>
                     <div style="display: grid; gap: 15px;">
@@ -519,7 +503,7 @@
     <script>
         // Configuration
         const CONFIG = {
-            ADMIN_PASSWORD: .kawinkawin.,
+            ADMIN_PASSWORD: 'kawinkawin',
             WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbxJXvAz9s_WWOGSopAQIgUsph_dUpNIK21bXyeB3SJalEp2Ea3VwRJvYjUcaCGEuHO3/exec',
             SPREADSHEET_ID: '1gvHiIkStxwhnhLZhK7se-TfQucecSy-9ClZe_gKv8A8',
             SHEETS: {
@@ -1706,53 +1690,7 @@ With love and gratitude in Christ,
             }
         }
 
-        // Settings Functions
-        function changePassword() {
-            console.log('changePassword function called');
-            
-            const currentPassword = document.getElementById('currentPassword').value;
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            console.log('Current password:', currentPassword);
-            console.log('New password:', newPassword);
-            console.log('Expected password:', CONFIG.ADMIN_PASSWORD);
-            
-            if (!currentPassword || !newPassword || !confirmPassword) {
-                showMessage('settingsMessage', 'Semua field harus diisi!', 'error');
-                return;
-            }
-            
-            if (currentPassword !== CONFIG.ADMIN_PASSWORD) {
-                showMessage('settingsMessage', 'Password saat ini salah! Expected: ' + CONFIG.ADMIN_PASSWORD, 'error');
-                return;
-            }
-            
-            if (newPassword !== confirmPassword) {
-                showMessage('settingsMessage', 'Konfirmasi password tidak cocok!', 'error');
-                return;
-            }
-            
-            if (newPassword.length < 4) {
-                showMessage('settingsMessage', 'Password baru minimal 4 karakter!', 'error');
-                return;
-            }
-            
-            // Update password in config
-            CONFIG.ADMIN_PASSWORD = newPassword;
-            
-            // Save to localStorage for persistent login
-            localStorage.setItem('adminPassword', newPassword);
-            
-            // Clear form
-            document.getElementById('currentPassword').value = '';
-            document.getElementById('newPassword').value = '';
-            document.getElementById('confirmPassword').value = '';
-            
-            showMessage('settingsMessage', 'Password berhasil diganti! Password baru: ' + newPassword, 'success');
-            console.log('Password changed successfully to:', newPassword);
-        }
-
+        
         // Utility functions
         function showMessage(elementId, message, type) {
             const element = document.getElementById(elementId);
