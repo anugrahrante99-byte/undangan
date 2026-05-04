@@ -5391,6 +5391,13 @@ With love and gratitude in Christ,
                         if (data.success) {
                             showMessage('photosMessage', `✅ ${file.name} berhasil diupload!`, 'success');
                             loadPhotos(category); // Refresh gallery
+                            
+                            // Store uploaded photo in localStorage for invitation display
+                            if (typeof window !== 'undefined' && window.localStorage) {
+                                const storageKey = `uploaded_${category}_photo`;
+                                localStorage.setItem(storageKey, JSON.stringify(data.fileInfo));
+                                console.log('Photo stored in localStorage:', storageKey);
+                            }
                         } else {
                             showMessage('photosMessage', `❌ Gagal upload ${file.name}: ${data.error}`, 'error');
                         }
