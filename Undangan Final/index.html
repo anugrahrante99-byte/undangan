@@ -4153,7 +4153,7 @@
                 bottom: max(10px, env(safe-area-inset-bottom));
             }
         }
-        /* Phone background optimization - Better mobile fit */
+        /* Phone background optimization - Better mobile fit with scrolling */
         @media (max-width: 559px), (hover: none) and (pointer: coarse) {
             html, body {
                 background: url('background.jpg') center center / cover fixed no-repeat !important;
@@ -4161,23 +4161,28 @@
                 background-position: center !important;
                 background-attachment: fixed !important;
                 background-repeat: no-repeat !important;
-                /* Force proper viewport sizing */
+                /* Allow proper viewport sizing with scrolling */
                 width: 100vw !important;
-                height: 100vh !important;
+                height: auto !important;
                 min-width: 100vw !important;
                 min-height: 100vh !important;
                 max-width: 100vw !important;
-                max-height: 100vh !important;
-                overflow: hidden !important;
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
+                max-height: none !important;
+                overflow-x: hidden !important;
+                overflow-y: auto !important;
+                position: relative !important;
+                top: auto !important;
+                left: auto !important;
+                right: auto !important;
+                bottom: auto !important;
                 /* Prevent zoom on mobile */
                 -webkit-text-size-adjust: 100% !important;
                 -ms-text-size-adjust: 100% !important;
                 text-size-adjust: 100% !important;
+                /* Enable smooth scrolling */
+                -webkit-overflow-scrolling: touch !important;
+                scroll-behavior: smooth !important;
+                overscroll-behavior-y: contain !important;
             }
             
             body::before {
@@ -6567,9 +6572,21 @@
             const coverScreen = document.getElementById('coverScreen');
             const mainContent = document.getElementById('mainContent');
             
-            // Remove scroll lock
+            // Remove scroll lock completely
             document.body.classList.remove('cover-active');
             document.body.style.overflow = 'auto';
+            document.body.style.overflowY = 'auto';
+            document.body.style.overflowX = 'hidden';
+            document.body.style.position = 'relative';
+            document.body.style.height = 'auto';
+            document.body.style.touchAction = 'auto';
+            
+            // Also ensure HTML element allows scrolling
+            document.documentElement.style.overflow = 'auto';
+            document.documentElement.style.overflowY = 'auto';
+            document.documentElement.style.overflowX = 'hidden';
+            document.documentElement.style.position = 'relative';
+            document.documentElement.style.height = 'auto';
             
             // Smooth fade out cover
             coverScreen.style.transition = 'opacity 1s ease, transform 1s ease';
@@ -6581,6 +6598,9 @@
                 coverScreen.style.display = 'none';
                 mainContent.style.opacity = '1';
                 mainContent.style.transform = 'translateY(0)';
+                
+                // Ensure scroll is fully unlocked
+                unlockScrollForMainContent();
                 
                 // Start music if available
                 if (typeof playWithFade === 'function' && playlist.length > 0 && !isPlaying) {
@@ -6661,28 +6681,8 @@
         }
         
         // Unlock scroll for main content
-        function unlockCoverScreen() {
+        function unlockScrollForMainContent() {
             const body = document.body;
-            const html = document.documentElement;
-            body.classList.remove('cover-active');
-            
-            // Force enable scroll with multiple methods
-            body.style.overflowY = 'auto';
-            body.style.overflowX = 'hidden';
-            body.style.position = 'relative';
-            body.style.height = 'auto';
-            body.style.minHeight = 'auto';
-            
-            html.style.overflowY = 'auto';
-            html.style.overflowX = 'hidden';
-            html.style.height = 'auto';
-            
-            // Remove any fixed positioning
-            body.style.removeProperty('top');
-            body.style.removeProperty('left');
-            
-            // CRITICAL: Preserve background settings while unlocking scroll
-            body.style.backgroundAttachment = 'fixed';
             body.style.backgroundSize = 'cover';
             body.style.backgroundPosition = 'center';
             body.style.backgroundRepeat = 'no-repeat';
