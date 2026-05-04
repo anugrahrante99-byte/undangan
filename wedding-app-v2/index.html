@@ -5360,14 +5360,13 @@
             setTimeout(checkAndRetry, retryInterval);
         }
         
-        // Load photos from Google Drive ONLY
+        // Load photos from Google Drive ONLY - USE POST INSTEAD OF GET
         async function loadPhotosFromGoogleDrive(category, elementId) {
             try {
                 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbznRPH4w_9rQSBGog69SPk6LEoAyS5krJ8Wx1t30Pai8opzl8gNNyZoAvUJRC2NgMGqSw/exec';
                 
-                // DEBUG: Log the exact URL being called
-                const fullUrl = `${WEB_APP_URL}?action=getphotourl&type=${category}`;
-                console.log('DEBUG: Loading photo from URL:', fullUrl);
+                // DEBUG: Log the request
+                console.log('DEBUG: Loading photo with POST for category:', category);
                 
                 // Show loading state
                 const element = document.getElementById(elementId);
@@ -5391,7 +5390,16 @@
                     `;
                 }
                 
-                const response = await fetch(fullUrl);
+                // Use POST instead of GET
+                const formData = new FormData();
+                formData.append('action', 'getphotourl');
+                formData.append('type', category);
+                
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                
                 console.log('DEBUG: Response status:', response.status);
                 console.log('DEBUG: Response headers:', response.headers);
                 
