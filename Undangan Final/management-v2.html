@@ -687,14 +687,14 @@
                             
                             // With no-cors, we can't read the response, but we can assume success
                             // and check Google Drive manually
-                            result = { ok: true, data: { url: 'uploaded_successfully' } };
+                            result = { ok: true, data: { url: null } };
                             console.log('Assuming upload success with no-cors');
                         }
                         
                         if (result.ok) {
-                            updatePhotoDisplay(type, result.data.url);
                             showMessage('photosMessage', `✅ Foto ${type === 'groom' ? 'mempelai pria' : 'mempelai wanita'} berhasil diupload!`, 'success');
-                            setTimeout(() => loadAllPhotos(), 1000);
+                            // Load photos after 2 seconds to allow Google Drive to process
+                            setTimeout(() => loadAllPhotos(), 2000);
                         } else {
                             showMessage('photosMessage', `❌ Upload gagal: ${result.error}`, 'error');
                         }
