@@ -860,16 +860,28 @@
 
         // Photo upload functions
         async function handlePhotoUpload(event, type) {
+            console.log('=== PHOTO UPLOAD START ===');
+            console.log('Type:', type);
+            console.log('Event:', event);
+            console.log('Files:', event.target.files);
+            
             const file = event.target.files[0];
-            if (!file) return;
+            if (!file) {
+                console.log('No file selected');
+                return;
+            }
+
+            console.log('File selected:', file.name, file.size, file.type);
 
             // Validate file
             if (!file.type.startsWith('image/')) {
+                console.log('Invalid file type:', file.type);
                 showMessage('photosMessage', 'Harap pilih file gambar!', 'error');
                 return;
             }
 
             if (file.size > 5 * 1024 * 1024) {
+                console.log('File too large:', file.size);
                 showMessage('photosMessage', 'Ukuran file terlalu besar! Max 5MB', 'error');
                 return;
             }
@@ -878,28 +890,53 @@
             showMessage('photosMessage', `📤 Mengupload foto ${type === 'groom' ? 'mempelai pria' : 'mempelai wanita'}...`, 'info');
 
             try {
+                console.log('Creating FormData...');
                 const formData = new FormData();
                 formData.append('action', 'uploadphoto');
                 formData.append('type', type);
                 formData.append('file', file);
+                
+                console.log('Sending request to:', CONFIG.WEB_APP_URL);
+                console.log('FormData entries:');
+                for (let [key, value] of formData.entries()) {
+                    console.log(`  ${key}:`, value instanceof File ? `File(${value.name}, ${value.size} bytes)` : value);
+                }
                 
                 const response = await fetch(CONFIG.WEB_APP_URL, {
                     method: 'POST',
                     body: formData
                 });
                 
-                const result = await response.json();
+                console.log('Response status:', response.status);
+                console.log('Response type:', response.type);
+                console.log('Response headers:', [...response.headers.entries()]);
+                
+                let result;
+                try {
+                    result = await response.json();
+                    console.log('Response JSON:', result);
+                } catch (jsonError) {
+                    console.log('Failed to parse JSON:', jsonError);
+                    console.log('Response text:', await response.text());
+                    result = { ok: false, error: 'Invalid response format' };
+                }
                 
                 if (result.ok) {
+                    console.log('Upload successful!');
                     // Update photo display
                     updatePhotoDisplay(type, result.data.url);
                     showMessage('photosMessage', `✅ Foto ${type === 'groom' ? 'mempelai pria' : 'mempelai wanita'} berhasil diupload!`, 'success');
                 } else {
+                    console.log('Upload failed:', result.error);
                     showMessage('photosMessage', `❌ Upload gagal: ${result.error}`, 'error');
                 }
             } catch (error) {
+                console.log('Upload error:', error);
+                console.log('Error stack:', error.stack);
                 showMessage('photosMessage', `❌ Upload error: ${error.message}`, 'error');
             }
+            
+            console.log('=== PHOTO UPLOAD END ===');
         }
 
         async function handleGalleryUpload(event, category) {
