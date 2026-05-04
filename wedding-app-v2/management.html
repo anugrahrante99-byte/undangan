@@ -479,27 +479,37 @@
             
             showMessage('photosMessage', 'Mengupload foto...', 'info');
             
-            const formData = new FormData();
-            formData.append('action', 'uploadphoto');
-            formData.append('type', type);
-            formData.append('file', file);
-            
-            fetch(CONFIG.WEB_APP_URL, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.ok) {
-                    showMessage('photosMessage', 'Foto berhasil diupload!', 'success');
-                    updatePhotoPreview(type, data.data.url);
-                } else {
-                    showMessage('photosMessage', 'Error: ' + data.error, 'error');
-                }
-            })
-            .catch(error => {
-                showMessage('photosMessage', 'Error: ' + error.message, 'error');
-            });
+            // Convert file to base64
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Data = e.target.result;
+                
+                // Create form data with base64
+                const formData = new FormData();
+                formData.append('action', 'uploadphoto');
+                formData.append('type', type);
+                formData.append('fileData', base64Data);
+                formData.append('fileName', file.name);
+                formData.append('mimeType', file.type);
+                
+                fetch(CONFIG.WEB_APP_URL, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        showMessage('photosMessage', 'Foto berhasil diupload!', 'success');
+                        updatePhotoPreview(type, data.data.url);
+                    } else {
+                        showMessage('photosMessage', 'Error: ' + data.error, 'error');
+                    }
+                })
+                .catch(error => {
+                    showMessage('photosMessage', 'Error: ' + error.message, 'error');
+                });
+            };
+            reader.readAsDataURL(file);
         }
         
         // Update photo preview
