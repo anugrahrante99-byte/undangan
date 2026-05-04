@@ -97,21 +97,30 @@ export default async function handler(req, res) {
         });
       }
 
-      // Create response (simulated upload)
+      // Create response with actual file URL for invitation
       const timestamp = Date.now();
-      const uniqueFileName = `${timestamp}_${fileName}`;
+      
+      // For groom/bride photos, use simple names for invitation compatibility
+      let finalFileName = fileName;
+      if (category === 'groom' && fileName.toLowerCase().includes('pria')) {
+        finalFileName = 'pria.jpg';
+      } else if (category === 'bride' && fileName.toLowerCase().includes('wanita')) {
+        finalFileName = 'wanita.jpg';
+      } else {
+        finalFileName = `${timestamp}_${fileName}`;
+      }
       
       const fileInfo = {
-        id: uniqueFileName,
-        name: uniqueFileName,
+        id: finalFileName,
+        name: finalFileName,
         originalName: fileName,
         size: buffer.length,
-        url: `/photos/${category}/${uniqueFileName}`,
+        url: `${category}/${finalFileName}`,
         category: category,
         uploadedAt: new Date().toISOString()
       };
 
-      console.log('Upload successful:', fileName);
+      console.log('Upload successful:', fileName, 'as:', finalFileName);
       return res.status(200).json({ 
         success: true, 
         fileInfo: fileInfo 
