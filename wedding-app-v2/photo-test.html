@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Upload Test - Step 4</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .btn {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #45a049;
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .progress {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: #4CAF50;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .test-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .test-btn {
+            background: #2196F3;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .test-btn:hover {
+            background: #1976D2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📸 Photo Upload Test - Step 4</h1>
+        
+        <div id="message"></div>
+        
+        <!-- Test Connection Section -->
+        <div class="test-section">
+            <h3>🔧 Test Connection</h3>
+            <button class="test-btn" onclick="testConnection()">Test Web App Connection</button>
+            <button class="test-btn" onclick="testPhotoUploadFunction()">Test Photo Upload Function</button>
+        </div>
+        
+        <!-- Photo Upload Form -->
+        <form id="uploadForm">
+            <div class="form-group">
+                <label for="photoFile">Pilih Foto:</label>
+                <input type="file" id="photoFile" accept="image/*" required>
+            </div>
+            
+            <div class="form-group">
+                <div class="progress">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <p id="progressText">Ready to upload</p>
+            </div>
+            
+            <button type="submit" class="btn" id="uploadBtn">
+                📤 Upload Foto ke Google Drive
+            </button>
+        </form>
+        
+        <!-- Result Section -->
+        <div id="resultSection" style="display: none;">
+            <h3>📊 Upload Result</h3>
+            <div id="resultContent"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Configuration
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbynQc0eX-1VTAjRNUYf3dRNtGmOkzo8ChCyIuDep_o_70DCR7wFa-Kpk_c-8jvRL0tb2g/exec';
+        
+        // Show message
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="message ${type}">${text}</div>`;
+            
+            setTimeout(() => {
+                messageDiv.innerHTML = '';
+            }, 5000);
+        }
+        
+        // Test connection
+        async function testConnection() {
+            showMessage('Testing connection...', 'info');
+            
+            try {
+                const response = await fetch(WEB_APP_URL);
+                const text = await response.text();
+                
+                if (text.includes('Step 2 Ready')) {
+                    showMessage('✅ Connection successful!', 'success');
+                    console.log('Connection test response:', text);
+                } else {
+                    showMessage('❌ Connection failed: ' + text, 'error');
+                }
+            } catch(error) {
+                showMessage('❌ Connection error: ' + error.message, 'error');
+                console.error('Connection test error:', error);
+            }
+        }
+        
+        // Test photo upload function
+        async function testPhotoUploadFunction() {
+            showMessage('Testing photo upload function...', 'info');
+            
+            try {
+                const response = await fetch(WEB_APP_URL + '?action=test');
+                const text = await response.text();
+                
+                if (text.includes('successfully')) {
+                    showMessage('✅ Photo upload function test successful!', 'success');
+                    console.log('Function test response:', text);
+                } else {
+                    showMessage('❌ Function test failed: ' + text, 'error');
+                }
+            } catch(error) {
+                showMessage('❌ Function test error: ' + error.message, 'error');
+                console.error('Function test error:', error);
+            }
+        }
+        
+        // Convert file to base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        // Update progress
+        function updateProgress(percent, text) {
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('progressText').textContent = text;
+        }
+        
+        // Handle form submission
+        async function handleUpload(event) {
+            event.preventDefault();
+            
+            const fileInput = document.getElementById('photoFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showMessage('Please select a file', 'error');
+                return;
+            }
+            
+            if (!file.type.startsWith('image/')) {
+                showMessage('Please select an image file', 'error');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                showMessage('File too large! Max 5MB', 'error');
+                return;
+            }
+            
+            const uploadBtn = document.getElementById('uploadBtn');
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = '⏳ Uploading...';
+            
+            try {
+                updateProgress(10, 'Converting file to base64...');
+                
+                // Convert file to base64
+                const base64Data = await fileToBase64(file);
+                
+                updateProgress(30, 'Preparing upload...');
+                
+                // Create form data
+                const formData = new FormData();
+                formData.append('action', 'uploadphoto');
+                formData.append('fileData', base64Data);
+                formData.append('fileName', file.name);
+                formData.append('mimeType', file.type);
+                
+                updateProgress(50, 'Uploading to Google Drive...');
+                
+                // Upload to Google Drive
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                updateProgress(90, 'Processing response...');
+                
+                const result = await response.text();
+                
+                updateProgress(100, 'Upload complete!');
+                
+                // Show result
+                document.getElementById('resultSection').style.display = 'block';
+                document.getElementById('resultContent').innerHTML = `
+                    <h4>Upload Result:</h4>
+                    <pre>${result}</pre>
+                    <p><strong>File Name:</strong> ${file.name}</p>
+                    <p><strong>File Size:</strong> ${(file.size / 1024).toFixed(2)} KB</p>
+                    <p><strong>File Type:</strong> ${file.type}</p>
+                `;
+                
+                if (result.includes('SUCCESS')) {
+                    showMessage('🎉 Photo uploaded successfully to Google Drive!', 'success');
+                } else {
+                    showMessage('❌ Upload failed: ' + result, 'error');
+                }
+                
+            } catch(error) {
+                showMessage('❌ Upload error: ' + error.message, 'error');
+                console.error('Upload error:', error);
+                updateProgress(0, 'Upload failed');
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = '📤 Upload Foto ke Google Drive';
+                
+                // Reset progress after 3 seconds
+                setTimeout(() => {
+                    updateProgress(0, 'Ready to upload');
+                }, 3000);
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('uploadForm').addEventListener('submit', handleUpload);
+            
+            // Auto-test connection on page load
+            setTimeout(() => {
+                testConnection();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
