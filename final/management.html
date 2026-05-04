@@ -1562,15 +1562,15 @@
 
                 <div style="margin-bottom: 30px;">
 
-                    <h3>�️ Tools & Maintenance</h3>
+                    <h3> ️ Tools & Maintenance</h3>
 
                     <div style="display: grid; gap: 15px;">
 
-                        <button class="btn btn-danger" onclick="clearCache()">�️ Clear Cache & Local Storage</button>
+                        <button class="btn btn-danger" onclick="clearCache()"> ️ Clear Cache & Local Storage</button>
 
-                        <button class="btn btn-primary" onclick="testConnection()">� Test Koneksi Google Sheets</button>
+                        <button class="btn btn-primary" onclick="testConnection()">  Test Koneksi Google Sheets</button>
 
-                        <button class="btn btn-secondary" onclick="exportData()">� Export Data Ucapan</button>
+                        <button class="btn btn-secondary" onclick="exportData()">  Export Data Ucapan</button>
 
                         <button class="btn btn-secondary" onclick="backupData()">💾 Backup Data</button>
 
@@ -1582,7 +1582,7 @@
 
                 <div style="margin-bottom: 30px;">
 
-                    <h3>� Konfigurasi Sistem</h3>
+                    <h3>  Konfigurasi Sistem</h3>
 
                     <div class="form-group">
 
@@ -4410,7 +4410,7 @@ Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan acara
 
 
 
-�‍♀️ *Pdt. Fepprianti S.Th.*
+ ‍♀️ *Pdt. Fepprianti S.Th.*
 
       (Putri dari Bapak Pdt. Yunus Toding & Ibu Pdt. Yuliana Toding)
 
@@ -5371,8 +5371,11 @@ With love and gratitude in Christ,
                     
                     fetch(CONFIG.PHOTO_WEB_APP_URL, {
                         method: 'POST',
+                        mode: 'cors',
+                        cache: 'no-cache',
                         headers: {
                             'Content-Type': 'application/json',
+                            'Accept': 'application/json',
                         },
                         body: JSON.stringify(payload)
                     })
