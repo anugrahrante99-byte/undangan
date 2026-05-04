@@ -659,10 +659,26 @@
                     console.log('Sending JSON payload:', jsonPayload);
                     
                     try {
-                        // Try chunked upload method (GET request with chunks)
+                        // Try direct POST no-cors first (most reliable)
+                        console.log('Trying POST no-cors method...');
+                        
+                        const postResponse = await fetch(CONFIG.WEB_APP_URL, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            body: JSON.stringify(jsonPayload)
+                        });
+                        
+                        console.log('POST no-cors sent');
+                        showMessage('photosMessage', `✅ Foto ${type === 'groom' ? 'mempelai pria' : 'mempelai wanita'} diupload (no-cors)!`, 'success');
+                        setTimeout(() => loadAllPhotos(), 2000);
+                        
+                    } catch (error) {
+                        console.log('POST no-cors failed, trying chunked upload:', error);
+                        
+                        // Fallback to chunked upload method (GET request with chunks)
                         console.log('Trying chunked upload method...');
                         
-                        const chunkSize = 8000; // Optimized chunk size for URL
+                        const chunkSize = 2000; // Safe chunk size for URL
                         const totalChunks = Math.ceil(base64Data.length / chunkSize);
                         
                         console.log(`File size: ${base64Data.length} bytes, Chunks: ${totalChunks}`);
@@ -744,27 +760,13 @@
                                     showMessage('photosMessage', `❌ Upload gagal: ${finalizeResult.error}`, 'error');
                                 }
                             } else {
-                                console.log('Finalize request failed, trying POST no-cors...');
-                                throw new Error('Finalize failed');
+                                console.log('Finalize request failed, upload failed completely');
+                                showMessage('photosMessage', `❌ Upload gagal: finalize failed`, 'error');
                             }
                         } else {
-                            throw new Error('Chunk upload failed');
+                            console.log('Chunked upload failed completely');
+                            showMessage('photosMessage', `❌ Upload gagal: chunked upload failed`, 'error');
                         }
-                        
-                    } catch (error) {
-                        console.log('Chunked upload error:', error);
-                        console.log('Trying POST no-cors fallback...');
-                        
-                        // Fallback to POST no-cors
-                        const postResponse = await fetch(CONFIG.WEB_APP_URL, {
-                            method: 'POST',
-                            mode: 'no-cors',
-                            body: JSON.stringify(jsonPayload)
-                        });
-                        
-                        console.log('POST no-cors sent');
-                        showMessage('photosMessage', `✅ Foto ${type === 'groom' ? 'mempelai pria' : 'mempelai wanita'} diupload (no-cors)!`, 'success');
-                        setTimeout(() => loadAllPhotos(), 2000);
                     }
                 };
                 
