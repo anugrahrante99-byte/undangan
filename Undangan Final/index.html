@@ -5344,14 +5344,10 @@
                 
                 if (!groomLoaded) {
                     loadPhotosFromGoogleDrive('groom', 'groomPhoto');
-                    // Fallback to local if Google Drive fails
-                    setTimeout(() => loadPhotosFromFolderLazy('groom', 'groomPhoto'), 1000);
                 }
                 
                 if (!brideLoaded) {
                     loadPhotosFromGoogleDrive('bride', 'bridePhoto');
-                    // Fallback to local if Google Drive fails
-                    setTimeout(() => loadPhotosFromFolderLazy('bride', 'bridePhoto'), 1000);
                 }
                 
                 // Continue retrying if needed
@@ -5364,38 +5360,80 @@
             setTimeout(checkAndRetry, retryInterval);
         }
         
-        // Load photos from Google Drive
+        // Load photos from Google Drive ONLY
         async function loadPhotosFromGoogleDrive(category, elementId) {
             try {
                 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxJXvAz9s_WWOGSopAQIgUsph_dUpNIK21bXyeB3SJalEp2Ea3VwRJvYjUcaCGEuHO3/exec';
+                
+                // Show loading state
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.innerHTML = `
+                        <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,255,255,0.05)); border-radius: 50%; border: 2px dashed rgba(255,215,0,0.3); position: relative; overflow: hidden;">
+                            <div style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: linear-gradient(45deg, transparent 30%, rgba(255,215,0,0.1) 50%, transparent 70%); animation: shimmer 2s infinite;"></div>
+                            <div style="width: 32px; height: 32px; border: 3px solid rgba(255,215,0,0.2); border-top: 3px solid #FFD700; border-radius: 50%; animation: premiumSpin 1s linear infinite; margin-bottom: 8px; position: relative; z-index: 1;"></div>
+                            <div style="color: rgba(255,215,0,0.8); font-size: 0.7rem; font-weight: 500; position: relative; z-index: 1;">Loading...</div>
+                        </div>
+                        <style>
+                            @keyframes premiumSpin {
+                                0% { transform: rotate(0deg); }
+                                100% { transform: rotate(360deg); }
+                            }
+                            @keyframes shimmer {
+                                0% { transform: translateX(-100%); }
+                                100% { transform: translateX(100%); }
+                            }
+                        </style>
+                    `;
+                }
                 
                 const response = await fetch(`${WEB_APP_URL}?action=getphotourl&type=${category}`);
                 const result = await response.json();
                 
                 if (result.ok && result.data && result.data.url) {
-                    const element = document.getElementById(elementId);
-                    if (element) {
-                        const img = document.createElement('img');
-                        img.src = result.data.url;
-                        img.alt = category === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita';
-                        img.style.cssText = 'width: 100%; height: 100%; object-fit: cover; border-radius: 50%;';
-                        img.onload = function() {
+                    const img = document.createElement('img');
+                    img.src = result.data.url;
+                    img.alt = category === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita';
+                    img.style.cssText = 'width: 100%; height: 100%; object-fit: cover; border-radius: 50%;';
+                    img.onload = function() {
+                        if (element) {
                             element.innerHTML = '';
                             element.appendChild(img);
-                        };
-                        img.onerror = function() {
-                            console.log(`Failed to load ${category} photo from Google Drive, trying fallback...`);
-                            loadPhotosFromFolderLazy(category, elementId);
-                        };
-                    }
+                        }
+                    };
+                    img.onerror = function() {
+                        console.log(`Failed to load ${category} photo from Google Drive`);
+                        // Show error state instead of fallback
+                        if (element) {
+                            element.innerHTML = `
+                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(255,0,0,0.1); border-radius: 50%; border: 2px solid rgba(255,0,0,0.3);">
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 0.6rem; text-align: center; padding: 10px;">No Photo</div>
+                                </div>
+                            `;
+                        }
+                    };
                 } else {
-                    // Fallback to local if Google Drive has no photo
-                    loadPhotosFromFolderLazy(category, elementId);
+                    // Show empty state if no photo in Drive
+                    console.log(`No ${category} photo found in Google Drive`);
+                    if (element) {
+                        element.innerHTML = `
+                            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(255,215,0,0.1); border-radius: 50%; border: 2px solid rgba(255,215,0,0.3);">
+                                <div style="color: rgba(255,215,0,0.8); font-size: 0.6rem; text-align: center; padding: 10px;">No Photo</div>
+                            </div>
+                        `;
+                    }
                 }
             } catch (error) {
                 console.log(`Error loading ${category} photo from Google Drive:`, error);
-                // Fallback to local
-                loadPhotosFromFolderLazy(category, elementId);
+                // Show error state instead of fallback
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.innerHTML = `
+                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(255,0,0,0.1); border-radius: 50%; border: 2px solid rgba(255,0,0,0.3);">
+                            <div style="color: rgba(255,255,255,0.6); font-size: 0.6rem; text-align: center; padding: 10px;">Error</div>
+                        </div>
+                    `;
+                }
             }
         }
 
