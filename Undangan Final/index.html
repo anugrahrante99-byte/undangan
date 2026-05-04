@@ -779,59 +779,29 @@
             scrollbar-color: rgba(255,255,255,0.3) transparent;
         }
         
-        /* Cover Screen - PERFECT VIEWPORT LOCK */
+        /* Cover Screen - Simple and clean */
         .cover-screen {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            max-width: 100vw;
+            max-height: 100vh;
             background: transparent;
-            background-color: transparent;
-            background-image: none;
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 99997;
             transition: opacity 1s ease, transform 1s ease;
-            /* Reset all box model */
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            /* Prevent all scrolling and zooming */
             overflow: hidden;
             touch-action: none;
-            -webkit-touch-callout: none;
             -webkit-user-select: none;
             user-select: none;
-            
-            /* Mobile-specific fixes */
-            @media (max-width: 768px) {
-                width: 100vw !important;
-                height: 100vh !important;
-                min-width: 100vw !important;
-                min-height: 100vh !important;
-                max-width: 100vw !important;
-                max-height: 100vh !important;
-            }
-            /* iOS Safari fixes */
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-            /* Prevent bounce scroll */
-            overscroll-behavior: none;
-            -webkit-overscroll-behavior: none;
-            /* Force viewport dimensions */
-            min-width: 100vw;
-            min-height: 100vh;
-            max-width: 100vw;
-            max-height: 100vh;
-            /* Ensure no scaling on refresh */
-            -webkit-text-size-adjust: 100%;
-            -ms-text-size-adjust: 100%;
-            text-size-adjust: 100%;
-            /* Prevent content shift */
             pointer-events: auto !important;
             image-rendering: -webkit-optimize-contrast;
             image-rendering: crisp-edges;
@@ -3798,19 +3768,11 @@
             min-height: 100svh !important;
             overflow-x: hidden !important;
             color: var(--ink);
-            background: url('background.jpg') center center / cover fixed no-repeat !important;
-            
-            /* Mobile background optimization - background tetap fixed dan tidak zoom */
-            @media (max-width: 768px) {
-                background-attachment: fixed !important;
-                background-size: cover !important;
-                background-position: center !important;
-                background-repeat: no-repeat !important;
-                /* Prevent background zoom on mobile */
-                -webkit-background-size: cover !important;
-                -moz-background-size: cover !important;
-                -o-background-size: cover !important;
-            }
+            background: url('background.jpg') center center / cover fixed no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         body::before {
@@ -4191,17 +4153,44 @@
                 bottom: max(10px, env(safe-area-inset-bottom));
             }
         }
-        /* Phone background optimization - KEEP BACKGROUND IMAGE */
+        /* Phone background optimization - Better mobile fit */
         @media (max-width: 559px), (hover: none) and (pointer: coarse) {
-            body {
+            html, body {
                 background: url('background.jpg') center center / cover fixed no-repeat !important;
                 background-size: cover !important;
                 background-position: center !important;
                 background-attachment: fixed !important;
+                background-repeat: no-repeat !important;
+                /* Force proper viewport sizing */
+                width: 100vw !important;
+                height: 100vh !important;
+                min-width: 100vw !important;
+                min-height: 100vh !important;
+                max-width: 100vw !important;
+                max-height: 100vh !important;
+                overflow: hidden !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                /* Prevent zoom on mobile */
+                -webkit-text-size-adjust: 100% !important;
+                -ms-text-size-adjust: 100% !important;
+                text-size-adjust: 100% !important;
             }
-
+            
             body::before {
                 background: linear-gradient(180deg, rgba(0,0,0,0.20), rgba(255,248,235,0.08) 42%, rgba(0,0,0,0.20)) !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                pointer-events: none !important;
+                z-index: -1 !important;
             }
         }
 /* Laptop/desktop scroll repair */
@@ -5338,9 +5327,9 @@
                 return;
             }
             
-            // Load both photos simultaneously with smart loading
-            loadPhotosFromFolderLazy('groom', 'groomPhoto');
-            loadPhotosFromFolderLazy('bride', 'bridePhoto');
+            // Load from Google Drive first, then fallback to local
+            loadPhotosFromGoogleDrive('groom', 'groomPhoto');
+            loadPhotosFromGoogleDrive('bride', 'bridePhoto');
             
             // Smart fallback system with multiple attempts
             let retryCount = 0;
@@ -5354,11 +5343,15 @@
                 const brideLoaded = brideElement.querySelector('img');
                 
                 if (!groomLoaded) {
-                    loadPhotosFromFolderLazy('groom', 'groomPhoto');
+                    loadPhotosFromGoogleDrive('groom', 'groomPhoto');
+                    // Fallback to local if Google Drive fails
+                    setTimeout(() => loadPhotosFromFolderLazy('groom', 'groomPhoto'), 1000);
                 }
                 
                 if (!brideLoaded) {
-                    loadPhotosFromFolderLazy('bride', 'bridePhoto');
+                    loadPhotosFromGoogleDrive('bride', 'bridePhoto');
+                    // Fallback to local if Google Drive fails
+                    setTimeout(() => loadPhotosFromFolderLazy('bride', 'bridePhoto'), 1000);
                 }
                 
                 // Continue retrying if needed
@@ -5371,10 +5364,98 @@
             setTimeout(checkAndRetry, retryInterval);
         }
         
+        // Load photos from Google Drive
+        async function loadPhotosFromGoogleDrive(category, elementId) {
+            try {
+                const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxJXvAz9s_WWOGSopAQIgUsph_dUpNIK21bXyeB3SJalEp2Ea3VwRJvYjUcaCGEuHO3/exec';
+                
+                const response = await fetch(`${WEB_APP_URL}?action=getphotourl&type=${category}`);
+                const result = await response.json();
+                
+                if (result.ok && result.data && result.data.url) {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        const img = document.createElement('img');
+                        img.src = result.data.url;
+                        img.alt = category === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita';
+                        img.style.cssText = 'width: 100%; height: 100%; object-fit: cover; border-radius: 50%;';
+                        img.onload = function() {
+                            element.innerHTML = '';
+                            element.appendChild(img);
+                        };
+                        img.onerror = function() {
+                            console.log(`Failed to load ${category} photo from Google Drive, trying fallback...`);
+                            loadPhotosFromFolderLazy(category, elementId);
+                        };
+                    }
+                } else {
+                    // Fallback to local if Google Drive has no photo
+                    loadPhotosFromFolderLazy(category, elementId);
+                }
+            } catch (error) {
+                console.log(`Error loading ${category} photo from Google Drive:`, error);
+                // Fallback to local
+                loadPhotosFromFolderLazy(category, elementId);
+            }
+        }
+
+        // Load gallery photos from Google Drive
+        async function loadGalleryPhotosFromGoogleDrive() {
+            try {
+                const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxJXvAz9s_WWOGSopAQIgUsph_dUpNIK21bXyeB3SJalEp2Ea3VwRJvYjUcaCGEuHO3/exec';
+                const categories = ['engagement', 'prewedding', 'together', 'moments'];
+                
+                for (const category of categories) {
+                    try {
+                        const response = await fetch(`${WEB_APP_URL}?action=listphotos&type=${category}`);
+                        const result = await response.json();
+                        
+                        if (result.ok && result.data && result.data.photos && result.data.photos.length > 0) {
+                            updateGalleryDisplay(category, result.data.photos);
+                        }
+                    } catch (error) {
+                        console.log(`Error loading ${category} gallery:`, error);
+                    }
+                }
+            } catch (error) {
+                console.log('Error loading gallery photos from Google Drive:', error);
+            }
+        }
+
+        // Update gallery display
+        function updateGalleryDisplay(category, photos) {
+            const galleryElements = {
+                'engagement': 'engagementGallery',
+                'prewedding': 'preweddingGallery', 
+                'together': 'togetherGallery',
+                'moments': 'momentsGallery'
+            };
+            
+            const galleryId = galleryElements[category];
+            if (!galleryId) return;
+            
+            const galleryElement = document.getElementById(galleryId);
+            if (!galleryElement) return;
+            
+            // Clear existing photos
+            galleryElement.innerHTML = '';
+            
+            // Add photos from Google Drive
+            photos.forEach(photo => {
+                const photoItem = document.createElement('div');
+                photoItem.className = 'mini-gallery-item';
+                photoItem.innerHTML = `
+                    <img src="${photo.url}" alt="${photo.name}" onclick="openGalleryModal('${photo.url}', '${category}')">
+                `;
+                galleryElement.appendChild(photoItem);
+            });
+        }
+
         // Auto-load photos when page becomes visible
         function setupAutoPhotoLoading() {
             // Load photos immediately
             loadCouplePhotos();
+            loadGalleryPhotosFromGoogleDrive();
             
             // Set up Intersection Observer for auto-loading when scrolled into view
             const observerOptions = {
@@ -5490,7 +5571,7 @@
                 </style>
             `;
             
-            // Smart photo detection with multiple fallback options
+            // Smart photo detection with multiple fallback options - Use correct folders
             const photoOptions = [
                 `${folderName}/pria.jpg`, // Primary for groom
                 `${folderName}/wanita.jpg`, // Primary for bride
@@ -6090,6 +6171,11 @@
                 }
             });
         }
+        
+        // Play with fade function for compatibility
+        function playWithFade() {
+            autoStartMusic();
+        }
 
         // Initialize music player
         function initSimpleMusic() {
@@ -6407,79 +6493,33 @@
             }, 1000);
         }
         
-        // Open invitation function - simplified without time lock
+        // Open invitation function - simple and clean
         function openInvitation() {
             const coverScreen = document.getElementById('coverScreen');
             const mainContent = document.getElementById('mainContent');
-            
-            // Reset cover screen viewport before opening
-            resetCoverScreenViewport();
-            
-            // Unlock scroll using the new system
-            unlockCoverScreen();
-            
-            // Additional scroll unlock for safety
-            setTimeout(() => {
-                ensureScrollEnabled();
-            }, 100);
             
             // Hide cover screen with animation
             coverScreen.style.opacity = '0';
             coverScreen.style.transform = 'scale(0.8)';
             coverScreen.style.pointerEvents = 'none';
             
-            // Show main content from top
+            // Show main content
             mainContent.style.opacity = '1';
             mainContent.style.transform = 'translateY(0)';
-            mainContent.style.height = 'auto';
             mainContent.style.pointerEvents = 'auto';
             mainContent.style.visibility = 'visible';
             
             // Set invitation as opened
             invitationOpened = true;
             
-            // CRITICAL: Force background to stay fixed and prevent zoom - ENHANCED
-            setTimeout(() => {
-                enforceBackgroundFixed();
-                stabilizeBackgroundTransition();
-            }, 200);
-            
-            // Start countdown timer when invitation is opened
+            // Start countdown timer
             setTimeout(() => {
                 startCountdown();
             }, 500);
             
-            // CONTINUOUS enforcement to prevent zoom
-            const backgroundGuardInterval = setInterval(() => {
-                enforceBackgroundFixed();
-            }, 1000);
-            
-            // Stop enforcement after 10 seconds
-            setTimeout(() => {
-                clearInterval(backgroundGuardInterval);
-            }, 10000);
-            
-            // Auto-start music with smooth fade-in
-            setTimeout(() => {
-                autoStartMusic();
-            }, 800); // Start music after 800ms for smooth transition
-            
-            // Prevent auto-scroll on mobile
-            setTimeout(() => {
-                window.scrollTo(0, 0);
-                document.documentElement.scrollTop = 0;
-                document.body.scrollTop = 0;
-            }, 100);
-            
-            // Initialize scroll animations after opening
-            setTimeout(() => {
-                initializeElegantScroll();
-                initializeContentAnimations();
-            }, 500);
-            
             // Start music if available
             setTimeout(() => {
-                if (playlist.length > 0 && !isPlaying) {
+                if (typeof playWithFade === 'function' && playlist.length > 0 && !isPlaying) {
                     playWithFade();
                 }
             }, 1000);
@@ -6956,136 +6996,11 @@
             location.reload();
         }
 
-        // Add scroll-reveal classes to important elements
-        function addScrollRevealClasses() {
-            // console.log('Adding scroll-reveal classes to elements...');
-            
-            // Hero section elements
-            const heroTitle = document.querySelector('.cover-title');
-            if (heroTitle) heroTitle.classList.add('scroll-reveal');
-            
-            const heroSubtitle = document.querySelector('.cover-subtitle');
-            if (heroSubtitle) heroSubtitle.classList.add('scroll-reveal');
-            
-            const heroDate = document.querySelector('.cover-date');
-            if (heroDate) heroDate.classList.add('scroll-reveal');
-            
-            const openButton = document.querySelector('.open-button');
-            if (openButton) openButton.classList.add('scroll-reveal-scale');
-            
-            // Couple section
-            const coupleSection = document.querySelector('#couple');
-            if (coupleSection) {
-                const groomPhoto = coupleSection.querySelector('.groom-photo');
-                if (groomPhoto) groomPhoto.classList.add('scroll-reveal-left');
-                
-                const bridePhoto = coupleSection.querySelector('.bride-photo');
-                if (bridePhoto) bridePhoto.classList.add('scroll-reveal-right');
-                
-                const groomInfo = coupleSection.querySelector('.groom-info');
-                if (groomInfo) groomInfo.classList.add('scroll-reveal-left');
-                
-                const brideInfo = coupleSection.querySelector('.bride-info');
-                if (brideInfo) brideInfo.classList.add('scroll-reveal-right');
-            }
-            
-            // Event section
-            const eventSection = document.querySelector('#events');
-            if (eventSection) {
-                const eventCards = eventSection.querySelectorAll('.event-card');
-                eventCards.forEach((card, index) => {
-                    card.classList.add('scroll-reveal');
-                    card.dataset.delay = index * 100;
-                });
-            }
-            
-            // Gallery section
-            const gallerySection = document.querySelector('#gallery');
-            if (gallerySection) {
-                const galleryItems = gallerySection.querySelectorAll('.gallery-item');
-                galleryItems.forEach((item, index) => {
-                    item.classList.add('scroll-reveal-scale');
-                    item.dataset.delay = index * 50;
-                });
-            }
-            
-            // Wishes section
-            const wishesSection = document.querySelector('#wishes');
-            if (wishesSection) {
-                const wishForm = wishesSection.querySelector('.wish-form');
-                if (wishForm) wishForm.classList.add('scroll-reveal');
-                
-                const wishItems = wishesSection.querySelectorAll('.wish-item');
-                wishItems.forEach((item, index) => {
-                    item.classList.add('scroll-reveal');
-                    item.dataset.delay = index * 100;
-                });
-            }
-            
-            // Account section
-            const accountSection = document.querySelector('#account');
-            if (accountSection) {
-                const accountCard = accountSection.querySelector('.account-card');
-                if (accountCard) accountCard.classList.add('scroll-reveal-scale');
-            }
-            
-            // console.log('Scroll-reveal classes added successfully');
-        }
+        // Initialize music player
+        initSimpleMusic();
         
-        // Initialize everything when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if this is a refresh (not first load)
-            const isRefresh = performance.navigation && performance.navigation.type === 1 || 
-                            performance.getEntriesByType && performance.getEntriesByType('navigation').length > 0 && 
-                            performance.getEntriesByType('navigation')[0].type === 'reload';
-            
-            // Only force return to cover on refresh, not on first load
-            if (isRefresh) {
-                forceReturnToCover();
-            } else {
-                // For first load, ensure main content is ready but hidden
-                const mainContent = document.getElementById('mainContent');
-                if (mainContent) {
-                    mainContent.style.opacity = '0';
-                    mainContent.style.transform = 'translateY(50px)';
-                    mainContent.style.pointerEvents = 'none';
-                    mainContent.style.visibility = 'hidden';
-                }
-            }
-            
-            // Reset cover screen to perfect viewport on load
-            resetCoverScreenViewport();
-            
-            // Stabilize background immediately on load
-            setTimeout(() => {
-                stabilizeBackgroundTransition();
-            }, 100);
-            
-            // Set guest name from URL parameter
-            const guestName = getGuestName();
-            const guestNameDisplay = document.getElementById('guestNameDisplay');
-            if (guestNameDisplay) {
-                guestNameDisplay.textContent = guestName;
-            }
-            
-            // Initialize photo detection and smart loading system
-            initializePhotoDetection().then(() => {
-                // Start smart auto-loading system
-                setupAutoPhotoLoading();
-                
-                // Start photo watcher for auto-refresh
-                setupPhotoWatcher();
-            });
-            
-            // Initialize music player
-            initSimpleMusic();
-            
-            // Initialize ultra-simple scroll animations
-            simpleScrollAnimation.init();
-            
-            // Initialize countdown timer
-            startCountdown();
-        });
+        // Initialize countdown timer
+        startCountdown();
         
         // Force return to cover screen on refresh
         function forceReturnToCover() {
@@ -7162,7 +7077,7 @@
             }, 200);
         }
         
-        // Reset cover screen to perfect viewport
+        // Reset cover screen to perfect viewport - ENHANCED FOR MOBILE
         function resetCoverScreenViewport() {
             const coverScreen = document.querySelector('.cover-screen');
             if (!coverScreen) return;
@@ -7217,6 +7132,95 @@
             // Force refresh after a short delay to ensure proper sizing
             setTimeout(updateViewportHeight, 100);
             setTimeout(updateViewportHeight, 500);
+        }
+        
+        // AGGRESSIVE MOBILE BACKGROUND FIX
+        function fixMobileBackgroundZoom() {
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isAndroid = /Android/.test(navigator.userAgent);
+            
+            if (!isMobile) return;
+            
+            const body = document.body;
+            const html = document.documentElement;
+            
+            // Force background settings for mobile
+            const mobileBackgroundFix = `
+                background: url('background.jpg') center center / cover fixed no-repeat !important;
+                background-size: cover !important;
+                background-position: center !important;
+                background-attachment: fixed !important;
+                background-repeat: no-repeat !important;
+                -webkit-background-size: cover !important;
+                -moz-background-size: cover !important;
+                -o-background-size: cover !important;
+                -webkit-background-repeat: no-repeat !important;
+                -moz-background-repeat: no-repeat !important;
+                -o-background-repeat: no-repeat !important;
+                -webkit-text-size-adjust: 100% !important;
+                -ms-text-size-adjust: 100% !important;
+                text-size-adjust: 100% !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                min-width: 100vw !important;
+                min-height: 100vh !important;
+                max-width: 100vw !important;
+                max-height: 100vh !important;
+                overflow: hidden !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                -webkit-transform: translateZ(0) !important;
+                transform: translateZ(0) !important;
+                -webkit-backface-visibility: hidden !important;
+                backface-visibility: hidden !important;
+                -webkit-perspective: 1000px !important;
+                perspective: 1000px !important;
+                -webkit-font-smoothing: antialiased !important;
+                -moz-osx-font-smoothing: grayscale !important;
+                font-smoothing: antialiased !important;
+            `;
+            
+            // Apply to both html and body
+            body.style.cssText += mobileBackgroundFix;
+            html.style.cssText += mobileBackgroundFix;
+            
+            // iOS specific fixes
+            if (isIOS) {
+                const iosFix = `
+                    -webkit-transform: translate3d(0,0,0) !important;
+                    transform: translate3d(0,0,0) !important;
+                    -webkit-backface-visibility: hidden !important;
+                    backface-visibility: hidden !important;
+                    -webkit-perspective: 1000px !important;
+                    perspective: 1000px !important;
+                    -webkit-font-smoothing: antialiased !important;
+                    -moz-osx-font-smoothing: grayscale !important;
+                `;
+                body.style.cssText += iosFix;
+                html.style.cssText += iosFix;
+            }
+            
+            // Android specific fixes
+            if (isAndroid) {
+                const androidFix = `
+                    -webkit-transform: translateZ(0) !important;
+                    transform: translateZ(0) !important;
+                    -webkit-backface-visibility: hidden !important;
+                    backface-visibility: hidden !important;
+                    -webkit-perspective: 1000px !important;
+                    perspective: 1000px !important;
+                `;
+                body.style.cssText += androidFix;
+                html.style.cssText += androidFix;
+            }
+            
+            // Force repaint
+            body.offsetHeight;
+            html.offsetHeight;
         }
         // Music starts only after the invitation is opened.
 
@@ -7445,8 +7449,134 @@
         document.addEventListener('DOMContentLoaded', function() {
             initSmartMusicDock();
             initCopyButtons();
+            
+            // Fix mobile background
+            fixMobileBackground();
+            
+            // Fix cover screen full viewport
+            fixCoverScreen();
+            
+            // Initialize music autoplay with fallback
+            initMusicAutoplay();
+            
+            // Load couple photos
+            if (typeof loadCouplePhotos === 'function') {
+                loadCouplePhotos();
+            }
         });
+        
+        // Fix mobile background function
+        function fixMobileBackground() {
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                const body = document.body;
+                const html = document.documentElement;
+                
+                // Force background settings for mobile
+                const mobileFix = `
+                    background: url('background.jpg') center center / cover fixed no-repeat !important;
+                    background-size: cover !important;
+                    background-position: center !important;
+                    background-attachment: fixed !important;
+                    background-repeat: no-repeat !important;
+                    width: 100vw !important;
+                    height: 100vh !important;
+                    min-width: 100vw !important;
+                    min-height: 100vh !important;
+                    max-width: 100vw !important;
+                    max-height: 100vh !important;
+                    overflow: hidden !important;
+                    position: fixed !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    right: 0 !important;
+                    bottom: 0 !important;
+                    -webkit-text-size-adjust: 100% !important;
+                    -ms-text-size-adjust: 100% !important;
+                    text-size-adjust: 100% !important;
+                `;
+                
+                // Apply to both html and body
+                body.style.cssText += mobileFix;
+                html.style.cssText += mobileFix;
+                
+                // Force repaint
+                body.offsetHeight;
+                html.offsetHeight;
+            }
+        }
+        
+        // Fix cover screen full viewport
+        function fixCoverScreen() {
+            const coverScreen = document.querySelector('.cover-screen');
+            if (!coverScreen) return;
+            
+            // Get actual viewport dimensions
+            const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+            const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+            
+            // Force full viewport
+            coverScreen.style.width = `${viewportWidth}px`;
+            coverScreen.style.height = `${viewportHeight}px`;
+            coverScreen.style.minWidth = `${viewportWidth}px`;
+            coverScreen.style.minHeight = `${viewportHeight}px`;
+            coverScreen.style.maxWidth = `${viewportWidth}px`;
+            coverScreen.style.maxHeight = `${viewportHeight}px`;
+            coverScreen.style.position = 'fixed';
+            coverScreen.style.top = '0';
+            coverScreen.style.left = '0';
+            coverScreen.style.right = '0';
+            coverScreen.style.bottom = '0';
+            
+            // Force repaint
+            coverScreen.offsetHeight;
+        }
+        
+        // Enhanced music autoplay with user interaction fallback
+        function initMusicAutoplay() {
+            // Try to autoplay immediately
+            setTimeout(() => {
+                if (typeof autoStartMusic === 'function') {
+                    autoStartMusic();
+                }
+            }, 1000);
+            
+            // Fallback: Try on first user interaction
+            const firstInteraction = () => {
+                if (typeof autoStartMusic === 'function' && !isSimpleMusicPlaying) {
+                    autoStartMusic();
+                    // Remove event listeners after first interaction
+                    document.removeEventListener('click', firstInteraction);
+                    document.removeEventListener('touchstart', firstInteraction);
+                    document.removeEventListener('keydown', firstInteraction);
+                }
+            };
+            
+            // Add event listeners for user interaction fallback
+            document.addEventListener('click', firstInteraction, { once: true });
+            document.addEventListener('touchstart', firstInteraction, { once: true });
+            document.addEventListener('keydown', firstInteraction, { once: true });
+        }
         })();
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
