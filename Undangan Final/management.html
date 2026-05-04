@@ -902,6 +902,23 @@
                     console.log(`  ${key}:`, value instanceof File ? `File(${value.name}, ${value.size} bytes)` : value);
                 }
                 
+                // Test connection first
+                console.log('Testing connection...');
+                try {
+                    const testResponse = await fetch(`${CONFIG.WEB_APP_URL}?action=testconnection`);
+                    const testResult = await testResponse.json();
+                    console.log('Connection test result:', testResult);
+                    
+                    if (!testResult.ok) {
+                        showMessage('photosMessage', `❌ Connection test failed: ${testResult.error}`, 'error');
+                        return;
+                    }
+                } catch (testError) {
+                    console.log('Connection test error:', testError);
+                    showMessage('photosMessage', `❌ Cannot connect to server. Check Web App URL in settings.`, 'error');
+                    return;
+                }
+                
                 const response = await fetch(CONFIG.WEB_APP_URL, {
                     method: 'POST',
                     body: formData
@@ -926,6 +943,9 @@
                     // Update photo display
                     updatePhotoDisplay(type, result.data.url);
                     showMessage('photosMessage', `✅ Foto ${type === 'groom' ? 'mempelai pria' : 'mempelai wanita'} berhasil diupload!`, 'success');
+                    
+                    // Refresh photos after upload
+                    setTimeout(() => loadAllPhotos(), 1000);
                 } else {
                     console.log('Upload failed:', result.error);
                     showMessage('photosMessage', `❌ Upload gagal: ${result.error}`, 'error');
