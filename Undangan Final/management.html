@@ -896,6 +896,57 @@
                 formData.append('type', type);
                 formData.append('file', file);
                 
+                // Debug FormData contents
+                console.log('FormData debug:');
+                for (let [key, value] of formData.entries()) {
+                    console.log(`Key: ${key}, Value:`, value);
+                }
+                
+                // Alternative: Try base64 encoding
+                console.log('Trying base64 approach...');
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    const base64Data = e.target.result.split(',')[1];
+                    
+                    const jsonPayload = {
+                        action: 'uploadphoto',
+                        type: type,
+                        fileData: base64Data,
+                        fileName: file.name,
+                        mimeType: file.type
+                    };
+                    
+                    console.log('Sending JSON payload:', jsonPayload);
+                    
+                    try {
+                        const response = await fetch(CONFIG.WEB_APP_URL, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(jsonPayload)
+                        });
+                        
+                        console.log('JSON Response status:', response.status);
+                        const result = await response.json();
+                        console.log('JSON Response:', result);
+                        
+                        if (result.ok) {
+                            updatePhotoDisplay(type, result.data.url);
+                            showMessage('photosMessage', `✅ Foto ${type === 'groom' ? 'mempelai pria' : 'mempelai wanita'} berhasil diupload!`, 'success');
+                            setTimeout(() => loadAllPhotos(), 1000);
+                        } else {
+                            showMessage('photosMessage', `❌ Upload gagal: ${result.error}`, 'error');
+                        }
+                    } catch (error) {
+                        console.log('JSON Upload error:', error);
+                        showMessage('photosMessage', `❌ JSON Upload error: ${error.message}`, 'error');
+                    }
+                };
+                
+                reader.readAsDataURL(file);
+                return; // Skip FormData approach
+                
                 console.log('Sending request to:', CONFIG.WEB_APP_URL);
                 console.log('FormData entries:');
                 for (let [key, value] of formData.entries()) {
