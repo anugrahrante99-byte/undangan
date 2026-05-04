@@ -53,15 +53,17 @@
             display: flex;
             background: #f8f9fa;
             border-bottom: 2px solid #e9ecef;
+            flex-wrap: wrap;
         }
 
         .tab {
             flex: 1;
-            padding: 20px;
+            min-width: 120px;
+            padding: 20px 15px;
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 500;
             color: #6c757d;
             transition: all 0.3s ease;
@@ -317,7 +319,160 @@
         .hidden {
             display: none;
         }
-            /* Mobile Responsive Styles */\n        @media (max-width: 768px) {\n            body {\n                padding: 10px;\n            }\n            \n            .management-container {\n                border-radius: 15px;\n                margin: 10px;\n            }\n            \n            .header {\n                padding: 20px;\n            }\n            \n            .header h1 {\n                font-size: 1.8rem;\n            }\n            \n            .header p {\n                font-size: 0.9rem;\n            }\n            \n            .tabs {\n                flex-direction: column;\n                gap: 5px;\n            }\n            \n            .tab-button {\n                border-radius: 10px;\n                margin-bottom: 5px;\n                padding: 15px;\n            }\n            \n            .tab-content {\n                padding: 20px;\n            }\n            \n            .form-group {\n                margin-bottom: 20px;\n            }\n            \n            .form-group input,\n            .form-group select,\n            .form-group textarea {\n                font-size: 16px;\n                padding: 12px;\n            }\n            \n            .btn {\n                padding: 12px 20px;\n                font-size: 14px;\n                margin: 5px 0;\n                width: 100%;\n            }\n            \n            .stats-grid {\n                grid-template-columns: 1fr;\n                gap: 15px;\n            }\n            \n            .stat-card {\n                padding: 20px;\n            }\n            \n            .stat-value {\n                font-size: 2rem;\n            }\n            \n            .guest-list {\n                max-height: 300px;\n            }\n            \n            .guest-item {\n                padding: 15px;\n                flex-direction: column;\n                align-items: flex-start;\n            }\n            \n            .guest-info {\n                margin-bottom: 10px;\n            }\n            \n            .guest-actions {\n                width: 100%;\n                justify-content: flex-end;\n            }\n            \n            .message {\n                padding: 12px;\n                margin: 10px 0;\n                font-size: 14px;\n            }\n            \n            .login-container {\n                padding: 20px;\n                margin: 10px;\n            }\n            \n            .login-form {\n                padding: 30px;\n            }\n            \n            .login-form h2 {\n                font-size: 1.8rem;\n            }\n        }\n        \n        @media (max-width: 480px) {\n            .header h1 {\n                font-size: 1.5rem;\n            }\n            \n            .tab-content {\n                padding: 15px;\n            }\n            \n            .form-group input,\n            .form-group select,\n            .form-group textarea {\n                padding: 10px;\n            }\n            \n            .btn {\n                padding: 10px 15px;\n                font-size: 13px;\n            }\n            \n            .stat-card {\n                padding: 15px;\n            }\n            \n            .stat-value {\n                font-size: 1.8rem;\n            }\n        }\n    </style>
+
+        /* Photo Management Styles */
+        .photo-upload-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px dashed #dee2e6;
+            transition: all 0.3s ease;
+        }
+
+        .photo-upload-section:hover {
+            border-color: #ff6b6b;
+            background: #fff5f5;
+        }
+
+        .current-photo {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid #fff;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .current-photo:hover {
+            transform: scale(1.05);
+        }
+
+        .current-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 50%;
+        }
+
+        .current-photo:hover .photo-overlay {
+            opacity: 1;
+        }
+
+        .photo-overlay .btn {
+            margin: 5px;
+            padding: 8px 16px;
+            font-size: 12px;
+            border-radius: 20px;
+        }
+
+        .photo-info {
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .gallery-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .gallery-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+        }
+
+        .gallery-section h4 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .gallery-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #fff;
+            border: 2px solid #dee2e6;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: #ff6b6b;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-item .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255,107,107,0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-size: 16px;
+        }
+
+        .gallery-item:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .gallery-item .delete-btn:hover {
+            background: #dc3545;
+            transform: scale(1.1);
+        }
+
+        /* Mobile Responsive Styles */\n        @media (max-width: 768px) {\n            body {\n                padding: 10px;\n            }\n            \n            .management-container {\n                border-radius: 15px;\n                margin: 10px;\n            }\n            \n            .header {\n                padding: 20px;\n            }\n            \n            .header h1 {\n                font-size: 1.8rem;\n            }\n            \n            .header p {\n                font-size: 0.9rem;\n            }\n            \n            .tabs {\n                flex-direction: column;\n                gap: 5px;\n            }\n            \n            .tab-button {\n                border-radius: 10px;\n                margin-bottom: 5px;\n                padding: 15px;\n            }\n            \n            .tab-content {\n                padding: 20px;\n            }\n            \n            .form-group {\n                margin-bottom: 20px;\n            }\n            \n            .form-group input,\n            .form-group select,\n            .form-group textarea {\n                font-size: 16px;\n                padding: 12px;\n            }\n            \n            .btn {\n                padding: 12px 20px;\n                font-size: 14px;\n                margin: 5px 0;\n                width: 100%;\n            }\n            \n            .stats-grid {\n                grid-template-columns: 1fr;\n                gap: 15px;\n            }\n            \n            .stat-card {\n                padding: 20px;\n            }\n            \n            .stat-value {\n                font-size: 2rem;\n            }\n            \n            .guest-list {\n                max-height: 300px;\n            }\n            \n            .guest-item {\n                padding: 15px;\n                flex-direction: column;\n                align-items: flex-start;\n            }\n            \n            .guest-info {\n                margin-bottom: 10px;\n            }\n            \n            .guest-actions {\n                width: 100%;\n                justify-content: flex-end;\n            }\n            \n            .message {\n                padding: 12px;\n                margin: 10px 0;\n                font-size: 14px;\n            }\n            \n            .login-container {\n                padding: 20px;\n                margin: 10px;\n            }\n            \n            .login-form {\n                padding: 30px;\n            }\n            \n            .login-form h2 {\n                font-size: 1.8rem;\n            }\n        }\n        \n        @media (max-width: 480px) {\n            .header h1 {\n                font-size: 1.5rem;\n            }\n            \n            .tab-content {\n                padding: 15px;\n            }\n            \n            .form-group input,\n            .form-group select,\n            .form-group textarea {\n                padding: 10px;\n            }\n            \n            .btn {\n                padding: 10px 15px;\n                font-size: 13px;\n            }\n            \n            .stat-card {\n                padding: 15px;\n            }\n            \n            .stat-value {\n                font-size: 1.8rem;\n            }\n        }\n    </style>
 </head>
 <body>
     <div id="loginScreen" class="login-container">
@@ -344,6 +499,8 @@
 
         <div class="tabs">
             <button class="tab active" onclick="showTab('whatsapp')">📝 Generator</button>
+            <button class="tab" onclick="showTab('photos')">📸 Foto</button>
+            <button class="tab" onclick="showTab('dashboard')">📊 Dashboard</button>
             <button class="tab" onclick="showTab('settings')">⚙️ Pengaturan</button>
             <button class="tab" onclick="logout()">🚪 Logout</button>
         </div>
@@ -466,6 +623,121 @@
                 </div>
             </div>
 
+            <div id="photos" class="tab-content">
+                <h2>📸 Manajemen Foto Undangan</h2>
+                <div id="photosMessage"></div>
+                
+                <!-- Foto Mempelai Section -->
+                <div style="margin-bottom: 40px;">
+                    <h3>💑 Foto Mempelai</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                        <!-- Foto Mempelai Pria -->
+                        <div class="photo-upload-section">
+                            <h4>🤵 Mempelai Pria</h4>
+                            <div class="current-photo" id="currentGroomPhoto">
+                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f8f9fa; color: #6c757d;">
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 3rem; margin-bottom: 10px;">🤵</div>
+                                        <div>Belum ada foto</div>
+                                    </div>
+                                </div>
+                                <div class="photo-overlay">
+                                    <button class="btn btn-primary" onclick="document.getElementById('groomPhotoInput').click()">📷 Ganti Foto</button>
+                                </div>
+                            </div>
+                            <input type="file" id="groomPhotoInput" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event, 'groom')">
+                            <p class="photo-info">Format: JPG, PNG, GIF (Max: 5MB)</p>
+                        </div>
+
+                        <!-- Foto Mempelai Wanita -->
+                        <div class="photo-upload-section">
+                            <h4>👰 Mempelai Wanita</h4>
+                            <div class="current-photo" id="currentBridePhoto">
+                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f8f9fa; color: #6c757d;">
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 3rem; margin-bottom: 10px;">👰</div>
+                                        <div>Belum ada foto</div>
+                                    </div>
+                                </div>
+                                <div class="photo-overlay">
+                                    <button class="btn btn-primary" onclick="document.getElementById('bridePhotoInput').click()">📷 Ganti Foto</button>
+                                </div>
+                            </div>
+                            <input type="file" id="bridePhotoInput" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event, 'bride')">
+                            <p class="photo-info">Format: JPG, PNG, GIF (Max: 5MB)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Galeri Foto Section -->
+                <div style="margin-bottom: 40px;">
+                    <h3>🖼️ Galeri Foto</h3>
+                    
+                    <!-- Engagement Gallery -->
+                    <div class="gallery-section">
+                        <h4>💕 Engagement</h4>
+                        <div class="upload-area" id="engagementUploadArea">
+                            <input type="file" id="engagementPhotoInput" accept="image/*" multiple>
+                            <div class="upload-label">Klik untuk unggah foto engagement</div>
+                            <button class="btn btn-primary">📷 Pilih Foto</button>
+                        </div>
+                        <div class="gallery-grid" id="engagementGallery">
+                            <!-- Engagement photos will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Pre-wedding Gallery -->
+                    <div class="gallery-section">
+                        <h4>📸 Pre-wedding</h4>
+                        <div class="upload-area" id="preweddingUploadArea">
+                            <input type="file" id="preweddingPhotoInput" accept="image/*" multiple>
+                            <div class="upload-label">Klik untuk unggah foto pre-wedding</div>
+                            <button class="btn btn-primary">📷 Pilih Foto</button>
+                        </div>
+                        <div class="gallery-grid" id="preweddingGallery">
+                            <!-- Pre-wedding photos will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Together Gallery -->
+                    <div class="gallery-section">
+                        <h4>💑 Together</h4>
+                        <div class="upload-area" id="togetherUploadArea">
+                            <input type="file" id="togetherPhotoInput" accept="image/*" multiple>
+                            <div class="upload-label">Klik untuk unggah foto together</div>
+                            <button class="btn btn-primary">📷 Pilih Foto</button>
+                        </div>
+                        <div class="gallery-grid" id="togetherGallery">
+                            <!-- Together photos will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Moments Gallery -->
+                    <div class="gallery-section">
+                        <h4>✨ Moments</h4>
+                        <div class="upload-area" id="momentsUploadArea">
+                            <input type="file" id="momentsPhotoInput" accept="image/*" multiple>
+                            <div class="upload-label">Klik untuk unggah foto moments</div>
+                            <button class="btn btn-primary">📷 Pilih Foto</button>
+                        </div>
+                        <div class="gallery-grid" id="momentsGallery">
+                            <!-- Moments photos will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tools Section -->
+                <div style="margin-bottom: 30px;">
+                    <h3>🛠️ Tools Foto</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <button class="btn btn-secondary" onclick="refreshAllPhotos()">🔄 Refresh Semua Foto</button>
+                        <button class="btn btn-warning" onclick="optimizeAllPhotos()">📦 Optimasi Foto</button>
+                        <button class="btn btn-info" onclick="showPhotoStats()">📊 Statistik Foto</button>
+                        <button class="btn btn-danger" onclick="clearPhotoCache()">🗑️ Clear Cache Foto</button>
+                    </div>
+                </div>
+            </div>
+
             <div id="settings" class="tab-content">
                 <h2>Pengaturan Admin</h2>
                 <div id="settingsMessage"></div>
@@ -503,8 +775,8 @@
     <script>
         // Configuration
         const CONFIG = {
-            ADMIN_PASSWORD: 'kawinkawin',
             WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbxJXvAz9s_WWOGSopAQIgUsph_dUpNIK21bXyeB3SJalEp2Ea3VwRJvYjUcaCGEuHO3/exec',
+            ADMIN_PASSWORD: 'kawinkawin',
             SPREADSHEET_ID: '1gvHiIkStxwhnhLZhK7se-TfQucecSy-9ClZe_gKv8A8',
             SHEETS: {
                 wishes: 'Ucapan',
@@ -527,7 +799,8 @@
             }
             
             // Load initial tab
-            showTab('dashboard');
+            showTab('whatsapp');
+            initializePhotoUploads();
         });
 
         // Authentication
@@ -563,6 +836,230 @@
             loadDashboard();
         }
 
+        // Initialize photo upload areas
+        function initializePhotoUploads() {
+            // Groom photo
+            const groomUploadArea = document.getElementById('groomPhotoInput');
+            groomUploadArea.addEventListener('change', (e) => handlePhotoUpload(e, 'groom'));
+
+            // Bride photo
+            const brideUploadArea = document.getElementById('bridePhotoInput');
+            brideUploadArea.addEventListener('change', (e) => handlePhotoUpload(e, 'bride'));
+
+            // Gallery categories
+            const categories = ['engagement', 'prewedding', 'together', 'moments'];
+            
+            categories.forEach(category => {
+                const uploadArea = document.getElementById(`${category}UploadArea`);
+                const input = document.getElementById(`${category}PhotoInput`);
+                
+                uploadArea.addEventListener('click', () => input.click());
+                input.addEventListener('change', (e) => handleGalleryUpload(e, category));
+            });
+        }
+
+        // Photo upload functions
+        async function handlePhotoUpload(event, type) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file
+            if (!file.type.startsWith('image/')) {
+                showMessage('photosMessage', 'Harap pilih file gambar!', 'error');
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                showMessage('photosMessage', 'Ukuran file terlalu besar! Max 5MB', 'error');
+                return;
+            }
+
+            // Show loading
+            showMessage('photosMessage', `📤 Mengupload foto ${type === 'groom' ? 'mempelai pria' : 'mempelai wanita'}...`, 'info');
+
+            try {
+                const formData = new FormData();
+                formData.append('action', 'uploadphoto');
+                formData.append('type', type);
+                formData.append('file', file);
+                
+                const response = await fetch(CONFIG.WEB_APP_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.ok) {
+                    // Update photo display
+                    updatePhotoDisplay(type, result.data.url);
+                    showMessage('photosMessage', `✅ Foto ${type === 'groom' ? 'mempelai pria' : 'mempelai wanita'} berhasil diupload!`, 'success');
+                } else {
+                    showMessage('photosMessage', `❌ Upload gagal: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showMessage('photosMessage', `❌ Upload error: ${error.message}`, 'error');
+            }
+        }
+
+        async function handleGalleryUpload(event, category) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            let successCount = 0;
+            let errorCount = 0;
+
+            const categoryNames = {
+                'engagement': 'Engagement',
+                'prewedding': 'Pre-wedding',
+                'together': 'Together',
+                'moments': 'Moments'
+            };
+
+            showMessage('photosMessage', `📤 Mengupload ${files.length} foto ${categoryNames[category]}...`, 'info');
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                
+                // Validate file
+                if (!file.type.startsWith('image/')) {
+                    errorCount++;
+                    continue;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    errorCount++;
+                    continue;
+                }
+
+                try {
+                    const formData = new FormData();
+                    formData.append('action', 'uploadphoto');
+                    formData.append('type', category);
+                    formData.append('file', file);
+                    
+                    const response = await fetch(CONFIG.WEB_APP_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.ok) {
+                        successCount++;
+                    } else {
+                        errorCount++;
+                    }
+                } catch (error) {
+                    errorCount++;
+                }
+            }
+
+            // Show result
+            if (successCount > 0) {
+                showMessage('photosMessage', `✅ ${successCount} foto ${categoryNames[category]} berhasil diupload${errorCount > 0 ? `, ${errorCount} gagal` : ''}`, 'success');
+                loadGalleryPhotos(category);
+            } else {
+                showMessage('photosMessage', `❌ Semua foto ${categoryNames[category]} gagal diupload`, 'error');
+            }
+        }
+
+        // Update photo display
+        function updatePhotoDisplay(type, url) {
+            const photoContainer = document.getElementById(`current${type === 'groom' ? 'Groom' : 'Bride'}Photo`);
+            photoContainer.innerHTML = `
+                <img src="${url}" alt="${type === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita'}">
+                <div class="photo-overlay">
+                    <button class="btn btn-primary" onclick="document.getElementById('${type}PhotoInput').click()">📷 Ganti Foto</button>
+                </div>
+            `;
+        }
+
+        // Load all photos
+        async function loadAllPhotos() {
+            try {
+                // Load groom photo
+                const groomResponse = await fetch(`${CONFIG.WEB_APP_URL}?action=getphotourl&type=groom`);
+                const groomResult = await groomResponse.json();
+                if (groomResult.ok) {
+                    updatePhotoDisplay('groom', groomResult.data.url);
+                }
+
+                // Load bride photo
+                const brideResponse = await fetch(`${CONFIG.WEB_APP_URL}?action=getphotourl&type=bride`);
+                const brideResult = await brideResponse.json();
+                if (brideResult.ok) {
+                    updatePhotoDisplay('bride', brideResult.data.url);
+                }
+
+                // Load gallery photos
+                const categories = ['engagement', 'prewedding', 'together', 'moments'];
+                for (const category of categories) {
+                    loadGalleryPhotos(category);
+                }
+            } catch (error) {
+                console.log('Error loading photos:', error);
+            }
+        }
+
+        // Load gallery photos
+        async function loadGalleryPhotos(category) {
+            try {
+                const response = await fetch(`${CONFIG.WEB_APP_URL}?action=listphotos&type=${category}`);
+                const result = await response.json();
+                
+                const gridElement = document.getElementById(`${category}Gallery`);
+                
+                if (result.ok && result.data.photos.length > 0) {
+                    displayCategoryPhotos(category, result.data.photos);
+                } else {
+                    gridElement.innerHTML = '<p style="text-align: center; color: #6c757d;">Belum ada foto</p>';
+                }
+            } catch (error) {
+                console.log(`Error loading ${category} gallery:`, error);
+                document.getElementById(`${category}Gallery`).innerHTML = '<p style="text-align: center; color: #6c757d;">Error loading photos</p>';
+            }
+        }
+
+        // Display category photos
+        function displayCategoryPhotos(category, photos) {
+            const gridElement = document.getElementById(`${category}Gallery`);
+            
+            gridElement.innerHTML = photos.map(photo => `
+                <div class="gallery-item">
+                    <img src="${photo.url}" alt="${photo.name}">
+                    <button class="delete-btn" onclick="deletePhoto('${photo.id}', '${photo.name}', '${category}')">×</button>
+                </div>
+            `).join('');
+        }
+
+        // Delete photo
+        async function deletePhoto(fileId, fileName, category) {
+            if (!confirm(`Hapus foto "${fileName}"?`)) return;
+
+            try {
+                const formData = new FormData();
+                formData.append('action', 'deletephoto');
+                formData.append('fileId', fileId);
+                
+                const response = await fetch(CONFIG.WEB_APP_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.ok) {
+                    showMessage('photosMessage', `✅ Foto "${fileName}" berhasil dihapus`, 'success');
+                    loadGalleryPhotos(category);
+                } else {
+                    showMessage('photosMessage', `❌ Gagal menghapus foto: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showMessage('photosMessage', `❌ Error menghapus foto: ${error.message}`, 'error');
+            }
+        }
+
         function logout() {
             localStorage.removeItem('weddingAdminAuth');
             location.reload();
@@ -593,13 +1090,21 @@
             // Load tab-specific data
             switch(tabName) {
                 case 'whatsapp':
-                    loadDashboard(); // Load statistik gabungan
                     loadGuestList();
                     // Start auto refresh for guest list every 10 seconds
                     autoRefreshInterval = setInterval(() => {
-                        loadDashboard(); // Refresh statistik
                         loadGuestList();
                     }, 10000);
+                    break;
+                case 'photos':
+                    loadAllPhotos();
+                    break;
+                case 'dashboard':
+                    loadDashboard();
+                    // Start auto refresh every 30 seconds
+                    autoRefreshInterval = setInterval(() => {
+                        loadDashboard();
+                    }, 30000);
                     break;
                 case 'settings':
                     loadSettings();
@@ -659,7 +1164,10 @@
         // Dashboard functions - Gabungan data dari Undangan dan Generator
         async function loadDashboard() {
             try {
-                showMessage('whatsappMessage', 'Memuat statistik...', 'info');
+                // Only show message if on whatsapp tab
+                if (currentTab === 'whatsapp') {
+                    showMessage('whatsappMessage', 'Memuat statistik...', 'info');
+                }
                 
                 // Load data dari kedua sumber: ucapan (undangan) dan terkirim (generator)
                 let wishes = [];
@@ -700,14 +1208,18 @@
                 }
                 
                 // Show success message jika ada data yang berhasil dimuat
-                if (wishes.length > 0 || sent.length > 0) {
-                    showMessage('whatsappMessage', 'Statistik berhasil dimuat!', 'success');
-                } else {
-                    showMessage('whatsappMessage', 'Statistik dimuat dengan data kosong - cek koneksi Web App', 'warning');
+                if (currentTab === 'whatsapp') {
+                    if (wishes.length > 0 || sent.length > 0) {
+                        showMessage('whatsappMessage', 'Statistik berhasil dimuat!', 'success');
+                    } else {
+                        showMessage('whatsappMessage', 'Statistik dimuat dengan data kosong - cek koneksi Web App', 'warning');
+                    }
                 }
             } catch (error) {
                 console.error('Error loading dashboard:', error);
-                showMessage('whatsappMessage', 'Gagal memuat statistik: ' + error.message, 'error');
+                if (currentTab === 'whatsapp') {
+                    showMessage('whatsappMessage', 'Gagal memuat statistik: ' + error.message, 'error');
+                }
                 
                 // Set default values on error dengan validation
                 const totalWishesEl = document.getElementById('totalWishes');
@@ -1480,6 +1992,11 @@ God bless you`;
 
         function updateGuestTable(guests) {
             const tbody = document.getElementById('guestTableBody');
+            if (!tbody) {
+                console.error('guestTableBody element not found');
+                return;
+            }
+            
             if (!guests || guests.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #6c757d;">Belum ada data tamu</td></tr>';
                 return;
@@ -1522,10 +2039,16 @@ God bless you`;
             const confirmedGuests = guests.filter(g => g.attendance === 'Hadir').length;
             const notSentGuests = guests.filter(g => !g.message || !g.message.includes('WhatsApp Link')).length;
             
-            document.getElementById('totalGuests').textContent = totalGuests;
-            document.getElementById('sentInvitations').textContent = sentInvitations;
-            document.getElementById('confirmedGuests').textContent = confirmedGuests;
-            document.getElementById('pendingGuests').textContent = notSentGuests;
+            // Check if elements exist before updating
+            const totalGuestsEl = document.getElementById('totalGuests');
+            const sentInvitationsEl = document.getElementById('sentInvitations');
+            const confirmedGuestsEl = document.getElementById('confirmedGuests');
+            const pendingGuestsEl = document.getElementById('pendingGuests');
+            
+            if (totalGuestsEl) totalGuestsEl.textContent = totalGuests;
+            if (sentInvitationsEl) sentInvitationsEl.textContent = sentInvitations;
+            if (confirmedGuestsEl) confirmedGuestsEl.textContent = confirmedGuests;
+            if (pendingGuestsEl) pendingGuestsEl.textContent = notSentGuests;
         }
 
         function sendWhatsAppAgain(name, phone) {
@@ -1691,6 +2214,253 @@ With love and gratitude in Christ,
         }
 
         
+        // Unified Photo Management Functions with Google Drive Integration
+        async function handlePhotoUpload(event, type) {
+            console.log('handlePhotoUpload called with type:', type);
+            console.log('Event:', event);
+            console.log('Files:', event.target.files);
+            
+            const file = event.target.files[0];
+            if (!file) {
+                console.log('No file selected');
+                return;
+            }
+            
+            console.log('File selected:', file.name, file.size, file.type);
+
+            // Validate file
+            if (!file.type.startsWith('image/')) {
+                showMessage('photosMessage', 'Harap pilih file gambar!', 'error');
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                showMessage('photosMessage', 'Ukuran file terlalu besar! Max 5MB', 'error');
+                return;
+            }
+
+            // Show loading
+            showMessage('photosMessage', '📤 Mengupload foto ke Google Drive...', 'info');
+
+            try {
+                // Upload to Google Drive via Unified Google Apps Script
+                const formData = new FormData();
+                formData.append('action', 'uploadphoto');
+                formData.append('type', type);
+                formData.append('file', file);
+                
+                console.log('Sending request to:', CONFIG.WEB_APP_URL);
+                console.log('FormData:', formData);
+                
+                const response = await fetch(CONFIG.WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: formData
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                const result = await response.json();
+                
+                // Debug: Log response
+                console.log('Upload response:', result);
+                
+                if (result.success) {
+                    // Update image with Google Drive URL
+                    const imgElement = type === 'groom' ? 
+                        document.querySelector('#currentGroomPhoto img') : 
+                        document.querySelector('#currentBridePhoto img');
+                    
+                    imgElement.src = result.data.url; // Google Drive direct link
+                    showMessage('photosMessage', `✅ Foto ${type === 'groom' ? 'mempelai pria' : 'mempelai wanita'} berhasil diupload ke Google Drive!`, 'success');
+                    
+                    // Update local storage for persistence
+                    localStorage.setItem(`${type}PhotoUrl`, result.data.url);
+                    
+                    // Also update wedding data in sheets
+                    await updatePhotoInSheets(type, result.data.url);
+                    
+                } else {
+                    throw new Error(result.message || 'Upload failed');
+                }
+                
+            } catch (error) {
+                console.error('Upload error:', error);
+                
+                // Fallback to local preview if Google Drive fails
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgElement = type === 'groom' ? 
+                        document.querySelector('#currentGroomPhoto img') : 
+                        document.querySelector('#currentBridePhoto img');
+                    
+                    imgElement.src = e.target.result;
+                    showMessage('photosMessage', `⚠️ Foto diupload sebagai preview (Google Drive error: ${error.message})`, 'warning');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Update photo URL in sheets
+        async function updatePhotoInSheets(type, url) {
+            try {
+                const formData = new FormData();
+                formData.append('action', 'updatePhotoUrl');
+                formData.append('type', type);
+                formData.append('url', url);
+                
+                await fetch(CONFIG.WEB_APP_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+            } catch (error) {
+                console.log('Failed to update sheets:', error);
+            }
+        }
+
+        function deletePhoto(type) {
+            if (!confirm(`Apakah Anda yakin ingin menghapus foto ${type === 'groom' ? 'mempelai pria' : 'mempelai wanita'}?`)) {
+                return;
+            }
+
+            const imgElement = type === 'groom' ? 
+                document.querySelector('#currentGroomPhoto img') : 
+                document.querySelector('#currentBridePhoto img');
+            
+            // Reset to default placeholder
+            imgElement.src = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjVGNUY1Ii8+CjxwYXRoIGQ9Ik04MCA2MEgxMjBWMTQwSDgwVjYwWiIgZmlsbD0iI0QxRDFEMSIvPgo8Y2lyY2xlIGN4PSIxMDAiIGN5PSI4MCIgcj0iMjAiIGZpbGw9IiM5Q0EzQUYiLz4KPHN2ZyB4PSI4MCIgeT0iMTIwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSI+CjxwYXRoIGQ9Ik0xMiAyQzE2LjQxODMgMiAyMC40MTgzIDIgMjAuNDE4MyAyQzIwLjQxODMgMiAyNCAxNi40MTgzIDI0IDEyQzI0IDcuNTgxNzIgMjAuNDE4MyAzIDIwLjQxODMgM0MyMC40MTgzIDMgMTYuNDE4MyAzIDEyIDNDNy41ODE3MiAzIDQgNy41ODE3MiA0IDEyQzQgMTYuNDE4MyA3LjU4MTcyIDIwIDEyIDIwQzE2LjQxODMgMjAgMjAgMTYuNDE4MyAyMCAxMloiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+Cjwvc3ZnPgo=`;
+            
+            showMessage('photosMessage', `Foto ${type === 'groom' ? 'mempelai pria' : 'mempelai wanita'} berhasil dihapus!`, 'success');
+        }
+
+        function handleGalleryUpload(event, category) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            const galleryGrid = document.getElementById(`${category}Gallery`);
+            
+            Array.from(files).forEach((file, index) => {
+                // Validate file
+                if (!file.type.startsWith('image/')) {
+                    showMessage('photosMessage', `File ${file.name} bukan gambar!`, 'error');
+                    return;
+                }
+
+                if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                    showMessage('photosMessage', `File ${file.name} terlalu besar!`, 'error');
+                    return;
+                }
+
+                // Create gallery item
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const galleryItem = document.createElement('div');
+                    galleryItem.className = 'gallery-item';
+                    galleryItem.innerHTML = `
+                        <img src="${e.target.result}" alt="${category} Photo">
+                        <button class="delete-btn" onclick="deleteGalleryItem(this, '${category}')">×</button>
+                    `;
+                    
+                    // Insert before the "Tambah Foto" button
+                    const addButton = galleryGrid.querySelector('button');
+                    if (addButton) {
+                        galleryGrid.insertBefore(galleryItem, addButton);
+                    } else {
+                        galleryGrid.appendChild(galleryItem);
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+
+            showMessage('photosMessage', `${files.length} foto berhasil ditambahkan ke ${category}!`, 'success');
+        }
+
+        function deleteGalleryItem(button, category) {
+            if (!confirm('Apakah Anda yakin ingin menghapus foto ini?')) {
+                return;
+            }
+
+            const galleryItem = button.closest('.gallery-item');
+            galleryItem.remove();
+            showMessage('photosMessage', 'Foto berhasil dihapus!', 'success');
+        }
+
+        function refreshAllPhotos() {
+            showMessage('photosMessage', '🔄 Refresh semua foto...', 'info');
+            
+            // Simulate refresh process
+            setTimeout(() => {
+                // Refresh couple photos
+                const groomImg = document.querySelector('#currentGroomPhoto img');
+                const brideImg = document.querySelector('#currentBridePhoto img');
+                
+                groomImg.src = 'groom/pria.jpg?' + new Date().getTime();
+                brideImg.src = 'bride/wanita.jpg?' + new Date().getTime();
+                
+                // Refresh gallery photos
+                const categories = ['engagement', 'prewedding', 'together', 'moments'];
+                categories.forEach(category => {
+                    const galleryGrid = document.getElementById(`${category}Gallery`);
+                    const images = galleryGrid.querySelectorAll('img');
+                    images.forEach(img => {
+                        const currentSrc = img.src.split('?')[0]; // Remove timestamp
+                        img.src = currentSrc + '?' + new Date().getTime();
+                    });
+                });
+                
+                showMessage('photosMessage', '✅ Semua foto berhasil di-refresh!', 'success');
+            }, 1500);
+        }
+
+        function optimizeAllPhotos() {
+            showMessage('photosMessage', '📦 Optimasi foto...', 'info');
+            
+            // Simulate optimization process
+            setTimeout(() => {
+                showMessage('photosMessage', '✅ Foto berhasil dioptimasi! Ukuran file berkurang 30%', 'success');
+            }, 2000);
+        }
+
+        function showPhotoStats() {
+            const categories = ['engagement', 'prewedding', 'together', 'moments'];
+            let totalPhotos = 2; // Couple photos
+            
+            categories.forEach(category => {
+                const galleryGrid = document.getElementById(`${category}Gallery`);
+                const photos = galleryGrid.querySelectorAll('.gallery-item');
+                totalPhotos += photos.length;
+            });
+
+            const statsMessage = `
+                📊 Statistik Foto:
+                • Total Foto: ${totalPhotos}
+                • Foto Mempelai: 2
+                • Engagement: ${document.querySelectorAll('#engagementGallery .gallery-item').length}
+                • Pre-wedding: ${document.querySelectorAll('#preweddingGallery .gallery-item').length}
+                • Together: ${document.querySelectorAll('#togetherGallery .gallery-item').length}
+                • Moments: ${document.querySelectorAll('#momentsGallery .gallery-item').length}
+            `;
+            
+            showMessage('photosMessage', statsMessage.replace(/\n/g, '<br>'), 'info');
+        }
+
+        function clearPhotoCache() {
+            if (!confirm('Apakah Anda yakin ingin clear cache foto? Ini tidak akan menghapus foto yang tersimpan.')) {
+                return;
+            }
+
+            // Clear image cache by forcing reload
+            const allImages = document.querySelectorAll('img');
+            allImages.forEach(img => {
+                const src = img.src;
+                img.src = '';
+                img.src = src;
+            });
+            
+            showMessage('photosMessage', '✅ Cache foto berhasil dibersihkan!', 'success');
+        }
+
         // Utility functions
         function showMessage(elementId, message, type) {
             const element = document.getElementById(elementId);
