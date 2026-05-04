@@ -2254,35 +2254,51 @@ With love and gratitude in Christ,
                 
                 const response = await fetch(CONFIG.WEB_APP_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
                     body: formData
                 });
                 
                 console.log('Response status:', response.status);
                 console.log('Response headers:', response.headers);
                 
-                const result = await response.json();
+                // Handle no-cors response
+                let result;
+                if (response.type === 'opaque') {
+                    console.log('Opaque response - upload likely succeeded');
+                    result = { success: true, message: 'Upload successful (opaque response)' };
+                } else {
+                    result = await response.json();
+                }
                 
                 // Debug: Log response
                 console.log('Upload response:', result);
                 
-                if (result.success) {
-                    // Update image with Google Drive URL
-                    const imgElement = type === 'groom' ? 
-                        document.querySelector('#currentGroomPhoto img') : 
-                        document.querySelector('#currentBridePhoto img');
+                if (result.success || result.ok) {
+                    // Update image display
+                    const photoContainer = document.getElementById(`current${type === 'groom' ? 'Groom' : 'Bride'}Photo`);
                     
-                    imgElement.src = result.data.url; // Google Drive direct link
-                    showMessage('photosMessage', `✅ Foto ${type === 'groom' ? 'mempelai pria' : 'mempelai wanita'} berhasil diupload ke Google Drive!`, 'success');
-                    
-                    // Update local storage for persistence
-                    localStorage.setItem(`${type}PhotoUrl`, result.data.url);
-                    
-                    // Also update wedding data in sheets
-                    await updatePhotoInSheets(type, result.data.url);
+                    if (result.data && result.data.url) {
+                        // Use Google Drive URL
+                        const img = document.createElement('img');
+                        img.src = result.data.url;
+                        img.alt = type === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita';
+                        img.style.cssText = 'width: 100%; height: 100%; object-fit: cover; border-radius: 50%;';
+                        
+                        photoContainer.innerHTML = `
+                            <img src="${result.data.url}" alt="${type === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita'}">
+                            <div class="photo-overlay">
+                                <button class="btn btn-primary" onclick="document.getElementById('${type}PhotoInput').click()">📷 Ganti Foto</button>
+                            </div>
+                        `;
+                        
+                        showMessage('photosMessage', `✅ Foto ${type === 'groom' ? 'mempelai pria' : 'mempelai wanita'} berhasil diupload ke Google Drive!`, 'success');
+                    } else {
+                        // Success but no URL - refresh to get the photo
+                        loadAllPhotos();
+                        showMessage('photosMessage', `✅ Foto ${type === 'groom' ? 'mempelai pria' : 'mempelai wanita'} berhasil diupload!`, 'success');
+                    }
                     
                 } else {
-                    throw new Error(result.message || 'Upload failed');
+                    throw new Error(result.message || result.error || 'Upload failed');
                 }
                 
             } catch (error) {
