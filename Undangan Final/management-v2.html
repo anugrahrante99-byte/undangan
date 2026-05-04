@@ -133,9 +133,22 @@
             width: 200px;
             height: 200px;
             border-radius: 15px;
-            object-fit: cover;
             border: 3px solid #764ba2;
             margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
         }
 
         .alert {
@@ -259,7 +272,7 @@
                     <div class="photo-container">
                         <h3>🤵 Mempelai Pria</h3>
                         <div id="currentGroomPhoto">
-                            <div class="photo-preview" style="background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: bold;">No Photo</div>
+                            <div class="photo-preview">No Photo</div>
                         </div>
                         <input type="file" id="groomPhotoInput" accept="image/*" style="display: none;">
                         <button class="btn btn-primary" onclick="document.getElementById('groomPhotoInput').click()">📷 Upload Foto</button>
@@ -269,7 +282,7 @@
                     <div class="photo-container">
                         <h3>👰 Mempelai Wanita</h3>
                         <div id="currentBridePhoto">
-                            <div class="photo-preview" style="background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: bold;">No Photo</div>
+                            <div class="photo-preview">No Photo</div>
                         </div>
                         <input type="file" id="bridePhotoInput" accept="image/*" style="display: none;">
                         <button class="btn btn-primary" onclick="document.getElementById('bridePhotoInput').click()">📷 Upload Foto</button>
@@ -437,7 +450,9 @@
             const photoElement = document.getElementById('current' + type.charAt(0).toUpperCase() + type.slice(1) + 'Photo');
             if (photoElement) {
                 photoElement.innerHTML = `
-                    <img src="${url}" alt="${type === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita'}" class="photo-preview">
+                    <div class="photo-preview">
+                        <img src="${url}" alt="${type === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita'}">
+                    </div>
                 `;
             }
         }
