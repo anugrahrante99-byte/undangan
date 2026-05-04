@@ -404,49 +404,15 @@
                 // Convert file to base64
                 const base64Data = await fileToBase64(file);
                 
-                // Upload via chunked URL parameter method (for large files)
-                const chunkSize = 5000; // 5KB chunks
-                const totalChunks = Math.ceil(base64Data.length / chunkSize);
-                const uploadId = Date.now().toString();
+                // Direct upload - simplest method
+                const formData = new FormData();
+                formData.append('action', 'uploadphoto');
+                formData.append('type', type);
+                formData.append('file', file);
                 
-                // Upload chunks
-                for (let i = 0; i < totalChunks; i++) {
-                    const start = i * chunkSize;
-                    const end = Math.min(start + chunkSize, base64Data.length);
-                    const chunk = base64Data.substring(start, end);
-                    
-                    const params = new URLSearchParams({
-                        action: 'uploadphoto_chunk',
-                        uploadId: uploadId,
-                        chunkIndex: i.toString(),
-                        totalChunks: totalChunks.toString(),
-                        chunkData: chunk,
-                        type: type,
-                        fileName: file.name,
-                        mimeType: file.type
-                    });
-                    
-                    const response = await fetch(`${CONFIG.WEB_APP_URL}?${params.toString()}`, {
-                        method: 'GET',
-                        mode: 'no-cors'
-                    });
-                    
-                    // Small delay between chunks
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                }
-                
-                // Finalize upload
-                const finalizeParams = new URLSearchParams({
-                    action: 'uploadphoto_finalize',
-                    uploadId: uploadId,
-                    type: type,
-                    fileName: file.name,
-                    mimeType: file.type
-                });
-                
-                const finalizeResponse = await fetch(`${CONFIG.WEB_APP_URL}?${finalizeParams.toString()}`, {
-                    method: 'GET',
-                    mode: 'no-cors'
+                const response = await fetch(CONFIG.WEB_APP_URL, {
+                    method: 'POST',
+                    body: formData
                 });
                 
                 // Wait for upload to complete, then verify
