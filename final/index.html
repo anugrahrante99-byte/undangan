@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -5609,7 +5609,7 @@
                 </style>
             `;
             
-            // Smart photo detection with multiple fallback options - Use correct folders
+            // Smart photo detection with multiple fallback options - Check uploaded photos first
             const photoOptions = [
                 `${folderName}/pria.jpg`, // Primary for groom
                 `${folderName}/wanita.jpg`, // Primary for bride
@@ -5618,6 +5618,35 @@
                 `${folderName}/default.jpg`, // Default photo
                 `${folderName}/${folderName}.jpg` // Folder name photo
             ];
+            
+            // Check for uploaded photos in localStorage (from management panel)
+            const uploadedPhotoKey = `uploaded_${folderName}_photo`;
+            const uploadedPhoto = localStorage.getItem(uploadedPhotoKey);
+            if (uploadedPhoto) {
+                try {
+                    const photoData = JSON.parse(uploadedPhoto);
+                    if (photoData && photoData.dataUrl) {
+                        // Use uploaded photo data URL
+                        photoElement.src = photoData.dataUrl;
+                        photoElement.style.display = 'block';
+                        photoElement.style.borderRadius = '50%';
+                        photoElement.style.objectFit = 'cover';
+                        photoElement.style.width = '100%';
+                        photoElement.style.height = '100%';
+                        photoElement.onload = () => {
+                            photoElement.style.opacity = '1';
+                            photoElement.style.transform = 'scale(1)';
+                        };
+                        photoElement.onerror = () => {
+                            console.log('Uploaded photo failed to load, trying fallback');
+                            tryNextPhoto();
+                        };
+                        return;
+                    }
+                } catch (e) {
+                    console.log('Error parsing uploaded photo data:', e);
+                }
+            }
             
             // Filter options based on folder
             const filteredOptions = photoOptions.filter(path => {
