@@ -1,4 +1,7 @@
-// Vercel Serverless Function for Photo Upload - Simple Version
+// Vercel Serverless Function for Photo Upload - With Real File Storage
+
+import fs from 'fs';
+import path from 'path';
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -58,7 +61,7 @@ export default async function handler(req, res) {
     
     console.log('Request:', { action, category, fileName, hasData: !!fileData });
 
-    // Simple upload handler
+    // Real upload handler with file storage
     if (action === 'upload') {
       if (!category || !fileName || !fileData) {
         return res.status(400).json({ 
@@ -97,9 +100,19 @@ export default async function handler(req, res) {
         });
       }
 
-      // Create response with actual file URL for invitation
-      const timestamp = Date.now();
+      // Create directories and save file
+      const publicDir = path.join(process.cwd(), 'public');
+      const categoryDir = path.join(publicDir, category);
       
+      // Ensure directory exists
+      if (!fs.existsSync(publicDir)) {
+        fs.mkdirSync(publicDir, { recursive: true });
+      }
+      
+      if (!fs.existsSync(categoryDir)) {
+        fs.mkdirSync(categoryDir, { recursive: true });
+      }
+
       // For groom/bride photos, use simple names for invitation compatibility
       let finalFileName = fileName;
       if (category === 'groom' && fileName.toLowerCase().includes('pria')) {
@@ -107,8 +120,13 @@ export default async function handler(req, res) {
       } else if (category === 'bride' && fileName.toLowerCase().includes('wanita')) {
         finalFileName = 'wanita.jpg';
       } else {
-        finalFileName = `${timestamp}_${fileName}`;
+        finalFileName = `${Date.now()}_${fileName}`;
       }
+      
+      const filePath = path.join(categoryDir, finalFileName);
+      
+      // Write file to disk
+      fs.writeFileSync(filePath, buffer);
       
       const fileInfo = {
         id: finalFileName,
@@ -117,10 +135,11 @@ export default async function handler(req, res) {
         size: buffer.length,
         url: `${category}/${finalFileName}`,
         category: category,
-        uploadedAt: new Date().toISOString()
+        uploadedAt: new Date().toISOString(),
+        filePath: filePath
       };
 
-      console.log('Upload successful:', fileName, 'as:', finalFileName);
+      console.log('File saved successfully:', fileName, 'as:', finalFileName, 'at:', filePath);
       return res.status(200).json({ 
         success: true, 
         fileInfo: fileInfo 
