@@ -12,12 +12,48 @@ export default async function handler(req, res) {
     return;
   }
 
-  if (req.method !== 'POST') {
+  if (req.method !== 'POST' && req.method !== 'GET') {
     res.status(405).json({ success: false, error: 'Method not allowed' });
     return;
   }
 
   try {
+    // Handle GET requests for listing photos
+    if (req.method === 'GET') {
+      const { action, category } = req.query;
+      
+      switch (action) {
+        case 'list':
+          return res.status(200).json({ success: true, photos: [] });
+          
+        case 'initialize':
+          return res.status(200).json({ 
+            success: true, 
+            message: 'Photo folders initialized' 
+          });
+          
+        case 'summary':
+          return res.status(200).json({ 
+            success: true, 
+            summary: {
+              engagement: { count: 0 },
+              prewedding: { count: 0 },
+              moments: { count: 0 },
+              together: { count: 0 },
+              bride: { count: 0 },
+              groom: { count: 0 }
+            }
+          });
+          
+        default:
+          return res.status(400).json({ 
+            success: false, 
+            error: 'Invalid GET action: ' + action 
+          });
+      }
+    }
+
+    // Handle POST requests
     const { action, category, fileName, fileData } = req.body;
     
     console.log('Request:', { action, category, fileName, hasData: !!fileData });
