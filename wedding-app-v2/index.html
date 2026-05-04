@@ -5365,6 +5365,10 @@
             try {
                 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyzsgml8m6wNoiMFtXow7qMT8XYl3JOUT8RBB9iNSAJDF4NJOt1BrRyRq7aIGHJsEZkZg/exec';
                 
+                // DEBUG: Log the exact URL being called
+                const fullUrl = `${WEB_APP_URL}?action=getphotourl&type=${category}`;
+                console.log('DEBUG: Loading photo from URL:', fullUrl);
+                
                 // Show loading state
                 const element = document.getElementById(elementId);
                 if (element) {
@@ -5387,8 +5391,12 @@
                     `;
                 }
                 
-                const response = await fetch(`${WEB_APP_URL}?action=getphotourl&type=${category}`);
+                const response = await fetch(fullUrl);
+                console.log('DEBUG: Response status:', response.status);
+                console.log('DEBUG: Response headers:', response.headers);
+                
                 const result = await response.json();
+                console.log('DEBUG: Response result:', result);
                 
                 if (result.ok && result.data && result.data.url) {
                     const img = document.createElement('img');
