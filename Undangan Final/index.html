@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -5033,29 +5033,78 @@
             ]
         };
 
-        // Smart photo detection with pattern matching - FULLY AUTOMATIC
+        // Smart photo detection with automatic folder scanning - FULLY AUTOMATIC
         async function detectPhotosFromFolder(category, forceRefresh = false) {
             
             const detectedPhotos = [];
             
-            // Test specific known files first (more efficient)
-            const knownFiles = fallbackPhotos[category] || [];
-            for (const file of knownFiles) {
-                if (await testImageExists(`${category}/${file}`)) {
+            // Common image file extensions to check
+            const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
+            
+            // Common photo naming patterns - Enhanced for any filename
+            const commonPatterns = [
+                // Numbered patterns (extended range)
+                ...Array.from({length: 100}, (_, i) => `${i + 1}`),
+                ...Array.from({length: 100}, (_, i) => `img${i + 1}`),
+                ...Array.from({length: 100}, (_, i) => `photo${i + 1}`),
+                ...Array.from({length: 100}, (_, i) => `image${i + 1}`),
+                ...Array.from({length: 100}, (_, i) => `pic${i + 1}`),
+                ...Array.from({length: 100}, (_, i) => `picture${i + 1}`),
+                ...Array.from({length: 50}, (_, i) => `dsc${i.toString().padStart(4, '0')}`), // DSC0001, DSC0002, etc.
+                ...Array.from({length: 50}, (_, i) => `img_${i.toString().padStart(3, '0')}`), // img_001, img_002, etc.
+                ...Array.from({length: 50}, (_, i) => `gm4_${i.toString().padStart(4, '0')}`), // GM4_0256, etc.
+                ...Array.from({length: 50}, (_, i) => `luk_${i.toString().padStart(4, '0')}`), // LUK_7950, etc.
+                // Letter patterns
+                ...Array.from({length: 26}, (_, i) => String.fromCharCode(97 + i)), // a-z
+                ...Array.from({length: 26}, (_, i) => String.fromCharCode(65 + i)), // A-Z
+                // Common wedding photo names
+                'bride', 'groom', 'couple', 'wedding', 'engagement', 'prewedding', 
+                'moment', 'together', 'love', 'romance', 'ceremony', 'reception',
+                // Indonesian specific
+                'pria', 'wanita', 'mempelai', 'pasangan', 'kawin', 'nikah',
+                // Additional common patterns
+                'main', 'cover', 'hero', 'featured', 'highlight', 'best',
+                'portrait', 'candid', 'formal', 'informal', 'group', 'family',
+                'details', 'rings', 'flowers', 'venue', 'decor', 'cake',
+                'dress', 'suit', 'shoes', 'accessories', 'makeup', 'hair',
+                // Generic patterns
+                'default', 'sample', 'test', 'demo', 'preview', 'thumbnail'
+            ];
+            
+            // Test all combinations of patterns and extensions
+            for (const pattern of commonPatterns) {
+                for (const ext of imageExtensions) {
+                    const filename = `${pattern}.${ext}`;
+                    if (await testImageExists(`${category}/${filename}`)) {
+                        detectedPhotos.push(filename);
+                    }
+                }
+            }
+            
+            // Also test fallback photos for compatibility
+            const fallbackFiles = fallbackPhotos[category] || [];
+            for (const file of fallbackFiles) {
+                if (!detectedPhotos.includes(file) && await testImageExists(`${category}/${file}`)) {
                     detectedPhotos.push(file);
                 }
             }
             
-            // If we found some files, try to find more with similar patterns
-            if (detectedPhotos.length > 0) {
-                // Extract pattern from found files and test similar patterns
-                await findSimilarPatterns(category, detectedPhotos);
-            }
+            // Sort photos alphabetically for consistent ordering
+            detectedPhotos.sort((a, b) => {
+                // Extract numbers for numeric sorting
+                const aNum = parseInt(a.match(/\d+/)?.[0] || '0');
+                const bNum = parseInt(b.match(/\d+/)?.[0] || '0');
+                if (aNum !== bNum) {
+                    return aNum - bNum;
+                }
+                return a.localeCompare(b);
+            });
             
-            // If still no files found, use fallback
+            // If no files found, return fallback
             if (detectedPhotos.length === 0) {
                 return fallbackPhotos[category] || [];
             }
+            
             return detectedPhotos;
         }
         
@@ -5327,9 +5376,9 @@
                 return;
             }
             
-            // Load from Google Drive first, then fallback to local
-            loadPhotosFromGoogleDrive('groom', 'groomPhoto');
-            loadPhotosFromGoogleDrive('bride', 'bridePhoto');
+            // Load from local folders using automatic detection
+            loadPhotosFromFolderLazy('groom', 'groomPhoto');
+            loadPhotosFromFolderLazy('bride', 'bridePhoto');
             
             // Smart fallback system with multiple attempts
             let retryCount = 0;
@@ -5343,11 +5392,11 @@
                 const brideLoaded = brideElement.querySelector('img');
                 
                 if (!groomLoaded) {
-                    loadPhotosFromGoogleDrive('groom', 'groomPhoto');
+                    loadPhotosFromFolderLazy('groom', 'groomPhoto');
                 }
                 
                 if (!brideLoaded) {
-                    loadPhotosFromGoogleDrive('bride', 'bridePhoto');
+                    loadPhotosFromFolderLazy('bride', 'bridePhoto');
                 }
                 
                 // Continue retrying if needed
@@ -5609,94 +5658,105 @@
                 </style>
             `;
             
-            // Smart photo detection with multiple fallback options - Use correct folders
-            const photoOptions = [
-                `${folderName}/pria.jpg`, // Primary for groom
-                `${folderName}/wanita.jpg`, // Primary for bride
-                `${folderName}/photo.jpg`, // Generic photo
-                `${folderName}/main.jpg`, // Main photo
-                `${folderName}/default.jpg`, // Default photo
-                `${folderName}/${folderName}.jpg` // Folder name photo
-            ];
+            // Use automatic folder detection to get available photos
+            // For bride section, check both bride and groom folders
+            const foldersToCheck = folderName === 'bride' ? ['bride', 'groom'] : [folderName];
             
-            // Filter options based on folder
-            const filteredOptions = photoOptions.filter(path => {
-                if (folderName === 'groom') {
-                    return path.includes('pria') || path.includes('groom') || path.includes('photo') || path.includes('main') || path.includes('default');
-                } else if (folderName === 'bride') {
-                    return path.includes('wanita') || path.includes('bride') || path.includes('photo') || path.includes('main') || path.includes('default');
-                }
-                return path.includes('photo') || path.includes('main') || path.includes('default');
-            });
-            
-            // Try each photo option until one loads successfully
-            let currentOptionIndex = 0;
-            
-            const tryLoadPhoto = () => {
-                if (currentOptionIndex >= filteredOptions.length) {
-                    // All options failed, show error state
+            (async () => {
+                try {
+                    let allDetectedPhotos = [];
+                    
+                    // Check each folder for photos
+                    for (const folder of foldersToCheck) {
+                        const photos = await detectPhotosFromFolder(folder);
+                        photos.forEach(photo => {
+                            allDetectedPhotos.push(`${folder}/${photo}`);
+                        });
+                    }
+                    
+                    const detectedPhotos = allDetectedPhotos;
+                    
+                    if (detectedPhotos.length === 0) {
+                        // No photos found, show error state
+                        photoElement.innerHTML = `
+                            <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(255,0,0,0.1); border-radius: 50%; border: 2px solid rgba(255,0,0,0.3);">
+                                <div style="color: rgba(255,255,255,0.6); font-size: 0.6rem; text-align: center; padding: 10px;">No Photo</div>
+                            </div>
+                        `;
+                        photoElement.dataset.loading = 'false';
+                        return;
+                    }
+                    
+                    // Use the first detected photo (already includes folder path)
+                    const photoPath = detectedPhotos[0];
+                    const img = new Image();
+                    
+                    img.onload = function() {
+                        // Success! Load the photo with premium animation
+                        photoElement.innerHTML = `
+                            <img src="${photoPath}" 
+                                 alt="${folderName === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita'}" 
+                                 style="width: 100%; height: 100%; object-fit: cover; object-position: center top; border-radius: 50%; display: block; position: absolute; top: 0; left: 0; animation: luxuryPhotoReveal 0.8s cubic-bezier(0.23, 1, 0.32, 1);" 
+                                 loading="lazy">
+                        `;
+                        photoElement.dataset.loading = 'false';
+                        
+                        // Add premium animation styles if not already added
+                        if (!document.querySelector('#premium-photo-styles')) {
+                            const style = document.createElement('style');
+                            style.id = 'premium-photo-styles';
+                            style.textContent = `
+                                @keyframes luxuryPhotoReveal {
+                                    0% {
+                                        opacity: 0;
+                                        transform: scale(0.8) rotateZ(-5deg);
+                                        filter: blur(10px) brightness(0.7);
+                                    }
+                                    50% {
+                                        opacity: 0.8;
+                                        transform: scale(0.95) rotateZ(-2deg);
+                                        filter: blur(3px) brightness(0.9);
+                                    }
+                                    100% {
+                                        opacity: 1;
+                                        transform: scale(1) rotateZ(0deg);
+                                        filter: blur(0) brightness(1);
+                                    }
+                                }
+                            `;
+                            document.head.appendChild(style);
+                        }
+                    };
+                    
+                    img.onerror = function() {
+                        // Try next photo if available
+                        if (detectedPhotos.length > 1) {
+                            // Try next photo by removing the first one and retrying
+                            detectedPhotos.shift();
+                            const nextPhotoPath = detectedPhotos[0];
+                            img.src = nextPhotoPath;
+                        } else {
+                            // No more photos to try, show error state
+                            photoElement.innerHTML = `
+                                <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(255,0,0,0.1); border-radius: 50%; border: 2px solid rgba(255,0,0,0.3);">
+                                    <div style="color: rgba(255,255,255,0.6); font-size: 0.6rem; text-align: center; padding: 10px;">No Photo</div>
+                                </div>
+                            `;
+                            photoElement.dataset.loading = 'false';
+                        }
+                    };
+                    
+                    img.src = photoPath;
+                } catch (error) {
+                    // Error in detection, show error state
                     photoElement.innerHTML = `
                         <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(255,0,0,0.1); border-radius: 50%; border: 2px solid rgba(255,0,0,0.3);">
-                            <div style="color: rgba(255,255,255,0.6); font-size: 0.6rem; text-align: center; padding: 10px;">No Photo</div>
+                            <div style="color: rgba(255,255,255,0.6); font-size: 0.6rem; text-align: center; padding: 10px;">Error</div>
                         </div>
                     `;
                     photoElement.dataset.loading = 'false';
-                    return;
                 }
-                
-                const photoPath = filteredOptions[currentOptionIndex];
-                
-                const img = new Image();
-                
-                img.onload = function() {
-                    // Success! Load the photo with premium animation
-                    photoElement.innerHTML = `
-                        <img src="${photoPath}" 
-                             alt="${folderName === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita'}" 
-                             style="width: 100%; height: 100%; object-fit: cover; object-position: center top; border-radius: 50%; display: block; position: absolute; top: 0; left: 0; animation: luxuryPhotoReveal 0.8s cubic-bezier(0.23, 1, 0.32, 1);" 
-                             loading="lazy">
-                    `;
-                    photoElement.dataset.loading = 'false';
-                    
-                    // Add premium animation styles if not already added
-                    if (!document.querySelector('#premium-photo-styles')) {
-                        const style = document.createElement('style');
-                        style.id = 'premium-photo-styles';
-                        style.textContent = `
-                            @keyframes luxuryPhotoReveal {
-                                0% {
-                                    opacity: 0;
-                                    transform: scale(0.8) rotateZ(-5deg);
-                                    filter: blur(10px) brightness(0.7);
-                                }
-                                50% {
-                                    opacity: 0.8;
-                                    transform: scale(0.95) rotateZ(-2deg);
-                                    filter: blur(3px) brightness(0.9);
-                                }
-                                100% {
-                                    opacity: 1;
-                                    transform: scale(1) rotateZ(0);
-                                    filter: blur(0) brightness(1);
-                                }
-                            }
-                        `;
-                        document.head.appendChild(style);
-                    }
-                };
-                
-                img.onerror = function() {
-                    currentOptionIndex++;
-                    // Try next option after a short delay
-                    setTimeout(tryLoadPhoto, 200);
-                };
-                
-                // Start loading the image
-                img.src = photoPath;
-            };
-            
-            // Start trying to load photos after showing loading animation
-            setTimeout(tryLoadPhoto, 600);
+            })();
         }
         
         // Enhanced gallery function with arrow navigation and lazy loading
@@ -7500,6 +7560,15 @@
             // Load couple photos
             if (typeof loadCouplePhotos === 'function') {
                 loadCouplePhotos();
+            }
+            
+            // Initialize automatic photo detection for all gallery categories
+            if (typeof initializePhotoDetection === 'function') {
+                initializePhotoDetection().then(() => {
+                    console.log('Photo detection initialized for all categories');
+                }).catch(error => {
+                    console.error('Error initializing photo detection:', error);
+                });
             }
         });
         
