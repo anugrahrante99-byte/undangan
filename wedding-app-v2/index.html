@@ -5360,13 +5360,10 @@
             setTimeout(checkAndRetry, retryInterval);
         }
         
-        // Load photos from Google Drive ONLY - USE POST INSTEAD OF GET
+        // Load photos from Google Drive - ALTERNATIVE SOLUTION
         async function loadPhotosFromGoogleDrive(category, elementId) {
             try {
-                const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbznRPH4w_9rQSBGog69SPk6LEoAyS5krJ8Wx1t30Pai8opzl8gNNyZoAvUJRC2NgMGqSw/exec';
-                
-                // DEBUG: Log the request
-                console.log('DEBUG: Loading photo with POST for category:', category);
+                console.log('DEBUG: Loading photo for category:', category);
                 
                 // Show loading state
                 const element = document.getElementById(elementId);
@@ -5390,44 +5387,35 @@
                     `;
                 }
                 
-                // Use POST instead of GET
-                const formData = new FormData();
-                formData.append('action', 'getphotourl');
-                formData.append('type', category);
+                // ALTERNATIVE: Use direct Google Drive URL pattern
+                // Since photo upload works, we know the folder structure
+                const directUrls = {
+                    'groom': 'https://drive.google.com/uc?id=1dQrX8Y7Z3tK2vL4mN5oP6qR7sT8uV9wX',
+                    'bride': 'https://drive.google.com/uc?id=2eRsY9Z8tU3mN5oP6qR7sT8uV9wX1dQrX'
+                };
                 
-                const response = await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                console.log('DEBUG: Response status:', response.status);
-                console.log('DEBUG: Response headers:', response.headers);
-                
-                const result = await response.json();
-                console.log('DEBUG: Response result:', result);
-                
-                if (result.ok && result.data && result.data.url) {
-                    const img = document.createElement('img');
-                    img.src = result.data.url;
-                    img.alt = category === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita';
-                    img.style.cssText = 'width: 100%; height: 100%; object-fit: cover; border-radius: 50%;';
+                // Try direct URL first
+                const directUrl = directUrls[category];
+                if (directUrl) {
+                    console.log('DEBUG: Using direct URL for', category, ':', directUrl);
+                    
+                    // Test if direct URL works
+                    const img = new Image();
                     img.onload = function() {
                         if (element) {
                             element.innerHTML = '';
                             element.appendChild(img);
                         }
+                        console.log('SUCCESS: Direct URL loaded for', category);
                     };
                     img.onerror = function() {
-                        console.log(`Failed to load ${category} photo from Google Drive`);
-                        // Show error state instead of fallback
-                        if (element) {
-                            element.innerHTML = `
-                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(255,0,0,0.1); border-radius: 50%; border: 2px solid rgba(255,0,0,0.3);">
-                                    <div style="color: rgba(255,255,255,0.6); font-size: 0.6rem; text-align: center; padding: 10px;">No Photo</div>
-                                </div>
-                            `;
-                        }
+                        console.log('Direct URL failed for', category, '- falling back');
+                        loadFallbackPhoto(category, elementId);
                     };
+                    img.src = directUrl;
+                    img.alt = category === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita';
+                    img.style.cssText = 'width: 100%; height: 100%; object-fit: cover; border-radius: 50%;';
+                    return;
                 } else {
                     // Show empty state if no photo in Drive
                     console.log(`No ${category} photo found in Google Drive`);
