@@ -890,20 +890,8 @@
             showMessage('photosMessage', `📤 Mengupload foto ${type === 'groom' ? 'mempelai pria' : 'mempelai wanita'}...`, 'info');
 
             try {
-                console.log('Creating FormData...');
-                const formData = new FormData();
-                formData.append('action', 'uploadphoto');
-                formData.append('type', type);
-                formData.append('file', file);
-                
-                // Debug FormData contents
-                console.log('FormData debug:');
-                for (let [key, value] of formData.entries()) {
-                    console.log(`Key: ${key}, Value:`, value);
-                }
-                
-                // Alternative: Try base64 encoding
-                console.log('Trying base64 approach...');
+                // Skip FormData approach entirely - use base64 directly
+                console.log('Using base64 approach directly...');
                 const reader = new FileReader();
                 reader.onload = async function(e) {
                     const base64Data = e.target.result.split(',')[1];
@@ -944,8 +932,13 @@
                     }
                 };
                 
+                reader.onerror = function(error) {
+                    console.log('FileReader error:', error);
+                    showMessage('photosMessage', `❌ FileReader error: ${error.message}`, 'error');
+                };
+                
                 reader.readAsDataURL(file);
-                return; // Skip FormData approach
+                return;
                 
                 console.log('Sending request to:', CONFIG.WEB_APP_URL);
                 console.log('FormData entries:');
