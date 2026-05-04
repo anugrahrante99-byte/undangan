@@ -676,10 +676,20 @@
                             const uploadUrl = `${CONFIG.WEB_APP_URL}?${urlParams.toString()}`;
                             console.log('Single request upload:', uploadUrl.substring(0, 100) + '...');
                             
-                            const response = await fetch(uploadUrl, {
-                                method: 'GET',
-                                mode: 'cors'
-                            });
+                            let response;
+                            try {
+                                // Try CORS first
+                                response = await fetch(uploadUrl, {
+                                    method: 'GET',
+                                    mode: 'cors'
+                                });
+                            } catch (corsError) {
+                                console.log('CORS failed, trying no-cors fallback');
+                                response = await fetch(uploadUrl, {
+                                    method: 'GET',
+                                    mode: 'no-cors'
+                                });
+                            }
                             
                             console.log('Single request Response status:', response.status);
                             
@@ -725,13 +735,23 @@
                                     mimeType: file.type
                                 });
                                 
-                                const uploadUrl = `${CONFIG.WEB_APP_URL}?${urlParams.toString()}`;
-                                console.log(`Chunk ${chunkIndex + 1}/${totalChunks}:`, uploadUrl.substring(0, 100) + '...');
+                                const chunkUrl = `${CONFIG.WEB_APP_URL}?${urlParams.toString()}`;
+                                console.log(`Chunk ${chunkIndex + 1}/${totalChunks}:`, chunkUrl.substring(0, 100) + '...');
                                 
-                                const response = await fetch(uploadUrl, {
-                                    method: 'GET',
-                                    mode: 'cors'
-                                });
+                                let response;
+                                try {
+                                    // Try CORS first
+                                    response = await fetch(chunkUrl, {
+                                        method: 'GET',
+                                        mode: 'cors'
+                                    });
+                                } catch (corsError) {
+                                    console.log('CORS failed for chunk, trying no-cors fallback');
+                                    response = await fetch(chunkUrl, {
+                                        method: 'GET',
+                                        mode: 'no-cors'
+                                    });
+                                }
                                 
                                 console.log(`Chunk ${chunkIndex + 1} Response status:`, response.status);
                                 
