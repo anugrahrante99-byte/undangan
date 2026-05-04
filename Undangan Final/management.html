@@ -1015,18 +1015,48 @@
         // Load all photos
         async function loadAllPhotos() {
             try {
-                // Load groom photo
-                const groomResponse = await fetch(`${CONFIG.WEB_APP_URL}?action=getphotourl&type=groom`);
-                const groomResult = await groomResponse.json();
-                if (groomResult.ok) {
-                    updatePhotoDisplay('groom', groomResult.data.url);
+                // Load groom photo with CORS workaround
+                try {
+                    const groomResponse = await fetch(`${CONFIG.WEB_APP_URL}?action=getphotourl&type=groom`, {
+                        mode: 'cors'
+                    });
+                    const groomResult = await groomResponse.json();
+                    if (groomResult.ok) {
+                        updatePhotoDisplay('groom', groomResult.data.url);
+                    }
+                } catch (error) {
+                    console.log('Error loading groom photo (CORS issue):', error);
+                    // Try with no-cors as fallback
+                    try {
+                        const groomResponse = await fetch(`${CONFIG.WEB_APP_URL}?action=getphotourl&type=groom`, {
+                            mode: 'no-cors'
+                        });
+                        console.log('Groom photo request sent (no-cors mode)');
+                    } catch (fallbackError) {
+                        console.log('Groom photo fallback also failed:', fallbackError);
+                    }
                 }
 
-                // Load bride photo
-                const brideResponse = await fetch(`${CONFIG.WEB_APP_URL}?action=getphotourl&type=bride`);
-                const brideResult = await brideResponse.json();
-                if (brideResult.ok) {
-                    updatePhotoDisplay('bride', brideResult.data.url);
+                // Load bride photo with CORS workaround
+                try {
+                    const brideResponse = await fetch(`${CONFIG.WEB_APP_URL}?action=getphotourl&type=bride`, {
+                        mode: 'cors'
+                    });
+                    const brideResult = await brideResponse.json();
+                    if (brideResult.ok) {
+                        updatePhotoDisplay('bride', brideResult.data.url);
+                    }
+                } catch (error) {
+                    console.log('Error loading bride photo (CORS issue):', error);
+                    // Try with no-cors as fallback
+                    try {
+                        const brideResponse = await fetch(`${CONFIG.WEB_APP_URL}?action=getphotourl&type=bride`, {
+                            mode: 'no-cors'
+                        });
+                        console.log('Bride photo request sent (no-cors mode)');
+                    } catch (fallbackError) {
+                        console.log('Bride photo fallback also failed:', fallbackError);
+                    }
                 }
 
                 // Load gallery photos
@@ -1440,17 +1470,19 @@
         });
 
         // Generator
-        document.getElementById('generatorForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const groomName = document.getElementById('groomName').value;
-            const brideName = document.getElementById('brideName').value;
-            
-            try {
-                showMessage('generatorMessage', 'Generate undangan...', 'info');
+        const generatorForm = document.getElementById('generatorForm');
+        if (generatorForm) {
+            generatorForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
                 
-                const success = await sheetsPost({
-                    action: 'generateInvitation',
+                const groomName = document.getElementById('groomName').value;
+                const brideName = document.getElementById('brideName').value;
+                
+                try {
+                    showMessage('generatorMessage', 'Generate undangan...', 'info');
+                    
+                    const success = await sheetsPost({
+                        action: 'generateInvitation',
                     groomName,
                     brideName
                 });
@@ -1463,7 +1495,8 @@
             } catch (error) {
                 showMessage('generatorMessage', 'Error: ' + error.message, 'error');
             }
-        });
+            });
+        }
 
         function previewInvitation() {
             window.open('index.html', '_blank');
