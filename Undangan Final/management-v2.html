@@ -662,7 +662,7 @@
                         // Try chunked upload method (GET request with chunks)
                         console.log('Trying chunked upload method...');
                         
-                        const chunkSize = 1500; // Max chunk size for URL
+                        const chunkSize = 8000; // Optimized chunk size for URL
                         const totalChunks = Math.ceil(base64Data.length / chunkSize);
                         
                         console.log(`File size: ${base64Data.length} bytes, Chunks: ${totalChunks}`);
