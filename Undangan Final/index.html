@@ -5038,74 +5038,40 @@
             ]
         };
 
-        // Smart photo detection with automatic folder scanning - FULLY AUTOMATIC
+        // Fast photo detection with targeted file checking - OPTIMIZED
         async function detectPhotosFromFolder(category, forceRefresh = false) {
+            
+            // Known files in each folder - FAST APPROACH
+            const knownFiles = {
+                'bride': ['wanita.jpg'],
+                'groom': ['pria.jpg'],
+                'engagement': ['LUK_7950.JPG', 'LUK_7951.JPG', 'LUK_7952.JPG', 'LUK_7953.JPG', 'LUK_7954.JPG', 'LUK_7955.JPG', 'LUK_7956.JPG'],
+                'prewedding': ['GM4_0288.JPG', 'GM4_0289.JPG', 'GM4_0290.JPG', 'GM4_0291.JPG', 'GM4_0292.JPG', 'GM4_0293.JPG'],
+                'moments': ['1.jpg', '2.jpg', '3.jpg', '4.jpg'],
+                'together': ['DSC00334.jpg', 'DSC00335.jpg', 'DSC00336.jpg', 'DSC00337.jpg', 'DSC00338.jpg', 'DSC00339.jpg', 'DSC00340.jpg', 'DSC00341.jpg', 'DSC00342.jpg']
+            };
             
             const detectedPhotos = [];
             
-            // Common image file extensions to check
-            const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
+            // Fast check: Test known files first
+            const filesToCheck = knownFiles[category] || [];
+            for (const filename of filesToCheck) {
+                if (await testImageExists(`${category}/${filename}`)) {
+                    detectedPhotos.push(filename);
+                }
+            }
             
-            // Common photo naming patterns - Enhanced for any filename
-            const commonPatterns = [
-                // Numbered patterns (extended range)
-                ...Array.from({length: 100}, (_, i) => `${i + 1}`),
-                ...Array.from({length: 100}, (_, i) => `img${i + 1}`),
-                ...Array.from({length: 100}, (_, i) => `photo${i + 1}`),
-                ...Array.from({length: 100}, (_, i) => `image${i + 1}`),
-                ...Array.from({length: 100}, (_, i) => `pic${i + 1}`),
-                ...Array.from({length: 100}, (_, i) => `picture${i + 1}`),
-                ...Array.from({length: 50}, (_, i) => `dsc${i.toString().padStart(4, '0')}`), // DSC0001, DSC0002, etc.
-                ...Array.from({length: 50}, (_, i) => `img_${i.toString().padStart(3, '0')}`), // img_001, img_002, etc.
-                ...Array.from({length: 50}, (_, i) => `gm4_${i.toString().padStart(4, '0')}`), // GM4_0256, etc.
-                ...Array.from({length: 50}, (_, i) => `luk_${i.toString().padStart(4, '0')}`), // LUK_7950, etc.
-                // Letter patterns
-                ...Array.from({length: 26}, (_, i) => String.fromCharCode(97 + i)), // a-z
-                ...Array.from({length: 26}, (_, i) => String.fromCharCode(65 + i)), // A-Z
-                // Common wedding photo names
-                'bride', 'groom', 'couple', 'wedding', 'engagement', 'prewedding', 
-                'moment', 'together', 'love', 'romance', 'ceremony', 'reception',
-                // Indonesian specific
-                'pria', 'wanita', 'mempelai', 'pasangan', 'kawin', 'nikah',
-                // Additional common patterns
-                'main', 'cover', 'hero', 'featured', 'highlight', 'best',
-                'portrait', 'candid', 'formal', 'informal', 'group', 'family',
-                'details', 'rings', 'flowers', 'venue', 'decor', 'cake',
-                'dress', 'suit', 'shoes', 'accessories', 'makeup', 'hair',
-                // Generic patterns
-                'default', 'sample', 'test', 'demo', 'preview', 'thumbnail'
-            ];
-            
-            // Test all combinations of patterns and extensions
-            for (const pattern of commonPatterns) {
-                for (const ext of imageExtensions) {
-                    const filename = `${pattern}.${ext}`;
-                    if (await testImageExists(`${category}/${filename}`)) {
-                        detectedPhotos.push(filename);
+            // If no known files found, do minimal fallback check
+            if (detectedPhotos.length === 0) {
+                const fallbackPatterns = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', 'pria.jpg', 'wanita.jpg'];
+                for (const pattern of fallbackPatterns) {
+                    if (await testImageExists(`${category}/${pattern}`)) {
+                        detectedPhotos.push(pattern);
                     }
                 }
             }
             
-            // Also test fallback photos for compatibility
-            const fallbackFiles = fallbackPhotos[category] || [];
-            for (const file of fallbackFiles) {
-                if (!detectedPhotos.includes(file) && await testImageExists(`${category}/${file}`)) {
-                    detectedPhotos.push(file);
-                }
-            }
-            
-            // Sort photos alphabetically for consistent ordering
-            detectedPhotos.sort((a, b) => {
-                // Extract numbers for numeric sorting
-                const aNum = parseInt(a.match(/\d+/)?.[0] || '0');
-                const bNum = parseInt(b.match(/\d+/)?.[0] || '0');
-                if (aNum !== bNum) {
-                    return aNum - bNum;
-                }
-                return a.localeCompare(b);
-            });
-            
-            // If no files found, return fallback
+            // If still no files found, return fallback
             if (detectedPhotos.length === 0) {
                 return fallbackPhotos[category] || [];
             }
@@ -5337,15 +5303,31 @@
             return Array.from({length: 50}, (_, i) => `GM4_${String(i + 1).padStart(4, '0')}.JPG`);
         }
 
-        // Test if image exists (optimized)
+        // Test if image exists (FAST with caching)
+        const imageExistsCache = new Map();
+        
         async function testImageExists(imagePath) {
+            // Check cache first
+            if (imageExistsCache.has(imagePath)) {
+                return imageExistsCache.get(imagePath);
+            }
+            
             return new Promise((resolve) => {
                 const img = new Image();
-                img.onload = () => resolve(true);
-                img.onerror = () => resolve(false);
+                img.onload = () => {
+                    imageExistsCache.set(imagePath, true);
+                    resolve(true);
+                };
+                img.onerror = () => {
+                    imageExistsCache.set(imagePath, false);
+                    resolve(false);
+                };
                 img.src = imagePath;
-                // Shorter timeout for better performance
-                setTimeout(() => resolve(false), 1000);
+                // Faster timeout for better performance
+                setTimeout(() => {
+                    imageExistsCache.set(imagePath, false);
+                    resolve(false);
+                }, 300);
             });
         }
 
@@ -5926,14 +5908,22 @@
                     `;
                 }
 
-                // Lazy load image with timeout for better UX
+                // Enhanced lazy load with intersection observer and preloading
                 setTimeout(() => {
                     const img = new Image();
+                    
+                    // Add loading="lazy" attribute for better performance
+                    img.loading = 'lazy';
+                    
                     img.onload = function() {
                         if (photoContainer) {
                             photoContainer.innerHTML = `<img src="${photoPath}" alt="${titleText}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 14px; display: block; animation: fadeIn 0.3s ease-in-out;">`;
+                            
+                            // Preload next and previous photos for smoother navigation
+                            preloadAdjacentPhotos(currentPhotoIndex, photoPaths);
                         }
                     };
+                    
                     img.onerror = function() {
                         if (photoContainer) {
                             photoContainer.innerHTML = `
@@ -5945,6 +5935,7 @@
                             `;
                         }
                     };
+                    
                     img.src = photoPath;
                 }, 300);
             }
@@ -5988,6 +5979,48 @@
             modal.appendChild(content);
             document.body.appendChild(modal);
             updatePhotoDisplay(0);
+        }
+
+        // Preload adjacent photos for smoother gallery navigation
+        function preloadAdjacentPhotos(currentIndex, photoPaths) {
+            if (photoPaths.length <= 1) return;
+            
+            // Preload next photo
+            const nextIndex = (currentIndex + 1) % photoPaths.length;
+            const nextImg = new Image();
+            nextImg.loading = 'lazy';
+            nextImg.src = photoPaths[nextIndex];
+            
+            // Preload previous photo
+            const prevIndex = (currentIndex - 1 + photoPaths.length) % photoPaths.length;
+            const prevImg = new Image();
+            prevImg.loading = 'lazy';
+            prevImg.src = photoPaths[prevIndex];
+        }
+
+        // Enhanced lazy loading with intersection observer for gallery
+        function setupGalleryLazyLoading() {
+            // Create intersection observer for gallery images
+            const galleryObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                            img.removeAttribute('data-src');
+                            galleryObserver.unobserve(img);
+                        }
+                    }
+                });
+            }, {
+                rootMargin: '50px',
+                threshold: 0.1
+            });
+
+            // Observe all gallery images with data-src
+            document.querySelectorAll('img[data-src]').forEach(img => {
+                galleryObserver.observe(img);
+            });
         }
                 
         function viewImage(src) {
@@ -7569,6 +7602,11 @@
                 }).catch(error => {
                     console.error('Error initializing photo detection:', error);
                 });
+            }
+            
+            // Initialize enhanced lazy loading for gallery
+            if (typeof setupGalleryLazyLoading === 'function') {
+                setupGalleryLazyLoading();
             }
         });
         
