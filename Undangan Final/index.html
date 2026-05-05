@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -5578,6 +5578,16 @@
 
         // Get all photos from a category
         function getPhotosFromCategory(category) {
+            // If no photos detected yet, try to detect them first
+            if (!galleryCategories[category] || galleryCategories[category].length === 0) {
+                detectPhotosFromFolder(category, true).then(detectedPhotos => {
+                    if (detectedPhotos.length > 0) {
+                        galleryCategories[category] = detectedPhotos;
+                        console.log(`Auto-detected ${category}: ${detectedPhotos.length} photos`);
+                    }
+                });
+            }
+            
             return galleryCategories[category] || [];
         }
 
