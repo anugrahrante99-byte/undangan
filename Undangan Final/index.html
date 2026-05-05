@@ -5027,10 +5027,10 @@
                 'GM4_9625.webp', 'GM4_9672.webp'
             ],
             'moments': [
-                'GM4_0256.webp', 'GM4_0477.JPG', 'GM4_0477.webp', 'GM4_0541.webp', 'GM4_0715.webp'
+                'GM4_0256.webp', 'GM4_0477.webp', 'GM4_0541.webp', 'GM4_0715.webp'
             ],
             'together': [
-                'DSC00304.webp', 'DSC00316.webp', 'DSC00317.JPG', 'DSC00325.webp', 'DSC00329.webp', 'DSC00348.webp', 'DSC00352.JPG', 'DSC00354.JPG', 'DSC00355.JPG'
+                'DSC00304.webp', 'DSC00316.webp', 'DSC00325.webp', 'DSC00329.webp', 'DSC00348.webp'
             ]
         };
 
@@ -5043,8 +5043,8 @@
                 'groom': ['pria.webp'],
                 'engagement': ['LUK_7950.webp', 'LUK_8191.webp', 'LUK_8267.webp', 'LUK_8509.webp', 'LUK_8693.webp', 'LUK_8696.webp', 'LUK_8753.webp'],
                 'prewedding': ['GM4_0288.webp', 'GM4_9453.webp', 'GM4_9585.webp', 'GM4_9606.webp', 'GM4_9625.webp', 'GM4_9672.webp'],
-                'moments': ['GM4_0256.webp', 'GM4_0477.JPG', 'GM4_0477.webp', 'GM4_0541.webp', 'GM4_0715.webp'],
-                'together': ['DSC00304.webp', 'DSC00316.webp', 'DSC00317.JPG', 'DSC00325.webp', 'DSC00329.webp', 'DSC00348.webp', 'DSC00352.JPG', 'DSC00354.JPG', 'DSC00355.JPG']
+                'moments': ['GM4_0256.webp', 'GM4_0477.webp', 'GM4_0541.webp', 'GM4_0715.webp'],
+                'together': ['DSC00304.webp', 'DSC00316.webp', 'DSC00325.webp', 'DSC00329.webp', 'DSC00348.webp']
             };
             
             const detectedPhotos = [];
@@ -5591,9 +5591,21 @@
             return galleryCategories[category] || [];
         }
 
-        // Load all photos from category folder
+        // Load all photos from category folder - ENHANCED with auto-detection
         function loadAllPhotosFromCategory(category) {
+            // Use the same enhanced detection as couple photos
             const photos = getPhotosFromCategory(category);
+            
+            // If no photos detected yet, try to detect them first
+            if (!photos || photos.length === 0) {
+                detectPhotosFromFolder(category, true).then(detectedPhotos => {
+                    if (detectedPhotos.length > 0) {
+                        galleryCategories[category] = detectedPhotos;
+                        console.log(`Auto-detected ${category}: ${detectedPhotos.length} photos`);
+                    }
+                });
+            }
+            
             const photoPaths = photos.map(photo => `${category}/${photo}`);
             return photoPaths;
         }
@@ -5757,51 +5769,11 @@
             })();
         }
         
-        // Enhanced gallery function with arrow navigation and lazy loading
+        // Dynamic gallery function - always detects latest files
         function openSimpleGallery(category) {
-            // Debug: Check what photos are available
-            const photos = getPhotosFromCategory(category);
-            const photoPaths = loadAllPhotosFromCategory(category);
+            console.log(`Opening gallery for category: ${category}`);
             
-            // Debug: Log to see what's happening
-            if (photos.length === 0 || photoPaths.length === 0) {
-                // Try to detect photos immediately if none found
-                detectPhotosFromFolder(category, true).then(detectedPhotos => {
-                    if (detectedPhotos.length > 0) {
-                        galleryCategories[category] = detectedPhotos;
-                        // Retry opening gallery
-                        openSimpleGallery(category);
-                    } else {
-                        // Show user feedback
-                        const modal = document.createElement('div');
-                        modal.style.cssText = `
-                            position: fixed;
-                            inset: 0;
-                            background: rgba(0,0,0,0.8);
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            z-index: 99999;
-                            color: white;
-                            font-family: 'Montserrat', sans-serif;
-                            text-align: center;
-                            padding: 2rem;
-                        `;
-                        modal.innerHTML = `
-                            <div>
-                                <div style="font-size: 2rem; margin-bottom: 1rem;">📷</div>
-                                <div style="font-size: 1.2rem; margin-bottom: 0.5rem;">Foto tidak ditemukan</div>
-                                <div style="font-size: 0.9rem; opacity: 0.8;">Kategori: ${category}</div>
-                                <button onclick="this.closest('div').parentElement.remove()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #ff6b6b; color: white; border: none; border-radius: 5px; cursor: pointer;">Tutup</button>
-                            </div>
-                        `;
-                        document.body.appendChild(modal);
-                    }
-                });
-                return;
-            }
-            
-            // Create loading indicator
+            // Show loading indicator
             const loadingIndicator = document.createElement('div');
             loadingIndicator.style.cssText = `
                 position: fixed;
@@ -5815,14 +5787,62 @@
                 font-family: 'Montserrat', sans-serif;
                 font-size: 1.2rem;
             `;
-            loadingIndicator.innerHTML = '<div>Loading gallery...</div>';
+            loadingIndicator.innerHTML = '<div>🔍 Mendeteksi foto terbaru...</div>';
             document.body.appendChild(loadingIndicator);
             
-            // Load gallery after a short delay to show loading indicator
-            setTimeout(() => {
+            // Clear cache to ensure fresh detection
+            clearImageCache();
+            
+            // Detect photos dynamically
+            detectPhotosFromFolder(category, true).then(detectedPhotos => {
+                console.log(`Detected ${detectedPhotos.length} photos for ${category}:`, detectedPhotos);
+                
+                // Remove loading indicator
                 document.body.removeChild(loadingIndicator);
+                
+                if (detectedPhotos.length === 0) {
+                    // Show user feedback for no photos
+                    const modal = document.createElement('div');
+                    modal.style.cssText = `
+                        position: fixed;
+                        inset: 0;
+                        background: rgba(0,0,0,0.8);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        z-index: 99999;
+                        color: white;
+                        font-family: 'Montserrat', sans-serif;
+                        text-align: center;
+                        padding: 2rem;
+                    `;
+                    modal.innerHTML = `
+                        <div>
+                            <div style="font-size: 2rem; margin-bottom: 1rem;">📷</div>
+                            <div style="font-size: 1.2rem; margin-bottom: 0.5rem;">Foto tidak ditemukan</div>
+                            <div style="font-size: 0.9rem; opacity: 0.8;">Kategori: ${category}</div>
+                            <div style="font-size: 0.8rem; opacity: 0.6; margin-top: 0.5rem;">Pastikan folder ada foto yang valid</div>
+                            <button onclick="this.closest('div').parentElement.remove()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #ff6b6b; color: white; border: none; border-radius: 5px; cursor: pointer;">Tutup</button>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                    return;
+                }
+                
+                // Create photo paths
+                const photoPaths = detectedPhotos.map(photo => `${category}/${photo}`);
+                
+                // Update gallery categories with latest detection
+                galleryCategories[category] = detectedPhotos;
+                
+                // Open gallery with detected photos
                 createGalleryModal(category, photoPaths);
-            }, 500);
+                
+            }).catch(error => {
+                console.error('Error detecting photos:', error);
+                document.body.removeChild(loadingIndicator);
+                alert('Error mendeteksi foto: ' + error.message);
+            });
         }
         
         function createGalleryModal(category, photoPaths) {
@@ -5896,10 +5916,25 @@
             }
 
             function updatePhotoDisplay(index) {
+                console.log('updatePhotoDisplay called with index:', index);
+                console.log('photoPaths:', photoPaths);
+                
+                if (!photoPaths || photoPaths.length === 0) {
+                    console.error('No photo paths available!');
+                    return;
+                }
+                
                 currentPhotoIndex = (index + photoPaths.length) % photoPaths.length;
                 const photoPath = photoPaths[currentPhotoIndex];
-                const counter = content.querySelector('#galleryCounter');
-                const photoContainer = content.querySelector('#galleryPhotoContainer');
+                
+                console.log('Current photo path:', photoPath);
+                console.log('Current photo index:', currentPhotoIndex);
+                
+                const counter = document.querySelector('#galleryCounter');
+                const photoContainer = document.querySelector('#galleryPhotoContainer');
+
+                console.log('Counter element:', counter);
+                console.log('Photo container element:', photoContainer);
 
                 if (counter) counter.textContent = `${currentPhotoIndex + 1} / ${photoPaths.length}`;
                 if (photoContainer) {
@@ -5917,16 +5952,21 @@
                             }
                         </style>
                     `;
+                } else {
+                    console.error('Photo container not found!');
+                    return;
                 }
 
                 // Enhanced lazy load with intersection observer and preloading
                 setTimeout(() => {
+                    console.log('Starting to load image:', photoPath);
                     const img = new Image();
                     
                     // Add loading="lazy" attribute for better performance
                     img.loading = 'lazy';
                     
                     img.onload = function() {
+                        console.log('Image loaded successfully:', photoPath);
                         if (photoContainer) {
                             photoContainer.innerHTML = `<img src="${photoPath}" alt="${titleText}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 14px; display: block; animation: fadeIn 0.3s ease-in-out;">`;
                             
@@ -5936,6 +5976,7 @@
                     };
                     
                     img.onerror = function() {
+                        console.error('Failed to load image:', photoPath);
                         if (photoContainer) {
                             photoContainer.innerHTML = `
                                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #ffb4aa; font-family: 'Montserrat', sans-serif; text-align: center; padding: 1rem;">
@@ -6799,46 +6840,62 @@
             }, 1000);
         }
         
-        // Open invitation function - simple and clean
+        // Open invitation function - simple and clean with debugging
         function openInvitation() {
-            const coverScreen = document.getElementById('coverScreen');
-            const mainContent = document.getElementById('mainContent');
+            console.log('Opening invitation...');
             
-            // Hide cover screen with animation
-            coverScreen.style.opacity = '0';
-            coverScreen.style.transform = 'scale(0.8)';
-            coverScreen.style.pointerEvents = 'none';
-            
-            // Show main content
-            mainContent.style.opacity = '1';
-            mainContent.style.transform = 'translateY(0)';
-            mainContent.style.pointerEvents = 'auto';
-            mainContent.style.visibility = 'visible';
-            
-            // Set invitation as opened
-            invitationOpened = true;
-            
-            // Start countdown timer
-            setTimeout(() => {
-                startCountdown();
-            }, 500);
-            
-            // Start music if available
-            setTimeout(() => {
-                if (typeof playWithFade === 'function' && playlist.length > 0 && !isPlaying) {
-                    playWithFade();
+            try {
+                const coverScreen = document.getElementById('coverScreen');
+                const mainContent = document.getElementById('mainContent');
+                
+                console.log('Cover screen:', coverScreen);
+                console.log('Main content:', mainContent);
+                
+                if (!coverScreen || !mainContent) {
+                    console.error('Required elements not found!');
+                    return;
                 }
-            }, 1000);
-            
-            // Remove cover screen after animation
-            setTimeout(() => {
-                coverScreen.style.display = 'none';
-            }, 1000);
-            
-            // Ensure we're at the top after opening
-            setTimeout(() => {
-                window.scrollTo(0, 0);
-            }, 100);
+                
+                // Hide cover screen with animation
+                coverScreen.style.opacity = '0';
+                coverScreen.style.transform = 'scale(0.8)';
+                coverScreen.style.pointerEvents = 'none';
+                
+                // Show main content
+                mainContent.style.opacity = '1';
+                mainContent.style.transform = 'translateY(0)';
+                mainContent.style.pointerEvents = 'auto';
+                mainContent.style.visibility = 'visible';
+                
+                // Set invitation as opened
+                invitationOpened = true;
+                
+                // Start countdown timer
+                setTimeout(() => {
+                    startCountdown();
+                }, 500);
+                
+                // Start music if available
+                setTimeout(() => {
+                    if (typeof playWithFade === 'function' && typeof playlist !== 'undefined' && playlist.length > 0 && !isPlaying) {
+                        playWithFade();
+                    }
+                }, 1000);
+                
+                // Remove cover screen after animation
+                setTimeout(() => {
+                    coverScreen.style.display = 'none';
+                }, 1000);
+                
+                // Ensure we're at the top after opening
+                setTimeout(() => {
+                    window.scrollTo(0, 0);
+                }, 100);
+                
+                console.log('Invitation opened successfully!');
+            } catch (error) {
+                console.error('Error opening invitation:', error);
+            }
         }
 
         // Ensure scroll is enabled (backup function)
@@ -7743,11 +7800,19 @@
             fixCoverScreen();
             
             // Initialize music autoplay with fallback
-            initMusicAutoplay();
+            try {
+                initMusicAutoplay();
+            } catch (error) {
+                console.error('Error initializing music autoplay:', error);
+            }
             
             // Load couple photos
             if (typeof loadCouplePhotos === 'function') {
-                loadCouplePhotos();
+                try {
+                    loadCouplePhotos();
+                } catch (error) {
+                    console.error('Error loading couple photos:', error);
+                }
             }
             
             // Clear cache to detect new files
